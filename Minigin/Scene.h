@@ -14,6 +14,7 @@ namespace dae
 		void RemoveAll();
 
 		void Update();
+		void LateUpdate();
 		void Render() const;
 
 		~Scene() = default;
@@ -27,6 +28,7 @@ namespace dae
 		explicit Scene() = default;
 
 		std::vector < std::unique_ptr<GameObject>> m_objects{};
+		std::vector < const GameObject* > m_ToBeDeletedObjects{};
 	};
 
 }
