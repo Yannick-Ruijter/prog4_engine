@@ -1,6 +1,6 @@
 #include <algorithm>
 #include "Scene.h"
-
+#include "assert.h"
 using namespace dae;
 
 void Scene::Add(std::unique_ptr<GameObject> object)

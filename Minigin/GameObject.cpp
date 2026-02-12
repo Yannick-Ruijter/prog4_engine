@@ -2,23 +2,63 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
+#include "Transform.h"
+#include "TextComponent.h"
+#include "Font.h"
 
-dae::GameObject::~GameObject() = default;
-
-void dae::GameObject::Update(){}
+void dae::GameObject::Update()
+{
+	if (m_TextComponent.get())	m_Texture = m_TextComponent->GetTexture();
+}
 
 void dae::GameObject::Render() const
 {
-	const auto& pos = m_transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+	if (m_RenderComponent.get() == nullptr) return;
+	if (m_Texture.get()) m_RenderComponent->Render(m_Texture.get(), m_Transform);
 }
 
 void dae::GameObject::SetTexture(const std::string& filename)
 {
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+	std::string temp = filename;
+	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
 void dae::GameObject::SetPosition(float x, float y)
 {
-	m_transform.SetPosition(x, y, 0.0f);
+	m_Transform.SetPosition(x, y, 0.0f);
+}
+
+void dae::GameObject::AddRenderComponent()
+{
+	m_RenderComponent = std::make_unique<RenderComponent>(this);
+}
+
+void dae::GameObject::AddFpsComponent()
+{
+	m_FpsComponent = std::make_unique<FpsComponent>();
+}
+
+void dae::GameObject::AddTextComponent(const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
+{
+	assert(m_RenderComponent.get() != nullptr && "There is no Render component on this gameobject");
+	m_TextComponent = std::make_unique<TextComponent>(text, font, color);
+	m_Texture = m_TextComponent->GetTexture();
+}
+
+void dae::GameObject::SetRenderText(std::string const& text)
+{
+	assert(m_TextComponent.get() != nullptr && "There is no Text component on this gameobject");
+	m_TextComponent->SetText(text);
+}
+
+void dae::GameObject::SetRenderTextColor(const SDL_Color& color)
+{
+	assert(m_TextComponent.get() != nullptr && "There is no Text component on this gameobject");
+	m_TextComponent->SetColor(color);
+}
+
+float dae::GameObject::GetFps()
+{
+	assert(m_FpsComponent.get() != nullptr);
+	return m_FpsComponent->GetFps();
 }
