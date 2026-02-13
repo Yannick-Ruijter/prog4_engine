@@ -8,6 +8,7 @@ namespace dae
 	class Minigin final
 	{
 		bool m_quit{};
+		float m_DeltaTime;
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();

@@ -6,9 +6,10 @@
 #include "TextComponent.h"
 #include "Font.h"
 
-void dae::GameObject::Update()
+void dae::GameObject::Update(float deltaTime)
 {
 	if (m_TextComponent.get())	m_Texture = m_TextComponent->GetTexture();
+	if (m_FpsComponent.get()) m_FpsComponent->Update(deltaTime);
 }
 
 void dae::GameObject::Render() const
@@ -55,6 +56,11 @@ void dae::GameObject::SetRenderTextColor(const SDL_Color& color)
 {
 	assert(m_TextComponent.get() != nullptr && "There is no Text component on this gameobject");
 	m_TextComponent->SetColor(color);
+}
+
+bool dae::GameObject::HasFpsComponent() const
+{
+	return m_FpsComponent.get() != nullptr;
 }
 
 float dae::GameObject::GetFps()

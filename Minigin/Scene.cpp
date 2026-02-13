@@ -19,11 +19,13 @@ void Scene::RemoveAll()
 	m_objects.clear();
 }
 
-void Scene::Update()
+void Scene::Update(float deltaTime)
 {
 	for(auto& object : m_objects)
 	{
-		object->Update();
+		if (object->HasFpsComponent())
+			object->SetRenderText(std::to_string(object->GetFps()));
+		object->Update(deltaTime);
 	}
 }
 

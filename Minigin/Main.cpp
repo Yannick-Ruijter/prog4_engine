@@ -39,8 +39,10 @@ static void load()
 
 	go = std::make_unique<dae::GameObject>();
 	go->AddRenderComponent();
-	go->AddTextComponent("Programming 4 Assignment", font, { 255, 255, 255, 255 });
+	go->AddTextComponent("60.0", font, { 255, 255, 255, 255 });
+	go->AddFpsComponent();
 	go->SetPosition(0, 0);
+	scene.Add(std::move(go));
 }
 
 int main(int, char*[]) {

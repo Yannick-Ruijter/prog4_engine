@@ -15,6 +15,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include <chrono>
 
 SDL_Window* g_window{};
 
@@ -100,8 +101,18 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
+	auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	m_quit = !InputManager::GetInstance().ProcessInput();
-	SceneManager::GetInstance().Update();
+	SceneManager::GetInstance().Update(m_DeltaTime);
 	Renderer::GetInstance().Render();
 	SceneManager::GetInstance().LateUpdate();
+	auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+	auto diff = currentTime - startTime;
+	//force fps to be 60-ish
+	while (diff < 16666666)
+	{
+		currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		diff = currentTime - startTime;
+	}
+	m_DeltaTime = diff / 1000000000.f;
 }

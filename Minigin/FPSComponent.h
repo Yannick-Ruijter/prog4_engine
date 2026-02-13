@@ -2,8 +2,7 @@
 class FpsComponent {
 public:
 	FpsComponent() = default;
-	void StartLoop();
-	void EndLoop();
+	void Update(float deltaTime);
 	float GetFps();
 private:
 	float m_LastFps;
