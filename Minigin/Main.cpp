@@ -8,7 +8,9 @@
 #include "Minigin.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "RenderComponent.h"
 #include "TextComponent.h"
+#include "TransformComponent.h"
 #include "Scene.h"
 
 #include <filesystem>
@@ -19,29 +21,33 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
-	go->AddRenderComponent();
-	go->SetTexture("background.png");
+	dae::TransformComponent::AddToGameObject(go.get());
+	dae::RenderComponent::AddToGameObject(go.get());
+	dae::Texture2DComponent::AddToGameObject(go.get(), "background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
-	go->AddRenderComponent();
-	go->SetTexture("logo.png");
-	go->SetPosition(358, 180);
+	dae::RenderComponent::AddToGameObject(go.get());
+	dae::TransformComponent::AddToGameObject(go.get());
+	dae::TransformComponent::GetFromObject(go.get())->SetPosition(358, 180);
+	dae::Texture2DComponent::AddToGameObject(go.get(), "logo.png");
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	go = std::make_unique<dae::GameObject>();
-	go->AddRenderComponent();
-	go->AddTextComponent("Programming 4 Assignment", font, { 255, 255, 0, 255 });
-	go->SetPosition(292, 20);
-	go->SetRenderTextColor({ 255, 0, 0, 255 });
+	dae::RenderComponent::AddToGameObject(go.get());
+	dae::TransformComponent::AddToGameObject(go.get());
+	dae::TransformComponent::GetFromObject(go.get())->SetPosition(292, 20);
+	dae::TextComponent::AddToGameObject(go.get(), "Programming 4 Assignment", font, { 255, 255, 0, 255 });
+	dae::TextComponent::GetFromObject(go.get())->SetColor({ 255, 0, 0, 255 });
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
-	go->AddRenderComponent();
-	go->AddTextComponent("60.0", font, { 255, 255, 255, 255 });
-	go->AddFpsComponent();
-	go->SetPosition(0, 0);
+	dae::RenderComponent::AddToGameObject(go.get());
+	dae::TransformComponent::AddToGameObject(go.get());
+	dae::TransformComponent::GetFromObject(go.get())->SetPosition(0, 0);
+	dae::TextComponent::AddToGameObject(go.get(), "60.0", font, { 255, 255, 255, 255 });
+	dae::FpsComponent::AddToGameObject(go.get());
 	scene.Add(std::move(go));
 }
 

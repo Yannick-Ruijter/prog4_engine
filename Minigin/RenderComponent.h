@@ -1,21 +1,24 @@
 #pragma once
 #include <memory>
 #include <string>
+
 namespace dae
 {
-	class Texture2D;
+	class Texture2DComponent;
 	class GameObject;
-	class Transform;
+	class TransformComponent;
 	class RenderComponent final 
 	{
 	public:
-		RenderComponent(GameObject* parent);
+		static void AddToGameObject(GameObject* parent);
+		static RenderComponent* GetFromObject(GameObject* object);
+
+		RenderComponent() = default;
 		~RenderComponent() = default;
-		void Render(Texture2D* texture, Transform const& transform) const;
+		void Render(Texture2DComponent* texture, TransformComponent const* transform) const;
 
 	private:
-		GameObject* m_Parent;
-		//std::shared_ptr<Texture2D> m_Texture{};
 
+		friend GameObject;
 	};
 }

@@ -1,17 +1,21 @@
-#include "Texture2D.h"
+#include "Texture2DComponent.h"
 #include "RenderComponent.h"
 #include "GameObject.h"
-#include "Transform.h"
+#include "TransformComponent.h"
 #include "Renderer.h"
 
-dae::RenderComponent::RenderComponent(GameObject* parent)
-	:m_Parent{parent}
+void dae::RenderComponent::AddToGameObject(GameObject* parent)
 {
-	assert(parent != nullptr);
+	parent->m_Components.renderComponent = std::make_unique<RenderComponent>();
 }
 
-void dae::RenderComponent::Render(Texture2D* texture, Transform const& transform) const
+dae::RenderComponent* dae::RenderComponent::GetFromObject(GameObject* object)
 {
-	Renderer::GetInstance().RenderTexture(*texture, transform.GetPosition().x, transform.GetPosition().y);
+	return object->m_Components.renderComponent.get();
+}
+
+void dae::RenderComponent::Render(Texture2DComponent* texture, TransformComponent const * transform) const
+{
+	Renderer::GetInstance().RenderTexture(*texture, transform->GetPosition().x, transform->GetPosition().y);
 }
 

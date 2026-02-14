@@ -23,8 +23,8 @@ void Scene::Update(float deltaTime)
 {
 	for(auto& object : m_objects)
 	{
-		if (object->HasFpsComponent())
-			object->SetRenderText(std::to_string(object->GetFps()));
+		if (dae::FpsComponent::GetFromObject(object.get()) != nullptr)
+			dae::TextComponent::GetFromObject(object.get())->SetText(std::to_string(dae::FpsComponent::GetFromObject(object.get())->GetFps()));
 		object->Update(deltaTime);
 	}
 }
