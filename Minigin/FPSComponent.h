@@ -1,9 +1,10 @@
 #pragma once
+#include "Component.h"
 
 namespace dae
 {
 	class GameObject;
-	class FpsComponent 
+	class FpsComponent : public Component
 	{
 	public:
 		static void AddToGameObject(GameObject* parent);

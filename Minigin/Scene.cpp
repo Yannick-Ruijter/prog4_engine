@@ -31,13 +31,13 @@ void Scene::Update(float deltaTime)
 
 void Scene::LateUpdate()
 {
-	for (auto const objectPoint : m_ToBeDeletedObjects)
+	for (auto const objectPointer : m_ToBeDeletedObjects)
 	{
 		m_objects.erase(
 			std::remove_if(
 				m_objects.begin(),
 				m_objects.end(),
-				[objectPoint](const auto& ptr) { return ptr.get() == objectPoint; }
+				[objectPointer](const auto& ptr) { return ptr.get() == objectPointer; }
 			),
 			m_objects.end()
 		);

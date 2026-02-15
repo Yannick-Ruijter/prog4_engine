@@ -1,12 +1,14 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <vector>
 #include "TransformComponent.h"
 #include "RenderComponent.h"
 #include "FPSComponent.h"
 #include <SDL3/SDL.h>
 #include "TextComponent.h"
 #include "Texture2DComponent.h"
+#include "Component.h"
 
 namespace dae
 {
@@ -14,8 +16,10 @@ namespace dae
 	class GameObject final 
 	{
 	public:
-		virtual void Update(float deltaTime);
-		virtual void Render() const;
+		void Update(float deltaTime);
+		void Render() const;
+
+		//void AddComponent(Component* component);
 
 		GameObject() = default;
 		~GameObject() = default;
@@ -25,6 +29,7 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
+		std::vector<std::unique_ptr<Component>> m_MyComponents;
 		struct {
 			std::unique_ptr<TransformComponent> transform;
 			std::unique_ptr<RenderComponent> renderComponent;

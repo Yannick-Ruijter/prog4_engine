@@ -1,13 +1,14 @@
 #pragma once
 #include <memory>
 #include <string>
+#include "Component.h"
 
 namespace dae
 {
 	class Texture2DComponent;
 	class GameObject;
 	class TransformComponent;
-	class RenderComponent final 
+	class RenderComponent: public Component 
 	{
 	public:
 		static void AddToGameObject(GameObject* parent);

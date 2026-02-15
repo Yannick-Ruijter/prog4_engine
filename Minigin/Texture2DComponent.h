@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <glm/vec2.hpp>
 #include <string>
+#include "Component.h"
 
 struct SDL_Texture;
 namespace dae
@@ -9,7 +10,7 @@ namespace dae
 	 * Simple RAII wrapper for an SDL_Texture
 	 */
 	class GameObject;
-	class Texture2DComponent final
+	class Texture2DComponent: public Component
 	{
 	public:
 		static void AddToGameObject(GameObject* parent, const std::string& fullPath);

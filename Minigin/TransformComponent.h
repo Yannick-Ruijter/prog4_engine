@@ -1,10 +1,10 @@
 #pragma once
 #include <glm/glm.hpp>
-
+#include "Component.h"
 namespace dae
 {
 	class GameObject;
-	class TransformComponent final
+	class TransformComponent : public Component
 	{
 	public:
 		static void AddToGameObject(GameObject* parent);
