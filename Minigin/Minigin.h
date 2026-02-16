@@ -2,13 +2,14 @@
 #include <string>
 #include <functional>
 #include <filesystem>
-
+#include "..\Game\Game.h"
 namespace dae
 {
 	class Minigin final
 	{
 		bool m_quit{};
-		float m_DeltaTime;
+		float m_DeltaTime{};
+		Game m_Game{};
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();

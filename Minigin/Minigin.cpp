@@ -103,9 +103,11 @@ void dae::Minigin::RunOneFrame()
 {
 	auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	m_quit = !InputManager::GetInstance().ProcessInput();
+	m_Game.Update(m_DeltaTime);
 	SceneManager::GetInstance().Update(m_DeltaTime);
-	Renderer::GetInstance().Render();
 	SceneManager::GetInstance().LateUpdate();
+	m_Game.Render();
+	Renderer::GetInstance().Render();
 	auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	auto diff = currentTime - startTime;
 	//force fps to be 60-ish

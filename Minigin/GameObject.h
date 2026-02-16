@@ -19,7 +19,8 @@ namespace dae
 		void Update(float deltaTime);
 		void Render() const;
 
-		//void AddComponent(Component* component);
+		void AddComponent(std::unique_ptr<Component> component);
+		Component* GetComponent(int id) const;
 
 		GameObject() = default;
 		~GameObject() = default;
