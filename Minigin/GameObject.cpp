@@ -31,13 +31,13 @@ void dae::GameObject::AddComponent(std::unique_ptr<Component> component)
 	m_MyComponents.push_back(std::move(component));
 }
 
-Component* dae::GameObject::GetComponent(int id) const
+template <typename T>
+T* dae::GameObject::GetComponent() const
 {
-	assert(false);
-	id;
-	/*for (auto const& component : m_MyComponents)
+	for (auto const& component : m_MyComponents)
 	{
-
-	}*/
+		T* component = dynamic_cast<T*>(component.get());
+		if (component != nullptr) return component;
+	}
 	return nullptr;
 }

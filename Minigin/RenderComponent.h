@@ -14,12 +14,11 @@ namespace dae
 		static void AddToGameObject(GameObject* parent);
 		static RenderComponent* GetFromObject(GameObject* object);
 
-		RenderComponent() = default;
+		RenderComponent(GameObject* parent);
 		~RenderComponent() = default;
 		void Render(Texture2DComponent* texture, TransformComponent const* transform) const;
 
 	private:
-
 		friend GameObject;
 	};
 }

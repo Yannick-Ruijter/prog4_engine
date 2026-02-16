@@ -19,12 +19,12 @@ glm::vec2 dae::Texture2DComponent::GetSize() const
 
 void dae::Texture2DComponent::AddToGameObject(GameObject* parent, const std::string& fullPath)
 {
-    parent->m_Components.texture2DComponent = ResourceManager::GetInstance().LoadTexture(fullPath);;
+    parent->m_Components.texture2DComponent = ResourceManager::GetInstance().LoadTexture(parent, fullPath);
 }
 
 void dae::Texture2DComponent::AddToGameObject(GameObject* parent, SDL_Texture* texture)
 {
-    parent->m_Components.texture2DComponent = std::make_shared<Texture2DComponent>(texture);
+    parent->m_Components.texture2DComponent = std::make_shared<Texture2DComponent>(parent, texture);
 }
 
 dae::Texture2DComponent* dae::Texture2DComponent::GetFromObject(GameObject* object)
@@ -37,7 +37,8 @@ SDL_Texture* dae::Texture2DComponent::GetSDLTexture() const
 	return m_Texture;
 }
 
-dae::Texture2DComponent::Texture2DComponent(const std::string &fullPath)
+dae::Texture2DComponent::Texture2DComponent(GameObject* parent, const std::string &fullPath)
+    :Component(parent)
 {
     SDL_Surface* surface = SDL_LoadPNG(fullPath.c_str());
     if (!surface)
@@ -61,7 +62,8 @@ dae::Texture2DComponent::Texture2DComponent(const std::string &fullPath)
     }
 }
 
-dae::Texture2DComponent::Texture2DComponent(SDL_Texture* texture)	: m_Texture{ texture } 
+dae::Texture2DComponent::Texture2DComponent(GameObject* parent, SDL_Texture* texture)	
+    :Component(parent), m_Texture{texture}
 {
 	assert(m_Texture != nullptr);
 }

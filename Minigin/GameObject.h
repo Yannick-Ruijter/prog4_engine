@@ -20,7 +20,8 @@ namespace dae
 		void Render() const;
 
 		void AddComponent(std::unique_ptr<Component> component);
-		Component* GetComponent(int id) const;
+		template <typename T>
+		T* GetComponent() const;
 
 		GameObject() = default;
 		~GameObject() = default;

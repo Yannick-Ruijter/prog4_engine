@@ -18,8 +18,8 @@ namespace dae
 		static Texture2DComponent* GetFromObject(GameObject* object);
 
 		SDL_Texture* GetSDLTexture() const;
-		explicit Texture2DComponent(SDL_Texture* texture);
-		explicit Texture2DComponent(const std::string& fullPath);
+		explicit Texture2DComponent(GameObject* parent, SDL_Texture* texture);
+		explicit Texture2DComponent(GameObject* parent, const std::string& fullPath);
 		~Texture2DComponent();
 
 		glm::vec2 GetSize() const;
@@ -30,7 +30,6 @@ namespace dae
 		Texture2DComponent & operator= (const Texture2DComponent &&) = delete;
 	private:
 		SDL_Texture* m_Texture;
-
 		friend GameObject;
 	};
 }

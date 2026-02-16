@@ -1,5 +1,8 @@
 #include "Component.h"
+#include "assert.h"
 
-void Component::Update(float deltaTime) { deltaTime; }
+dae::Component::Component(GameObject* parent) :m_Parent(parent) { assert(parent != nullptr); }
 
-void Component::Render() const {}
+void dae::Component::Update(float deltaTime) { deltaTime; }
+
+void dae::Component::Render() const {}
