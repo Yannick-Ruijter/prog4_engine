@@ -13,10 +13,6 @@ namespace dae
 	class Texture2DComponent: public Component
 	{
 	public:
-		static void AddToGameObject(GameObject* parent, const std::string& fullPath);
-		static void AddToGameObject(GameObject* parent, SDL_Texture* texture);
-		static Texture2DComponent* GetFromObject(GameObject* object);
-
 		SDL_Texture* GetSDLTexture() const;
 		explicit Texture2DComponent(GameObject* parent, SDL_Texture* texture);
 		explicit Texture2DComponent(GameObject* parent, const std::string& fullPath);
@@ -30,6 +26,5 @@ namespace dae
 		Texture2DComponent & operator= (const Texture2DComponent &&) = delete;
 	private:
 		SDL_Texture* m_Texture;
-		friend GameObject;
 	};
 }

@@ -17,21 +17,6 @@ glm::vec2 dae::Texture2DComponent::GetSize() const
     return { w, h };
 }
 
-void dae::Texture2DComponent::AddToGameObject(GameObject* parent, const std::string& fullPath)
-{
-    parent->m_Components.texture2DComponent = ResourceManager::GetInstance().LoadTexture(parent, fullPath);
-}
-
-void dae::Texture2DComponent::AddToGameObject(GameObject* parent, SDL_Texture* texture)
-{
-    parent->m_Components.texture2DComponent = std::make_shared<Texture2DComponent>(parent, texture);
-}
-
-dae::Texture2DComponent* dae::Texture2DComponent::GetFromObject(GameObject* object)
-{
-    return object->m_Components.texture2DComponent.get();
-}
-
 SDL_Texture* dae::Texture2DComponent::GetSDLTexture() const
 {
 	return m_Texture;

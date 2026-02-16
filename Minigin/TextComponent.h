@@ -8,12 +8,9 @@ namespace dae
 	class Font;
 	class Texture2DComponent;
 	class GameObject;
-	class TransformComponent;
 	class TextComponent : public Component
 	{
 	public:
-		static void AddToGameObject(GameObject* parent, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color = { 255, 255, 255, 255 });
-		static TextComponent* GetFromObject(GameObject* object);
 		void Update(float deltaTime) override;
 
 		void SetText(const std::string& text);
@@ -32,6 +29,5 @@ namespace dae
 		SDL_Color m_color{ 255, 255, 255, 255 };
 		std::shared_ptr<Font> m_font{};
 		std::shared_ptr<Texture2DComponent> m_textTexture{};
-		friend GameObject;
 	};
 }

@@ -21,7 +21,15 @@ namespace dae
 
 		void AddComponent(std::unique_ptr<Component> component);
 		template <typename T>
-		T* GetComponent() const;
+		T* GetComponent() const
+		{
+			for (auto const& component : m_MyComponents)
+			{
+				T* castedComponent = dynamic_cast<T*>(component.get());
+				if (castedComponent != nullptr) return castedComponent;
+			}
+			return nullptr;
+		};
 
 		GameObject() = default;
 		~GameObject() = default;
@@ -32,18 +40,5 @@ namespace dae
 
 	private:
 		std::vector<std::unique_ptr<Component>> m_MyComponents;
-		struct {
-			std::unique_ptr<TransformComponent> transform;
-			std::unique_ptr<RenderComponent> renderComponent;
-			std::shared_ptr<Texture2DComponent> texture2DComponent;
-			std::unique_ptr<TextComponent> textComponent;
-			std::unique_ptr<FpsComponent> fpsComponent;
-		} m_Components;
-
-		friend TransformComponent;
-		friend RenderComponent;
-		friend Texture2DComponent;
-		friend TextComponent;
-		friend FpsComponent;
 	};
 }

@@ -5,9 +5,7 @@
 
 namespace dae
 {
-	class Texture2DComponent;
 	class GameObject;
-	class TransformComponent;
 	class RenderComponent: public Component 
 	{
 	public:
@@ -16,9 +14,6 @@ namespace dae
 
 		RenderComponent(GameObject* parent);
 		~RenderComponent() = default;
-		void Render(Texture2DComponent* texture, TransformComponent const* transform) const;
-
-	private:
-		friend GameObject;
+		void Render() const;
 	};
 }

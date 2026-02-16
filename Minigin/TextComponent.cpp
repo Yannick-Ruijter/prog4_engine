@@ -13,17 +13,6 @@ dae::TextComponent::TextComponent(GameObject* parent, const std::string& text, s
 	Update(0.f);
 }
 
-
-void dae::TextComponent::AddToGameObject(GameObject* parent, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
-{
-	parent->m_Components.textComponent = std::make_unique<TextComponent>(parent, text, font, color);
-}
-
-dae::TextComponent* dae::TextComponent::GetFromObject(GameObject* object)
-{
-	return object->m_Components.textComponent.get();
-}
-
 void dae::TextComponent::Update(float deltaTime)
 {
 	//so it's referenced somewhere

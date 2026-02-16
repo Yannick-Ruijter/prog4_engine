@@ -2,16 +2,6 @@
 #include <memory>
 #include "GameObject.h"
 
-void dae::TransformComponent::AddToGameObject(GameObject* parent)
-{
-	parent->m_Components.transform = std::make_unique<TransformComponent>(parent);
-}
-
-dae::TransformComponent* dae::TransformComponent::GetFromObject(GameObject* object)
-{
-	return object->m_Components.transform.get();
-}
-
 dae::TransformComponent::TransformComponent(GameObject* parent) : Component(parent), m_Position{} {}
 
 void dae::TransformComponent::Update(float deltaTime)
