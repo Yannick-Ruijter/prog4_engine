@@ -2,7 +2,7 @@
 #include <string>
 #include <functional>
 #include <filesystem>
-#include "..\Game\Game.h"
+#include "Game.h"
 namespace dae
 {
 	class Minigin final

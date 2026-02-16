@@ -18,7 +18,7 @@ namespace fs = std::filesystem;
 
 static void load()
 {
-	auto& scene = dae::SceneManager::GetInstance().CreateScene();
+	/*auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
 	dae::TransformComponent::AddToGameObject(go.get());
@@ -48,7 +48,7 @@ static void load()
 	dae::TransformComponent::GetFromObject(go.get())->SetPosition(0, 0);
 	dae::TextComponent::AddToGameObject(go.get(), "60.0", font, { 255, 255, 255, 255 });
 	dae::FpsComponent::AddToGameObject(go.get());
-	scene.Add(std::move(go));
+	scene.Add(std::move(go));*/
 }
 
 int main(int, char*[]) {

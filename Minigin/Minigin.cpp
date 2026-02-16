@@ -78,6 +78,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
+	m_Game.Initialize();
 }
 
 dae::Minigin::~Minigin()

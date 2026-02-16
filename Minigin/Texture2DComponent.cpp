@@ -49,8 +49,7 @@ dae::Texture2DComponent::Texture2DComponent(const std::string &fullPath)
 
     m_Texture = SDL_CreateTextureFromSurface(
         Renderer::GetInstance().GetSDLRenderer(),
-        surface
-    );
+        surface );
 
     SDL_DestroySurface(surface);
 

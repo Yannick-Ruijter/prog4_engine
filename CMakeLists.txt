@@ -118,8 +118,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
 find_package(Steamworks QUIET)
 
 target_include_directories("${TARGET_NAME}" PUBLIC
-  ${CMAKE_SOURCE_DIR}/Minigin/
-  ${VLD_INCLUDE_DIR}
+  "${CMAKE_SOURCE_DIR}/Minigin/"
+  "${CMAKE_SOURCE_DIR}/Data/"
+  "${CMAKE_SOURCE_DIR}/Game/"
+  "${VLD_INCLUDE_DIR}"
 )
 
 target_link_libraries("${TARGET_NAME}" PUBLIC
