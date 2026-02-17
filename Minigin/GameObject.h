@@ -20,6 +20,21 @@ namespace dae
 		void Render() const;
 
 		void AddComponent(std::unique_ptr<Component> component);
+
+		template <typename T>
+		void RemoveComponent()
+		{
+			T* toBeRemoved = GetComponent<T>();
+			m_MyComponents.erase(
+				std::remove_if(
+					m_MyComponents.begin(),
+					m_MyComponents.end(),
+					[componentPointer](const auto& ptr) { return ptr.get() == componentPointer; }
+				),
+				m_MyComponents.end()
+			);
+		};
+
 		template <typename T>
 		T* GetComponent() const
 		{
