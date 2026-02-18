@@ -29,7 +29,7 @@ namespace dae
 				std::remove_if(
 					m_MyComponents.begin(),
 					m_MyComponents.end(),
-					[componentPointer](const auto& ptr) { return ptr.get() == componentPointer; }
+					[toBeRemoved](const auto& ptr) { return ptr.get() == toBeRemoved; }
 				),
 				m_MyComponents.end()
 			);
