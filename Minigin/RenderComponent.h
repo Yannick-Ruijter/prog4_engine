@@ -9,9 +9,6 @@ namespace dae
 	class RenderComponent: public Component 
 	{
 	public:
-		static void AddToGameObject(GameObject* parent);
-		static RenderComponent* GetFromObject(GameObject* object);
-
 		RenderComponent(GameObject* parent);
 		~RenderComponent() = default;
 		void Render() const;
