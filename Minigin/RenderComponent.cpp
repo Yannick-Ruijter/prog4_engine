@@ -4,7 +4,7 @@
 #include "TransformComponent.h"
 #include "Renderer.h"
 
-dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner), m_Texture2DComponent{ nullptr }, m_TransformComponent{ nullptr } {}
+dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner), m_TransformComponent{ nullptr }, m_Texture2DComponent{ nullptr } {}
 
 void dae::RenderComponent::Update(float)
 {
