@@ -4,10 +4,7 @@
 
 dae::TransformComponent::TransformComponent(GameObject& owner) : Component(owner), m_Position{} {}
 
-void dae::TransformComponent::Update(float deltaTime)
-{
-	deltaTime;
-}
+void dae::TransformComponent::Update(float) {}
 
 void dae::TransformComponent::SetPosition(const float x, const float y, const float z)
 {

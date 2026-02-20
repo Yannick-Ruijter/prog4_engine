@@ -13,10 +13,8 @@ dae::TextComponent::TextComponent(GameObject& owner, const std::string& text, st
 	Update(0.f);
 }
 
-void dae::TextComponent::Update(float deltaTime)
+void dae::TextComponent::Update(float)
 {
-	//so it's referenced somewhere
-	deltaTime;
 	if (m_needsUpdate)
 	{
 		const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), m_text.length(), m_color);

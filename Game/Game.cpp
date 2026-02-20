@@ -45,12 +45,6 @@ void Game::Initialize()
 	scene.Add(std::move(go));
 }
 
-void Game::Update(float deltaTime)
-{
-	deltaTime;
-}
+void Game::Update(float) {}
 
-void Game::Render() const
-{
-
-}
+void Game::Render() const {}
