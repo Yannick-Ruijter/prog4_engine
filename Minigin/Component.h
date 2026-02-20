@@ -5,10 +5,13 @@ namespace dae
 	class GameObject;
 	class Component {
 	public:
-		Component(GameObject* parent);
+		virtual ~Component() = default;
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 	protected:
-		GameObject* m_Parent;
+		Component(GameObject* owner);
+		GameObject* GetOwner() const;
+	private:
+		GameObject* m_Owner;
 	};
 }

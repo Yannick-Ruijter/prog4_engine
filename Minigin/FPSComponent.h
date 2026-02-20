@@ -7,8 +7,9 @@ namespace dae
 	class FpsComponent : public Component
 	{
 	public:
-		FpsComponent(GameObject* parent);
-		void Update(float deltaTime);
+		FpsComponent(GameObject* owner);
+		~FpsComponent() override = default;
+		void Update(float deltaTime) override;
 		float GetFps() const;
 	private:
 		float m_LastFps{};

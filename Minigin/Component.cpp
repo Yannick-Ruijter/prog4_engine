@@ -1,7 +1,12 @@
 #include "Component.h"
 #include "assert.h"
 
-dae::Component::Component(GameObject* parent) :m_Parent(parent) { assert(parent != nullptr); }
+dae::Component::Component(GameObject* owner) :m_Owner(owner) { assert(owner != nullptr); }
+
+dae::GameObject* dae::Component::GetOwner() const
+{
+    return m_Owner;
+}
 
 void dae::Component::Update(float deltaTime) { deltaTime; }
 

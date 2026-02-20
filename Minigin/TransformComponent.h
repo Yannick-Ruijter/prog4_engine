@@ -7,7 +7,8 @@ namespace dae
 	class TransformComponent : public Component
 	{
 	public:
-		TransformComponent(GameObject* parent);
+		TransformComponent(GameObject* owner);
+		~TransformComponent() override = default;
 		void Update(float deltaTime) override;
 		const glm::vec3& GetPosition() const { return m_Position; }
 		void SetPosition(float x, float y, float z = 0);

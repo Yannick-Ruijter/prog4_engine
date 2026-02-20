@@ -17,8 +17,8 @@ namespace dae
 		void SetColor(const SDL_Color& color);
 		std::shared_ptr<Texture2DComponent> GetTexture() const;
 
-		TextComponent(GameObject* parent, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color = { 255, 255, 255, 255 });
-		virtual ~TextComponent() = default;
+		TextComponent(GameObject* owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color = { 255, 255, 255, 255 });
+		~TextComponent() override = default;
 		TextComponent(const TextComponent& other) = delete;
 		TextComponent(TextComponent&& other) = delete;
 		TextComponent& operator=(const TextComponent& other) = delete;

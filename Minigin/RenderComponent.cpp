@@ -4,15 +4,15 @@
 #include "TransformComponent.h"
 #include "Renderer.h"
 
-dae::RenderComponent::RenderComponent(GameObject* parent) :Component(parent) {}
+dae::RenderComponent::RenderComponent(GameObject* owner) :Component(owner) {}
 
 void dae::RenderComponent::Render(/*Texture2DComponent* texture, TransformComponent const * transform*/) const
 {
 	//Renderer::GetInstance().RenderTexture(*texture, transform->GetPosition().x, transform->GetPosition().y);
-	Texture2DComponent* texture = m_Parent->GetComponent<Texture2DComponent>();
+	Texture2DComponent* texture = GetOwner()->GetComponent<Texture2DComponent>();
 	if(texture == nullptr)
-		texture = m_Parent->GetComponent<TextComponent>()->GetTexture().get();
-	TransformComponent* transform = m_Parent->GetComponent<TransformComponent>();
+		texture = GetOwner()->GetComponent<TextComponent>()->GetTexture().get();
+	TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
 	Renderer::GetInstance().RenderTexture(*texture, transform->GetPosition().x, transform->GetPosition().y);
 }
 

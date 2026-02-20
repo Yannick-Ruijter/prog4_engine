@@ -22,8 +22,8 @@ SDL_Texture* dae::Texture2DComponent::GetSDLTexture() const
 	return m_Texture;
 }
 
-dae::Texture2DComponent::Texture2DComponent(GameObject* parent, const std::string &fullPath)
-    :Component(parent)
+dae::Texture2DComponent::Texture2DComponent(GameObject* owner, const std::string &fullPath)
+    :Component(owner)
 {
     SDL_Surface* surface = SDL_LoadPNG(fullPath.c_str());
     if (!surface)
@@ -47,8 +47,8 @@ dae::Texture2DComponent::Texture2DComponent(GameObject* parent, const std::strin
     }
 }
 
-dae::Texture2DComponent::Texture2DComponent(GameObject* parent, SDL_Texture* texture)	
-    :Component(parent), m_Texture{texture}
+dae::Texture2DComponent::Texture2DComponent(GameObject* owner, SDL_Texture* texture)
+    :Component(owner), m_Texture{texture}
 {
 	assert(m_Texture != nullptr);
 }
