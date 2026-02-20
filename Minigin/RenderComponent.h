@@ -9,7 +9,7 @@ namespace dae
 	class RenderComponent: public Component 
 	{
 	public:
-		RenderComponent(GameObject* owner);
+		RenderComponent(GameObject& owner);
 		~RenderComponent() override = default;
 		void Render() const override;
 	};

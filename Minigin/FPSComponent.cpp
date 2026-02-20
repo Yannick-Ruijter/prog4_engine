@@ -4,7 +4,7 @@
 #include "TextComponent.h"
 #include <format>
 
-dae::FpsComponent::FpsComponent(GameObject* owner)
+dae::FpsComponent::FpsComponent(GameObject& owner)
 	:Component(owner) {}
 
 void dae::FpsComponent::Update(float deltaTime)

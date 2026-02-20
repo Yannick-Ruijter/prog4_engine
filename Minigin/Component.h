@@ -9,7 +9,7 @@ namespace dae
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 	protected:
-		Component(GameObject* owner);
+		Component(GameObject& owner);
 		GameObject* GetOwner() const;
 	private:
 		GameObject* m_Owner;

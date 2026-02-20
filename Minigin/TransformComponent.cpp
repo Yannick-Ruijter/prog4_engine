@@ -2,7 +2,7 @@
 #include <memory>
 #include "GameObject.h"
 
-dae::TransformComponent::TransformComponent(GameObject* owner) : Component(owner), m_Position{} {}
+dae::TransformComponent::TransformComponent(GameObject& owner) : Component(owner), m_Position{} {}
 
 void dae::TransformComponent::Update(float deltaTime)
 {

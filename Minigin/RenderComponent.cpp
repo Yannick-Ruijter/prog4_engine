@@ -4,7 +4,7 @@
 #include "TransformComponent.h"
 #include "Renderer.h"
 
-dae::RenderComponent::RenderComponent(GameObject* owner) :Component(owner) {}
+dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner) {}
 
 void dae::RenderComponent::Render(/*Texture2DComponent* texture, TransformComponent const * transform*/) const
 {
