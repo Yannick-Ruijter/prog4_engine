@@ -13,7 +13,5 @@ namespace dae
 		float GetFps() const;
 	private:
 		float m_LastFps{};
-		long long m_StartLoopTime{};
-		long long m_EndLoopTime{};
 	};
 }
