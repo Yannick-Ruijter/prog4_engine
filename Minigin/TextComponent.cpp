@@ -8,7 +8,7 @@
 #include "TransformComponent.h"
 
 dae::TextComponent::TextComponent(GameObject& owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
-	: Component(owner), m_needsUpdate(true), m_text(text), m_color(color), m_font(std::move(font)), m_textTexture(nullptr)
+	: Component(owner), m_needsUpdate(true), m_text(text), m_color(color), m_font(std::move(font)), m_TextTexture(nullptr)
 {
 	Update(0.f);
 }
@@ -28,7 +28,19 @@ void dae::TextComponent::Update(float)
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_DestroySurface(surf);
-		m_textTexture = std::make_shared<Texture2DComponent>(*GetOwner(), texture);
+		if (m_TextTexture == nullptr)
+		{
+			m_TextTexture = GetOwner()->GetComponent<Texture2DComponent>();
+		}
+		if (m_TextTexture == nullptr)
+		{
+			GetOwner()->AddComponent(std::make_unique<Texture2DComponent>(*GetOwner(), texture));
+			m_TextTexture = GetOwner()->GetComponent<Texture2DComponent>();
+		}
+		else
+		{
+			m_TextTexture->SetSDLTexture(texture);
+		}
 		m_needsUpdate = false;
 	}
 }
@@ -47,9 +59,9 @@ void dae::TextComponent::SetColor(const SDL_Color& color)
 	Update(0.f);
 }
 
-std::shared_ptr<dae::Texture2DComponent> dae::TextComponent::GetTexture() const
-{
-	return m_textTexture;
-}
+//std::shared_ptr<dae::Texture2DComponent> dae::TextComponent::GetTexture() const
+//{
+//	return m_TextTexture;
+//}
 
 

@@ -14,6 +14,7 @@ namespace dae
 	{
 	public:
 		SDL_Texture* GetSDLTexture() const;
+		void SetSDLTexture(SDL_Texture* texture);
 		explicit Texture2DComponent(GameObject& owner, SDL_Texture* texture);
 		explicit Texture2DComponent(GameObject& owner, const std::string& fullPath);
 		~Texture2DComponent() override;

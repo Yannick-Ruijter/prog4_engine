@@ -10,7 +10,7 @@ dae::FpsComponent::FpsComponent(GameObject& owner)
 void dae::FpsComponent::Update(float deltaTime)
 {
 	float currentFPS{ 1 / deltaTime };
-	if (currentFPS - m_LastFps > 0.1f || currentFPS - m_LastFps < -0.1f)
+	if (currentFPS - m_LastFps > 0.1f || currentFPS - m_LastFps < -0.1f && m_LastFps != 0.0f)
 	{
 		m_LastFps = currentFPS;
 		TextComponent* textComponent = GetOwner()->GetComponent<TextComponent>();

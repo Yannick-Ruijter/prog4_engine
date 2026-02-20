@@ -4,15 +4,19 @@
 #include "TransformComponent.h"
 #include "Renderer.h"
 
-dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner) {}
+dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner), m_Texture2DComponent{ nullptr }, m_TransformComponent{ nullptr } {}
+
+void dae::RenderComponent::Update(float)
+{
+	if (m_Texture2DComponent == nullptr) m_Texture2DComponent = GetOwner()->GetComponent<Texture2DComponent>();
+	if (m_TransformComponent == nullptr) m_TransformComponent = GetOwner()->GetComponent<TransformComponent>();
+}
 
 void dae::RenderComponent::Render() const
 {
-	//Renderer::GetInstance().RenderTexture(*texture, transform->GetPosition().x, transform->GetPosition().y);
-	Texture2DComponent* texture = GetOwner()->GetComponent<Texture2DComponent>();
-	if(texture == nullptr)
-		texture = GetOwner()->GetComponent<TextComponent>()->GetTexture().get();
-	TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
-	Renderer::GetInstance().RenderTexture(*texture, transform->GetPosition().x, transform->GetPosition().y);
+	if (m_Texture2DComponent == nullptr) return;
+	if (m_TransformComponent == nullptr) return;
+
+	Renderer::GetInstance().RenderTexture(*m_Texture2DComponent, m_TransformComponent->GetPosition().x, m_TransformComponent->GetPosition().y);
 }
 

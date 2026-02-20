@@ -22,6 +22,11 @@ SDL_Texture* dae::Texture2DComponent::GetSDLTexture() const
 	return m_Texture;
 }
 
+void dae::Texture2DComponent::SetSDLTexture(SDL_Texture* texture)
+{
+    m_Texture = texture;
+}
+
 dae::Texture2DComponent::Texture2DComponent(GameObject& owner, const std::string &fullPath)
     :Component(owner)
 {
