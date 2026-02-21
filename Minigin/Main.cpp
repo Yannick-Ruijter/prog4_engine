@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+//TODO: Leak detector is not working, CMAKE ,, find_package(VLD CONFIG) not detecting vld"
 #if _DEBUG
 #if __has_include(<vld.h>)
 #pragma message(">>> VLD HEADER FOUND - including vld.h")
@@ -21,10 +22,6 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-static void load()
-{
-}
-
 int main(int, char*[]) {
 #if __EMSCRIPTEN__
 	fs::path data_location = "";
@@ -34,6 +31,6 @@ int main(int, char*[]) {
 		data_location = "../Data/";
 #endif
 	dae::Minigin engine(data_location);
-	engine.Run(load);
+	engine.Run();
     return 0;
 }
