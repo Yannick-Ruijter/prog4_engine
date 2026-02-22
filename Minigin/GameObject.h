@@ -20,6 +20,8 @@ namespace dae
 		void Update(float deltaTime);
 		void Render() const;
 
+		void SetParent(GameObject* parent);
+
 		template <typename T, typename ...Args>
 		void AddComponent(Args&& ...args)
 		{
@@ -51,6 +53,7 @@ namespace dae
 			return nullptr;
 		};
 
+
 		GameObject() = default;
 		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
@@ -60,6 +63,7 @@ namespace dae
 
 	private:
 		std::vector<std::unique_ptr<Component>> m_MyComponents;
-		std::vector<GameObject*> m_Children;
+		std::vector<GameObject*> m_Children{};
+		GameObject* m_Parent{ nullptr };
 	};
 }
