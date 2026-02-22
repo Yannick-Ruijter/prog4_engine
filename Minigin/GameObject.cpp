@@ -29,7 +29,7 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepCoordinates)
 
 	assert(parent != this && "You can not become your own parent!");
 
-	assert(std::find(begin(m_Children), end(m_Children), this) == end(m_Children) && "You can not become the child of your own child!");
+	assert(std::find(begin(m_Children), end(m_Children), parent) == end(m_Children) && "You can not become the child of your own child!");
 
 	if (m_Parent != nullptr)
 	{
