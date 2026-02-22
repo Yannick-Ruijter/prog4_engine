@@ -17,6 +17,6 @@ void dae::RenderComponent::Render() const
 	if (m_Texture2DComponent == nullptr) return;
 	if (m_TransformComponent == nullptr) return;
 
-	Renderer::GetInstance().RenderTexture(*m_Texture2DComponent, m_TransformComponent->GetPosition().x, m_TransformComponent->GetPosition().y);
+	Renderer::GetInstance().RenderTexture(*m_Texture2DComponent, m_TransformComponent->GetWorldPosition().x, m_TransformComponent->GetWorldPosition().y);
 }
 
