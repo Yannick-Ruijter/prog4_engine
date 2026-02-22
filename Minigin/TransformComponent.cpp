@@ -2,7 +2,7 @@
 #include <memory>
 #include "GameObject.h"
 
-dae::TransformComponent::TransformComponent(GameObject& owner) : Component(owner), m_Position{} {}
+dae::TransformComponent::TransformComponent(GameObject& owner, glm::vec3 const& position) : Component(owner), m_Position{ position } {}
 
 void dae::TransformComponent::Update(float) {}
 

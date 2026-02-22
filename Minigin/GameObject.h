@@ -20,7 +20,7 @@ namespace dae
 		void Update(float deltaTime);
 		void Render() const;
 
-		void SetParent(GameObject* parent);
+		void SetParent(GameObject* parent, bool keepCoordinates);
 
 		template <typename T, typename ...Args>
 		void AddComponent(Args&& ...args)
