@@ -28,8 +28,9 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepCoordinates)
 	if (parent == m_Parent) return;
 
 	assert(parent != this && "You can not become your own parent!");
-	auto it = std::find(begin(m_Children), end(m_Children), this);
-	assert(it == end(m_Children) && "You can not become the child of your own child!");
+
+	assert(std::find(begin(m_Children), end(m_Children), this) == end(m_Children) && "You can not become the child of your own child!");
+
 	if (m_Parent != nullptr)
 	{
 		m_Parent->m_Children.erase(
@@ -37,8 +38,10 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepCoordinates)
 			m_Parent->m_Children.end()
 		);
 	}
+
 	m_Parent = parent;
 	m_Parent->m_Children.emplace_back(this);
+
 	if (!keepCoordinates)
 	{
 		TransformComponent* transform{ GetComponent<TransformComponent>() };
