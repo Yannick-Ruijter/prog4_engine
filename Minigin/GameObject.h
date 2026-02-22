@@ -9,6 +9,7 @@
 #include "TextComponent.h"
 #include "Texture2DComponent.h"
 #include "Component.h"
+#include <utility>
 
 namespace dae
 {
@@ -19,7 +20,11 @@ namespace dae
 		void Update(float deltaTime);
 		void Render() const;
 
-		void AddComponent(std::unique_ptr<Component> component);
+		template <typename T, typename ...Args>
+		void AddComponent(Args&& ...args)
+		{
+			m_MyComponents.emplace_back(std::make_unique<T>(*this, std::forward<Args>(args)...));
+		};
 
 		template <typename T>
 		void RemoveComponent()
@@ -55,5 +60,6 @@ namespace dae
 
 	private:
 		std::vector<std::unique_ptr<Component>> m_MyComponents;
+		std::vector<GameObject*> m_Children;
 	};
 }

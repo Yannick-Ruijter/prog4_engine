@@ -23,9 +23,4 @@ void dae::GameObject::Render() const
 	}
 }
 
-void dae::GameObject::AddComponent(std::unique_ptr<Component> component)
-{
-	m_MyComponents.push_back(std::move(component));
-}
-
 

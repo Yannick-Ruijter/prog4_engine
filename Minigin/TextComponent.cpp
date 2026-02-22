@@ -34,7 +34,7 @@ void dae::TextComponent::Update(float)
 		}
 		if (m_TextTexture == nullptr)
 		{
-			GetOwner()->AddComponent(std::make_unique<Texture2DComponent>(*GetOwner(), texture));
+			GetOwner()->AddComponent<Texture2DComponent>(texture);
 			m_TextTexture = GetOwner()->GetComponent<Texture2DComponent>();
 		}
 		else
