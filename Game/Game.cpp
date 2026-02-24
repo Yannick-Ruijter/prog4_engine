@@ -6,6 +6,7 @@
 #include "Texture2DComponent.h"
 #include "TransformComponent.h"
 #include "ResourceManager.h"
+#include "OrbitComponent.h"
 
 Game::Game()
 {
@@ -42,6 +43,22 @@ void Game::Initialize()
 	go->AddComponent<dae::TransformComponent>();
 	go->AddComponent<dae::TextComponent>("60.0", font, SDL_Color{ 255, 0, 0, 255 });
 	go->AddComponent<dae::FpsComponent>();
+	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	dae::GameObject* temp{ go.get() };
+	go->AddComponent<dae::RenderComponent>();
+	go->AddComponent<dae::TransformComponent>();
+	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
+	go->AddComponent<dae::OrbitComponent>(glm::vec3{ 200, 200, 0 }, 30.f, 2.f);
+	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	go->AddComponent<dae::RenderComponent>();
+	go->AddComponent<dae::TransformComponent>();
+	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
+	go->AddComponent<dae::OrbitComponent>(glm::vec3{ 0, 0, 0 }, 30.f, 5.f);
+	go->SetParent(temp, false);
 	scene.Add(std::move(go));
 }
 

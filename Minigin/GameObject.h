@@ -10,6 +10,7 @@
 #include "Texture2DComponent.h"
 #include "Component.h"
 #include <utility>
+#include "OrbitComponent.h"
 
 namespace dae
 {
