@@ -5,5 +5,6 @@ class BurgerTime : public Game
 {
 public:
 	BurgerTime() = default;
+	~BurgerTime() override = default;
 	void Initialize() override;
 };
