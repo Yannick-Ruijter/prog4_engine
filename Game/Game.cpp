@@ -25,7 +25,7 @@ void Game::Initialize()
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::TransformComponent>();
-	go->GetComponent<dae::TransformComponent>()->SetWorldPosition(358, 180);
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(358, 180);
 	go->AddComponent<dae::Texture2DComponent>("Data/logo.png");
 	scene.Add(std::move(go));
 
@@ -33,7 +33,7 @@ void Game::Initialize()
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::TransformComponent>();
-	go->GetComponent<dae::TransformComponent>()->SetWorldPosition(292, 20);
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 20);
 	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font, SDL_Color{255, 0, 0, 255});
 	scene.Add(std::move(go));
 

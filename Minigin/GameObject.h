@@ -23,7 +23,8 @@ namespace dae
 		void SetParent(GameObject* parent, bool keepCoordinates);
 		GameObject* GetParent() const;
 
-		glm::vec3& GetWorldPosition() const;
+		glm::vec3 GetWorldPosition() const;
+		void SetPositionDirty();
 
 		template <typename T, typename ...Args>
 		void AddComponent(Args&& ...args)
@@ -75,6 +76,5 @@ namespace dae
 		void AddChild(GameObject* object);
 
 		void SetLocalPosition(glm::vec3 const& pos);
-		void SetPositionDirty();
 	};
 }

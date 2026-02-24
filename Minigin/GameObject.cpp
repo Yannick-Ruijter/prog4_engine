@@ -8,7 +8,6 @@
 
 void dae::GameObject::Update(float deltaTime)
 {
-
 	for (auto const& component : m_MyComponents)
 	{
 		component->Update(deltaTime);
@@ -46,6 +45,11 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepCoordinates)
 dae::GameObject* dae::GameObject::GetParent() const
 {
 	return m_Parent;
+}
+
+glm::vec3 dae::GameObject::GetWorldPosition() const
+{
+	return GetComponent<TransformComponent>()->GetWorldPosition();	
 }
 
 bool dae::GameObject::IsChild(GameObject* object) const

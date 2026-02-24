@@ -2,23 +2,37 @@
 #include <memory>
 #include "GameObject.h"
 
-dae::TransformComponent::TransformComponent(GameObject& owner, glm::vec3 const& position) : Component(owner), m_WorldPosition{ position } {}
+dae::TransformComponent::TransformComponent(GameObject& owner, glm::vec3 const& position) : Component(owner), m_LocalPosition{ position }, m_WorldPosition{ position } {}
 
 void dae::TransformComponent::Update(float) {}
 
-void dae::TransformComponent::SetWorldPosition(const float x, const float y, const float z)
+const glm::vec3& dae::TransformComponent::GetWorldPosition()
 {
-	m_WorldPosition.x = x;
-	m_WorldPosition.y = y;
-	m_WorldPosition.z = z;
+	if (m_UpdateWorldPos)
+	{
+		if (GetOwner()->GetParent() != nullptr)
+		{
+			TransformComponent* parentTransform{ GetOwner()->GetParent()->GetComponent<TransformComponent>() };
+			m_WorldPosition = parentTransform->GetWorldPosition() + m_LocalPosition;
+		}
+		else
+		{
+			m_WorldPosition = m_LocalPosition;
+		}
+		m_UpdateWorldPos = false;
+	}
+	return m_WorldPosition;
 }
 
-void dae::TransformComponent::SetWorldPosition(const glm::vec3& position) 
+void dae::TransformComponent::SetLocalPosition(const float x, const float y, const float z)
 {
-	m_WorldPosition = position;
+	m_LocalPosition.x = x;
+	m_LocalPosition.y = y;
+	m_LocalPosition.z = z;
+	m_UpdateWorldPos = true;
 }
 
-void dae::TransformComponent::SetLocalPosition(const glm::vec3& position)
+void dae::TransformComponent::SetLocalPosition(const glm::vec3& position) 
 {
-	m_LocalPosition = position;
+	SetLocalPosition(position.x, position.y, position.z);
 }
