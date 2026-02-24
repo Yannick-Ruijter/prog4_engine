@@ -25,46 +25,51 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::SetParent(GameObject* parent, bool keepCoordinates)
 {
-	if (parent == m_Parent) return;
+	if (IsChild(parent) || parent == this || m_Parent == parent) return;
 
-	assert(parent != this && "You can not become your own parent!");
-
-	assert(std::find(begin(m_Children), end(m_Children), parent) == end(m_Children) && "You can not become the child of your own child!");
-
-	if (m_Parent != nullptr)
+	if (parent == nullptr)
 	{
-		m_Parent->m_Children.erase(
-			std::find(begin(m_Parent->m_Children), end(m_Parent->m_Children), this),
-			m_Parent->m_Children.end()
-		);
-	}
-
-	m_Parent = parent;
-	if (m_Parent == nullptr) return;
-
-	m_Parent->m_Children.emplace_back(this);
-
-	TransformComponent* transform{ GetComponent<TransformComponent>() };
-	TransformComponent* otherTransform{ m_Parent->GetComponent<TransformComponent>() };
-	assert(otherTransform != nullptr && "Parent gameobject does not have a transform");
-
-	if (!keepCoordinates)
-	{
-		if (transform == nullptr)
-		{
-			AddComponent<TransformComponent>(otherTransform->GetWorldPosition());
-			GetComponent<TransformComponent>()->SetLocalPosition({ 0,0,0 });
-		}
-		else 
-		{ 
-			transform->SetWorldPosition(otherTransform->GetWorldPosition()); 
-			transform->SetLocalPosition({ 0,0,0 });
-		}
+		SetLocalPosition(GetWorldPosition());
 	}
 	else
 	{
-		transform->SetLocalPosition(transform->GetWorldPosition() - otherTransform->GetWorldPosition());
+		if (keepCoordinates)
+			SetLocalPosition(GetWorldPosition() - parent->GetWorldPosition());
+		SetPositionDirty();
 	}
+
+	if (m_Parent) m_Parent->RemoveChild(this);
+	m_Parent = parent;
+	if (m_Parent) m_Parent->AddChild(this);
 }
 
+dae::GameObject* dae::GameObject::GetParent() const
+{
+	return m_Parent;
+}
 
+bool dae::GameObject::IsChild(GameObject* object) const
+{
+	return std::find(begin(m_Children), end(m_Children), object) != end(m_Children);
+}
+
+void dae::GameObject::RemoveChild(GameObject* object)
+{
+	m_Children.erase(std::find(begin(m_Children), end(m_Children), object));
+}
+
+void dae::GameObject::AddChild(GameObject* object)
+{
+	m_Children.emplace_back(object);
+}
+
+void dae::GameObject::SetLocalPosition(glm::vec3 const& pos)
+{
+	TransformComponent* transform = GetComponent<TransformComponent>();
+	transform->SetLocalPosition(pos);
+}
+
+void dae::GameObject::SetPositionDirty()
+{
+	m_UpdatePosition = true;
+}
