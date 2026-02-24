@@ -40,15 +40,30 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepCoordinates)
 	}
 
 	m_Parent = parent;
+	if (m_Parent == nullptr) return;
+
 	m_Parent->m_Children.emplace_back(this);
+
+	TransformComponent* transform{ GetComponent<TransformComponent>() };
+	TransformComponent* otherTransform{ m_Parent->GetComponent<TransformComponent>() };
+	assert(otherTransform != nullptr && "Parent gameobject does not have a transform");
 
 	if (!keepCoordinates)
 	{
-		TransformComponent* transform{ GetComponent<TransformComponent>() };
-		TransformComponent* otherTransform{ m_Parent->GetComponent<TransformComponent>() };
-		assert(otherTransform != nullptr && "Parent gameobject does not have a transform");
-		if (transform == nullptr) AddComponent<TransformComponent>(otherTransform->GetWorldPosition());
-		else transform->SetWorldPosition(otherTransform->GetWorldPosition());
+		if (transform == nullptr)
+		{
+			AddComponent<TransformComponent>(otherTransform->GetWorldPosition());
+			GetComponent<TransformComponent>()->SetLocalPosition({ 0,0,0 });
+		}
+		else 
+		{ 
+			transform->SetWorldPosition(otherTransform->GetWorldPosition()); 
+			transform->SetLocalPosition({ 0,0,0 });
+		}
+	}
+	else
+	{
+		transform->SetLocalPosition(transform->GetWorldPosition() - otherTransform->GetWorldPosition());
 	}
 }
 

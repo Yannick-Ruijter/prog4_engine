@@ -14,6 +14,11 @@ void dae::TransformComponent::SetWorldPosition(const float x, const float y, con
 }
 
 void dae::TransformComponent::SetWorldPosition(const glm::vec3& position) 
-{ 
+{
 	m_WorldPosition = position;
+}
+
+void dae::TransformComponent::SetLocalPosition(const glm::vec3& position)
+{
+	m_LocalPosition = position;
 }

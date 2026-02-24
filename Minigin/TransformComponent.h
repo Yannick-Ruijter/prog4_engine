@@ -15,8 +15,8 @@ namespace dae
 		void SetWorldPosition(const glm::vec3& position);
 		void SetLocalPosition(const glm::vec3& position);
 	private:
-		glm::vec3 m_WorldPosition;
-		glm::vec3 m_LastParentPosition;
-		glm::vec3 m_LocalPosition;
+		glm::vec3 m_WorldPosition{};
+		glm::vec3 m_LastParentPosition{};
+		glm::vec3 m_LocalPosition{};
 	};
 }
