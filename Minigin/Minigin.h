@@ -9,9 +9,9 @@ namespace dae
 	{
 		bool m_quit{};
 		float m_DeltaTime{};
-		Game m_Game{};
+		std::unique_ptr<Game> m_Game{};
 	public:
-		explicit Minigin(const std::filesystem::path& dataPath);
+		explicit Minigin(const std::filesystem::path& dataPath, std::unique_ptr<Game> game);
 		~Minigin();
 		void Run();
 		void RunOneFrame();

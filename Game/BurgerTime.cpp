@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "BurgerTime.h"
 #include "FPSComponent.h"
 #include "Component.h"
 #include "RenderComponent.h"
@@ -8,12 +8,7 @@
 #include "ResourceManager.h"
 #include "OrbitComponent.h"
 
-Game::Game()
-{
-	
-}
-
-void Game::Initialize()
+void BurgerTime::Initialize()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
@@ -35,7 +30,7 @@ void Game::Initialize()
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::TransformComponent>();
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 20);
-	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font, SDL_Color{255, 0, 0, 255});
+	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font, SDL_Color{ 255, 0, 0, 255 });
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
@@ -61,7 +56,3 @@ void Game::Initialize()
 	go->SetParent(temp, false);
 	scene.Add(std::move(go));
 }
-
-void Game::Update(float) {}
-
-void Game::Render() const {}

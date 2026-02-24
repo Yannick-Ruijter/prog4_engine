@@ -55,7 +55,8 @@ void PrintSDLVersion()
 	LogSDLVersion("Linked with SDL_ttf ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version),	SDL_VERSIONNUM_MICRO(version));
 }
 
-dae::Minigin::Minigin(const std::filesystem::path& dataPath)
+dae::Minigin::Minigin(const std::filesystem::path& dataPath, std::unique_ptr<Game> game)
+	:m_Game{std::move(game)}
 {
 	PrintSDLVersion();
 	
@@ -78,7 +79,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
-	m_Game.Initialize();
+	m_Game->Initialize();
 }
 
 dae::Minigin::~Minigin()
@@ -103,10 +104,10 @@ void dae::Minigin::RunOneFrame()
 {
 	auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	m_quit = !InputManager::GetInstance().ProcessInput();
-	m_Game.Update(m_DeltaTime);
+	m_Game->Update(m_DeltaTime);
 	SceneManager::GetInstance().Update(m_DeltaTime);
 	SceneManager::GetInstance().LateUpdate();
-	m_Game.Render();
+	m_Game->Render();
 	Renderer::GetInstance().Render();
 	auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	auto diff = currentTime - startTime;

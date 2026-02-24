@@ -6,7 +6,7 @@
 class Game {
 public:
 	Game();
-	void Initialize();
-	void Update(float deltaTime);
-	void Render() const;
+	virtual void Initialize();
+	virtual void Update(float deltaTime);
+	virtual void Render() const;
 };
