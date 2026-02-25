@@ -50,6 +50,7 @@ namespace dae
 		template <typename T>
 		T* GetComponent() const
 		{
+			if (auto* t = dynamic_cast<T*>(m_Transform.get())) return t;
 			for (auto const& component : m_MyComponents)
 			{
 				T* castedComponent = dynamic_cast<T*>(component.get());
@@ -68,6 +69,7 @@ namespace dae
 
 	private:
 		std::vector<std::unique_ptr<Component>> m_MyComponents;
+		std::unique_ptr<TransformComponent> m_Transform{ std::make_unique<TransformComponent>(*this) };
 		std::vector<GameObject*> m_Children{};
 		GameObject* m_Parent{ nullptr };
 		bool m_UpdatePosition{ true };

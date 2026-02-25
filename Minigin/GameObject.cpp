@@ -48,7 +48,7 @@ dae::GameObject* dae::GameObject::GetParent() const
 
 glm::vec3 dae::GameObject::GetWorldPosition() const
 {
-	return GetComponent<TransformComponent>()->GetWorldPosition();	
+	return m_Transform->GetWorldPosition();	
 }
 
 bool dae::GameObject::IsChild(GameObject* object) const
@@ -68,8 +68,7 @@ void dae::GameObject::AddChild(GameObject* object)
 
 void dae::GameObject::SetLocalPosition(glm::vec3 const& pos)
 {
-	TransformComponent* transform = GetComponent<TransformComponent>();
-	transform->SetLocalPosition(pos);
+	m_Transform->SetLocalPosition(pos);
 }
 
 void dae::GameObject::SetPositionDirty()
