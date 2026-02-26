@@ -7,8 +7,11 @@ public:
 	TrashTheCache() = default;
 	~TrashTheCache() override;
 	void Initialize() override;
-	void Render() const override;
+	void Render() override;
 private:
-	void ShowEx1Screen() const;
+	bool m_TrashCacheEx1ButtonPressed{ false };
+	void ShowEx1Screen();
 	void ShowEx2Screen() const;
+
+	void CalculatePlotInfoEx1(int nrOfSamples);
 };

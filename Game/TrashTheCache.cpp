@@ -70,7 +70,7 @@ void TrashTheCache::Initialize()
 	scene.Add(std::move(go));
 }
 
-void TrashTheCache::Render() const
+void TrashTheCache::Render()
 {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
@@ -86,9 +86,9 @@ void TrashTheCache::Render() const
 	);
 }
 
-void TrashTheCache::ShowEx1Screen() const
+void TrashTheCache::ShowEx1Screen()
 {
-	static int samples = 100;
+	static int samples = 10;
 	
 	ImGui::Begin("Exercise 1");
 
@@ -100,7 +100,16 @@ void TrashTheCache::ShowEx1Screen() const
 
 	ImGui::Spacing();
 
-	ImGui::Button("Trash the cache");
+	if (ImGui::Button("Trash the cache"))
+	{
+		m_TrashCacheEx1ButtonPressed = true;
+		CalculatePlotInfoEx1(samples);
+	}
+
+	if (m_TrashCacheEx1ButtonPressed)
+	{
+
+	}
 
 	ImGui::End();
 }
@@ -124,4 +133,8 @@ void TrashTheCache::ShowEx2Screen() const
 	ImGui::Button("Trash the cache with GameObject3DAlt");
 
 	ImGui::End();
+}
+
+void TrashTheCache::CalculatePlotInfoEx1(int)
+{
 }

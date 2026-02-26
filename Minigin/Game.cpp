@@ -17,4 +17,4 @@ void Game::Initialize() {}
 
 void Game::Update(float) {}
 
-void Game::Render() const {}
+void Game::Render() {}

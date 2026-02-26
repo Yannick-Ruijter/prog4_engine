@@ -9,5 +9,5 @@ public:
 	virtual ~Game() = default;
 	virtual void Initialize();
 	virtual void Update(float deltaTime);
-	virtual void Render() const;
+	virtual void Render();
 };
