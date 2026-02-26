@@ -4,6 +4,7 @@
 namespace dae
 {
 	class GameObject;
+	class TextComponent;
 	class FpsComponent : public Component
 	{
 	public:
@@ -13,5 +14,6 @@ namespace dae
 		float GetFps() const;
 	private:
 		float m_LastFps{};
+		TextComponent* m_TextComponent{ nullptr };
 	};
 }
