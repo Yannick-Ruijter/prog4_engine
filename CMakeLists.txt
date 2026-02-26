@@ -92,6 +92,7 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
 )
+target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
 
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR} ${sdl3_SOURCE_DIR}/include)
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
@@ -108,6 +109,15 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL
 )
 FetchContent_MakeAvailable(imgui_plot)
+target_include_directories(imgui_plot PUBLIC
+    ${imgui_plot_SOURCE_DIR}
+)
+
+# Link imgui_plot against imgui
+target_link_libraries(imgui_plot PUBLIC imgui)
+
+# Link it to your main target
+target_link_libraries(${TARGET_NAME} PRIVATE imgui_plot)
 
 # Add SDL3_ttf
 find_package(SDL3_ttf 3.2.2 CONFIG QUIET)
