@@ -63,14 +63,14 @@ namespace dae
 		GameObject() = default;
 		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
-		GameObject(GameObject&& other) = delete;
+		GameObject(GameObject&& other) = default;
 		GameObject& operator=(const GameObject& other) = delete;
-		GameObject& operator=(GameObject&& other) = delete;
+		GameObject& operator=(GameObject&& other) = default;
 
 	private:
 		std::vector<std::unique_ptr<Component>> m_MyComponents;
 		std::unique_ptr<TransformComponent> m_Transform{ std::make_unique<TransformComponent>(*this) };
-		std::vector<GameObject*> m_Children{};
+		std::vector<std::unique_ptr<GameObject>> m_Children{};
 		GameObject* m_Parent{ nullptr };
 		bool m_UpdatePosition{ true };
 

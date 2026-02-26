@@ -7,6 +7,11 @@
 
 void dae::GameObject::Update(float deltaTime)
 {
+	for (auto const& child : m_Children)
+	{
+		child->Update(deltaTime);
+	}
+
 	for (auto const& component : m_MyComponents)
 	{
 		component->Update(deltaTime);
@@ -15,6 +20,11 @@ void dae::GameObject::Update(float deltaTime)
 
 void dae::GameObject::Render() const
 {
+	for (auto const& child : m_Children)
+	{
+		child->Render();
+	}
+
 	for (auto const& component : m_MyComponents)
 	{
 		component->Render();
@@ -53,12 +63,12 @@ glm::vec3 dae::GameObject::GetWorldPosition() const
 
 bool dae::GameObject::IsChild(GameObject* object) const
 {
-	return std::find(begin(m_Children), end(m_Children), object) != end(m_Children);
+	return std::find_if(begin(m_Children), end(m_Children), [object](const auto& ptr) {return ptr.get() == object; }) != end(m_Children);
 }
 
 void dae::GameObject::RemoveChild(GameObject* object)
 {
-	m_Children.erase(std::find(begin(m_Children), end(m_Children), object));
+	m_Children.erase(std::find_if(begin(m_Children), end(m_Children), [object](const auto& ptr) {return ptr.get() == object; }));
 }
 
 void dae::GameObject::AddChild(GameObject* object)

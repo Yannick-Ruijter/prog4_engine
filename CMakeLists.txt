@@ -30,7 +30,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Minigin/RenderComponent.cpp" 
   "Minigin/FPSComponent.cpp"
   "Minigin/Component.cpp"
-  "Minigin/Game.cpp" "Minigin/OrbitComponent.cpp" "Game/BurgerTime.cpp")
+  "Minigin/Game.cpp" "Minigin/OrbitComponent.cpp" "Game/BurgerTime.cpp" "Game/ImGui.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
