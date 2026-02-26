@@ -6,7 +6,12 @@
 #include "Texture2DComponent.h"
 #include "TransformComponent.h"
 #include "ResourceManager.h"
-#include "OrbitComponent.h"
+#include "SceneManager.h"
+#include "Renderer.h"
+#include <imgui.h>
+#include <backends/imgui_impl_sdl3.h>
+#include <backends/imgui_impl_sdlrenderer3.h>
+#include <SDL3/SDL.h>
 
 void TrashTheCache::Initialize()
 {
@@ -35,4 +40,8 @@ void TrashTheCache::Initialize()
 	go->AddComponent<dae::TextComponent>("60.0", font, SDL_Color{ 255, 0, 0, 255 });
 	go->AddComponent<dae::FpsComponent>();
 	scene.Add(std::move(go));
+}
+
+void TrashTheCache::Render() const
+{
 }

@@ -7,4 +7,5 @@ public:
 	TrashTheCache() = default;
 	~TrashTheCache() override = default;
 	void Initialize() override;
+	void Render() const override;
 };
