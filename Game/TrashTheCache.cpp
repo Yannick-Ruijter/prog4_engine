@@ -1,4 +1,4 @@
-#include "ImGui.h"
+#include "TrashTheCache.h"
 #include "FPSComponent.h"
 #include "Component.h"
 #include "RenderComponent.h"
@@ -8,7 +8,7 @@
 #include "ResourceManager.h"
 #include "OrbitComponent.h"
 
-void ImGui::Initialize()
+void TrashTheCache::Initialize()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 

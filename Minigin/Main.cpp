@@ -19,7 +19,7 @@
 #include "TransformComponent.h"
 #include "Scene.h"
 #include "BurgerTime.h"
-#include "ImGui.h"
+#include "TrashTheCache.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -32,7 +32,7 @@ int main(int, char*[]) {
 	if(!fs::exists(data_location))
 		data_location = "../Data/";
 #endif
-	dae::Minigin engine(data_location, std::make_unique<ImGui>());
+	dae::Minigin engine(data_location, std::make_unique<TrashTheCache>());
 	engine.Run();
     return 0;
 }
