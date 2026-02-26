@@ -8,11 +8,10 @@ namespace dae
 	class OrbitComponent : public Component
 	{
 	public:
-		OrbitComponent(GameObject& owner, float orbitRadius, float orbitSpeed);
+		OrbitComponent(GameObject& owner, float orbitOffset, float orbitSpeed);
 		void Update(float deltaTime) override;
 	private:
-		glm::vec3 m_Center{};
-		float m_OrbitRadius{};
+		float m_OrbitOffset{};
 		float m_OrbitSpeed{};
 		float m_CurrentAngle{};
 	}; 
