@@ -38,15 +38,21 @@ void BurgerTime::Initialize()
 
 	go = std::make_unique<dae::GameObject>();
 	dae::GameObject* temp{ go.get() };
-	go->AddComponent<dae::RenderComponent>();
-	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
-	go->AddComponent<dae::OrbitComponent>(glm::vec3{ 200, 200, 0 }, 30.f, 2.f);
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
+	go->SetParent(temp, false);
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
-	go->AddComponent<dae::OrbitComponent>(glm::vec3{ 0, 0, 0 }, 30.f, 5.f);
-	go->SetParent(temp, false);
+	go->AddComponent<dae::OrbitComponent>(30.f, 2.f);
+	temp = go.get();
 	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	go->SetParent(temp, false);
+	go->AddComponent<dae::RenderComponent>();
+	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
+	go->AddComponent<dae::OrbitComponent>(30.f, 5.f);
+	go.release();
 }

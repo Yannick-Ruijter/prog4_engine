@@ -12,8 +12,7 @@ const glm::vec3& dae::TransformComponent::GetWorldPosition()
 	{
 		if (GetOwner()->GetParent() != nullptr)
 		{
-			TransformComponent* parentTransform{ GetOwner()->GetParent()->GetComponent<TransformComponent>() };
-			m_WorldPosition = parentTransform->GetWorldPosition() + m_LocalPosition;
+			m_WorldPosition = GetOwner()->GetParent()->GetWorldPosition() + m_LocalPosition;
 		}
 		else
 		{
