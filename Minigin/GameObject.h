@@ -60,7 +60,7 @@ namespace dae
 		};
 
 
-		GameObject() = default;
+		GameObject(GameObject* parent = nullptr, bool keepCoordinates = true);
 		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = default;

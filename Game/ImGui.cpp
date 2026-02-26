@@ -41,17 +41,15 @@ void ImGui::Initialize()
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	scene.Add(std::move(go));
 
-	go = std::make_unique<dae::GameObject>();
+	go = std::make_unique<dae::GameObject>(temp, false);
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
 	go->AddComponent<dae::OrbitComponent>(30.f, 2.f);
-	go->SetParent(temp, false);
 	temp = go.release();
 
-	go = std::make_unique<dae::GameObject>();
+	go = std::make_unique<dae::GameObject>(temp, false);
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/RotatingAsset.png");
 	go->AddComponent<dae::OrbitComponent>(30.f, 5.f);
-	go->SetParent(temp, false);
 	temp = go.release();
 }

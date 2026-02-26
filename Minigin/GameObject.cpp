@@ -61,6 +61,11 @@ glm::vec3 dae::GameObject::GetWorldPosition() const
 	return m_Transform->GetWorldPosition();	
 }
 
+dae::GameObject::GameObject(GameObject* parent, bool keepCoordinates)
+{
+	SetParent(parent, keepCoordinates);
+}
+
 bool dae::GameObject::IsChild(GameObject* object) const
 {
 	return std::find_if(begin(m_Children), end(m_Children), [object](const auto& ptr) {return ptr.get() == object; }) != end(m_Children);
