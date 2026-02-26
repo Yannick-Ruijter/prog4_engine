@@ -8,7 +8,6 @@
 #endif
 
 #include <SDL3/SDL.h>
-//#include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "Minigin.h"
 #include "InputManager.h"
@@ -77,7 +76,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath, std::unique_ptr<Gam
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
+	Renderer::GetInstance().Init(g_window, m_Game.get());
 	ResourceManager::GetInstance().Init(dataPath);
 	m_Game->Initialize();
 }
@@ -107,7 +106,6 @@ void dae::Minigin::RunOneFrame()
 	m_Game->Update(m_DeltaTime);
 	SceneManager::GetInstance().Update(m_DeltaTime);
 	SceneManager::GetInstance().LateUpdate();
-	m_Game->Render();
 	Renderer::GetInstance().Render();
 	auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	auto diff = currentTime - startTime;

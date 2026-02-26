@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include "Singleton.h"
+#include "Game.h"
 
 namespace dae
 {
@@ -13,8 +14,9 @@ namespace dae
 		SDL_Renderer* m_renderer{};
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{};	
+		Game* m_Game{};
 	public:
-		void Init(SDL_Window* window);
+		void Init(SDL_Window* window, Game* game);
 		void Render() const;
 		void Destroy();
 

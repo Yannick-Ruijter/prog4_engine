@@ -98,6 +98,17 @@ target_link_libraries(imgui PUBLIC SDL3::SDL3)
 # enable c++20 features
 target_compile_features(imgui PUBLIC cxx_std_20)
 
+include(FetchContent)
+# Optional: Set IMGUI_INCLUDE_DIR to the path of imgui sources, if different from the default. 
+# set(IMGUI_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/imgui)
+FetchContent_Declare(
+    imgui_plot
+    GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git
+    GIT_TAG v0.1.0
+    EXCLUDE_FROM_ALL
+)
+FetchContent_MakeAvailable(imgui_plot)
+
 # Add SDL3_ttf
 find_package(SDL3_ttf 3.2.2 CONFIG QUIET)
 if(NOT SDL3_ttf_FOUND)
