@@ -88,5 +88,9 @@ void dae::GameObject::SetLocalPosition(glm::vec3 const& pos)
 
 void dae::GameObject::SetPositionDirty()
 {
+	for (auto const& child : m_Children)
+	{
+		child->SetPositionDirty();
+	}
 	m_UpdatePosition = true;
 }

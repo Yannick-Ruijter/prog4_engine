@@ -105,8 +105,6 @@ include(FetchContent)
 FetchContent_Declare(
     imgui_plot
     GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git
-    GIT_TAG v0.1.0
-    EXCLUDE_FROM_ALL
 )
 FetchContent_MakeAvailable(imgui_plot)
 target_include_directories(imgui_plot PUBLIC
