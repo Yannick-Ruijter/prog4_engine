@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "imgui_plot.h"
-
+#include <vector>
 namespace dae
 {
 	class GameObject;
@@ -17,9 +17,12 @@ namespace dae
 		std::unique_ptr<ImGui::PlotConfig> m_Ex2PlotInfo{ std::make_unique<ImGui::PlotConfig>() };
 		std::unique_ptr<ImGui::PlotConfig> m_Ex2PlotInfoAlt{ std::make_unique<ImGui::PlotConfig>() };
 		std::unique_ptr<ImGui::PlotConfig> m_Ex2PlotInfoCombined{ std::make_unique<ImGui::PlotConfig>() };
-		float* m_LoopInfoEx1{};
-		float* m_LoopInfoEx2{};
-		float* m_LoopInfoEx2Alt{};
+		std::vector<std::vector<float>> m_LoopInfoEx1{};
+		std::vector<float> m_CalculatedDataEx1{};
+		std::vector<std::vector<float>> m_LoopInfoEx2{};
+		std::vector<float> m_CalculatedDataEx2{};
+		std::vector<std::vector<float>> m_LoopInfoEx2Alt{};
+		std::vector<float> m_CalculatedDataEx2Alt{};
 		const float* m_LoopInfoEx2Combined[2]{};
 		bool m_TrashCacheEx1ButtonPressed{ false };
 		bool m_TrashCacheEx2ButtonPressed{ false };
