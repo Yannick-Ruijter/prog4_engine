@@ -15,22 +15,25 @@ endif()
 
 # list source files here
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  Minigin/Font.cpp
-  Minigin/GameObject.cpp
-  Minigin/InputManager.cpp
-  Minigin/Main.cpp
-  Minigin/Minigin.cpp
-  Minigin/Renderer.cpp
-  Minigin/ResourceManager.cpp
-  Minigin/Scene.cpp
-  Minigin/SceneManager.cpp
-  "Minigin/TextComponent.cpp"
-  "Minigin/Texture2DComponent.cpp"
-  "Minigin/TransformComponent.cpp"
-  "Minigin/RenderComponent.cpp" 
-  "Minigin/FPSComponent.cpp"
+  "Minigin/Font.cpp"
+  "Minigin/GameObject.cpp"
+  "Minigin/InputManager.cpp"
+  "Minigin/Main.cpp"
+  "Minigin/Minigin.cpp"
+  "Minigin/Renderer.cpp"
+  "Minigin/ResourceManager.cpp"
+  "Minigin/Scene.cpp"
+  "Minigin/SceneManager.cpp"
   "Minigin/Component.cpp"
-  "Minigin/Game.cpp" "Minigin/OrbitComponent.cpp" "Game/BurgerTime.cpp" "Game/TrashTheCache.cpp")
+  "Minigin/Game.cpp" 
+  "Minigin/TransformComponent.cpp"
+  "GameComponents/TextComponent.cpp"
+  "GameComponents/Texture2DComponent.cpp"
+  "GameComponents/RenderComponent.cpp" 
+  "GameComponents/FPSComponent.cpp"
+  "GameComponents/OrbitComponent.cpp" 
+  "Game/BurgerTime.cpp" 
+  "Game/TrashTheCache.cpp" "GameComponents/TrashTheCacheComponent.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -167,6 +170,7 @@ target_include_directories("${TARGET_NAME}" PUBLIC
   "${CMAKE_SOURCE_DIR}/Minigin/"
   "${CMAKE_SOURCE_DIR}/Data/"
   "${CMAKE_SOURCE_DIR}/Game/"
+  "${CMAKE_SOURCE_DIR}/GameComponents/"
   "${imgui_SOURCE_DIR}"
   "${VLD_INCLUDE_DIR}"
 )

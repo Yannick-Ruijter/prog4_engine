@@ -3,14 +3,9 @@
 #include <memory>
 #include <vector>
 #include "TransformComponent.h"
-#include "RenderComponent.h"
-#include "FPSComponent.h"
 #include <SDL3/SDL.h>
-#include "TextComponent.h"
-#include "Texture2DComponent.h"
 #include "Component.h"
 #include <utility>
-#include "OrbitComponent.h"
 
 namespace dae
 {

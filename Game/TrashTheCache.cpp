@@ -14,39 +14,15 @@
 #include <SDL3/SDL.h>
 #include <chrono>
 
-void InitializeImGui()
-{
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-#if __EMSCRIPTEN__
-	// For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
-	// You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
-	io.IniFilename = NULL;
-#endif
-
-	SDL_Window* window = dae::Renderer::GetInstance().GetWindow();
-	SDL_Renderer* renderer = dae::Renderer::GetInstance().GetSDLRenderer();
-	ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
-	ImGui_ImplSDLRenderer3_Init(renderer);
-}
-
 TrashTheCache::~TrashTheCache()
 {
 	delete[] m_LoopInfoEx1;
 	delete[] m_LoopInfoEx2;
 	delete[] m_LoopInfoEx2Alt;
-	ImGui_ImplSDLRenderer3_Shutdown();
-	ImGui_ImplSDL3_Shutdown();
-	ImGui::DestroyContext();
 }
 
 void TrashTheCache::Initialize()
 {
-	InitializeImGui();
-
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
