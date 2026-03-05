@@ -1,7 +1,8 @@
+#define WIN32_LEAN_AND_MEAN
 #include <SDL3/SDL.h>
 #include <backends/imgui_impl_sdl3.h>
 #include "InputManager.h"
-#include <Windows.h>
+
 bool dae::InputManager::ProcessInput()
 {
 	XINPUT_STATE previousState;

@@ -33,7 +33,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameComponents/FPSComponent.cpp"
   "GameComponents/OrbitComponent.cpp" 
   "Game/BurgerTime.cpp" 
-  "Game/TrashTheCache.cpp" "GameComponents/TrashTheCacheComponent.cpp")
+  "Game/TrashTheCache.cpp" "GameComponents/TrashTheCacheComponent.cpp" "Minigin/Command.cpp" "GameComponents/MoveComponent.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

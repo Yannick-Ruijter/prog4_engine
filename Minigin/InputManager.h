@@ -1,5 +1,7 @@
 #pragma once
 #include "Singleton.h"
+#include <Windows.h>
+#pragma comment(lib, "XInput.lib")
 #include <XInput.h>
 
 namespace dae
