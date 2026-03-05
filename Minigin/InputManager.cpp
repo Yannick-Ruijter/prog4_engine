@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <backends/imgui_impl_sdl3.h>
 #include "InputManager.h"
+#include "Command.h"
 
 bool dae::InputManager::ProcessInput()
 {
@@ -13,7 +14,32 @@ bool dae::InputManager::ProcessInput()
 	auto buttonChanges = m_CurrentState.Gamepad.wButtons ^ previousState.Gamepad.wButtons;
 	m_ButtonsPressedThisFrame = buttonChanges & m_CurrentState.Gamepad.wButtons;
 	m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);
+
+	SDL_Event e;
+	while (SDL_PollEvent(&e)) {
+		if (e.type == SDL_EVENT_QUIT) {
+			return false;
+		}
+		if (e.type == SDL_EVENT_KEY_DOWN) {
+
+		}
+		if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+
+		}
+		// etc...
+		ImGui_ImplSDL3_ProcessEvent(&e);
+	}
+
+	for (auto const& command : m_Commands)
+	{
+		command->Execute();
+	}
 	return true;
+}
+
+void dae::InputManager::AddCommand(std::unique_ptr<Command> command)
+{
+	m_Commands.push_back(std::move(command));
 }
 
 bool dae::InputManager::WasPressedThisFrame(unsigned int button) const

@@ -6,12 +6,14 @@
 #include "Texture2DComponent.h"
 #include "TransformComponent.h"
 #include "ResourceManager.h"
-#include "OrbitComponent.h"
+#include "MoveComponent.h"
+#include "InputManager.h"
+#include "Command.h"
 
 void BurgerTime::Initialize()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
-
+	auto& inputManager = dae::InputManager::GetInstance();
 	auto go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/background.png");
@@ -37,7 +39,11 @@ void BurgerTime::Initialize()
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
+	go->AddComponent<dae::RenderComponent>();
+	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
+	go->AddComponent<dae::MoveComponent>();
+	inputManager.AddCommand(std::make_unique<dae::MoveObjectCommand>(*go.get()));
 	scene.Add(std::move(go));
 
 }

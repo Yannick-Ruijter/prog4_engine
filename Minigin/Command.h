@@ -1,27 +1,33 @@
 #pragma once
-
-class GameObject;
-
-class Command
+namespace dae
 {
-public:
-	virtual ~Command() = default;
-	virtual void Execute() = 0;
-};
+	class GameObject;
+	class MoveComponent;
+	class Command
+	{
+	public:
+		virtual ~Command() = default;
+		virtual void Execute() = 0;
+	};
 
-class GameObjectCommand : public Command
-{
-public:
-	GameObjectCommand(GameObject& object);
-	virtual ~GameObjectCommand() = default;
-protected:
-	GameObject* GetGameObject() const;
-private:
-	GameObject* m_GameObject;
-};
+	class GameObjectCommand : public Command
+	{
+	public:
+		GameObjectCommand(GameObject& object);
+		virtual ~GameObjectCommand() = default;
+	protected:
+		GameObject* GetGameObject() const;
+	private:
+		GameObject* m_GameObject;
+	};
 
-class MoveObjectCommand : public GameObjectCommand
-{
-public:
-	void Execute() override;
-};
+	class MoveObjectCommand : public GameObjectCommand
+	{
+	public:
+		MoveObjectCommand(GameObject& object);
+		void Execute() override;
+
+	private:
+		MoveComponent* m_MoveComponent;
+	};
+}
