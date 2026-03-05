@@ -10,7 +10,7 @@ public:
 	void Initialize() override;
 	void Render() override;
 private:
-	std::unique_ptr<ImGui::PlotConfig> m_Ex1PlotInfo{ std::make_unique<ImGui::PlotConfig>() };
+	/*std::unique_ptr<ImGui::PlotConfig> m_Ex1PlotInfo{ std::make_unique<ImGui::PlotConfig>() };
 	std::unique_ptr<ImGui::PlotConfig> m_Ex2PlotInfo{ std::make_unique<ImGui::PlotConfig>() };
 	std::unique_ptr<ImGui::PlotConfig> m_Ex2PlotInfoAlt{ std::make_unique<ImGui::PlotConfig>() };
 	std::unique_ptr<ImGui::PlotConfig> m_Ex2PlotInfoCombined{ std::make_unique<ImGui::PlotConfig>() };
@@ -28,5 +28,5 @@ private:
 	void CalculatePlotInfoEx1(int nrOfSamples);
 	void CalculatePlotInfoEx2(int nrOfSamples);
 	void CalculatePlotInfoEx2Alt(int nrOfSamples);
-	void CalculatePlotInfoEx2Combined();
+	void CalculatePlotInfoEx2Combined();*/
 };
