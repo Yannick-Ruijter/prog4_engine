@@ -29,8 +29,9 @@ void MoveObjectCommand::Execute()
 {
 	if (m_MoveComponent == nullptr) m_MoveComponent = GetGameObject()->GetComponent<MoveComponent>();
 	assert(m_MoveComponent != nullptr);
-	if (dae::InputManager::GetInstance().IsButtonPressed(GAMEPAD_DPAD_UP)) m_MoveComponent->Move(MoveDirection::Up);
-	else if (dae::InputManager::GetInstance().IsButtonPressed(GAMEPAD_DPAD_DOWN)) m_MoveComponent->Move(MoveDirection::Down);
-	else if (dae::InputManager::GetInstance().IsButtonPressed(GAMEPAD_DPAD_LEFT)) m_MoveComponent->Move(MoveDirection::Left);
-	else if (dae::InputManager::GetInstance().IsButtonPressed(GAMEPAD_DPAD_RIGHT)) m_MoveComponent->Move(MoveDirection::Right);
+	auto controllerInput = dae::InputManager::GetInstance().GetControllerInput();
+	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_UP)) m_MoveComponent->Move(MoveDirection::Up);
+	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_DOWN)) m_MoveComponent->Move(MoveDirection::Down);
+	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_LEFT)) m_MoveComponent->Move(MoveDirection::Left);
+	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_RIGHT)) m_MoveComponent->Move(MoveDirection::Right);
 }

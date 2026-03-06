@@ -17,7 +17,7 @@ namespace dae
 	class MoveComponent : public Component
 	{
 	public:
-		MoveComponent(GameObject& owner, float speed = 1.f);
+		MoveComponent(GameObject& owner, float speed = 100.f);
 		~MoveComponent() override = default;
 		void Update(float deltaTime) override;
 		void Move(MoveDirection direction);

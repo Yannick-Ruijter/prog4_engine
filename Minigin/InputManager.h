@@ -1,11 +1,9 @@
 #pragma once
 #include "Singleton.h"
-#include <Windows.h>
-#pragma comment(lib, "XInput.lib")
-#include <XInput.h>
 #include <vector>
 #include <memory>
 #include "Command.h"
+#include "ControllerInput.h"
 
 namespace dae
 {
@@ -14,16 +12,10 @@ namespace dae
 	public:
 		bool ProcessInput();
 		void AddCommand(std::unique_ptr<Command> command);
-
-		bool WasPressedThisFrame(unsigned int button) const;
-		bool IsButtonPressed(unsigned int button) const;
-		bool WasReleasedThisFrame(unsigned int button) const;
-
+		ControllerInput* GetControllerInput();
 	private:
-		std::vector<std::unique_ptr<Command>> m_Commands;
-		XINPUT_STATE m_CurrentState{};
-		unsigned int m_ButtonsPressedThisFrame{};
-		unsigned int m_ButtonsReleasedThisFrame{};
+		std::vector<std::unique_ptr<Command>> m_Commands{};
+		ControllerInput m_ControllerInput{};
 	};
 
 }

@@ -19,9 +19,9 @@ void dae::MoveComponent::Update(float deltaTime)
 
 void dae::MoveComponent::Move(MoveDirection direction)
 {
-	if(direction == MoveDirection::Left) m_DisplacementBuffer.x += m_Speed;
-	else if(direction == MoveDirection::Right) m_DisplacementBuffer.x -= m_Speed;
-	else if(direction == MoveDirection::Up) m_DisplacementBuffer.y += m_Speed;
-	else if(direction == MoveDirection::Down) m_DisplacementBuffer.y -= m_Speed;
+	if(direction == MoveDirection::Left) m_DisplacementBuffer.x -= m_Speed;
+	else if(direction == MoveDirection::Right) m_DisplacementBuffer.x += m_Speed;
+	else if(direction == MoveDirection::Up) m_DisplacementBuffer.y -= m_Speed;
+	else if(direction == MoveDirection::Down) m_DisplacementBuffer.y += m_Speed;
 	m_ShouldMove = true;
 }

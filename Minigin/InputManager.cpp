@@ -6,15 +6,7 @@
 
 bool dae::InputManager::ProcessInput()
 {
-	XINPUT_STATE previousState;
-	CopyMemory(&previousState, &m_CurrentState, sizeof(XINPUT_STATE));
-	ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
-	XInputGetState(0, &m_CurrentState);
-
-	auto buttonChanges = m_CurrentState.Gamepad.wButtons ^ previousState.Gamepad.wButtons;
-	m_ButtonsPressedThisFrame = buttonChanges & m_CurrentState.Gamepad.wButtons;
-	m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);
-
+	m_ControllerInput.ProcessInput();
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_EVENT_QUIT) {
@@ -42,17 +34,7 @@ void dae::InputManager::AddCommand(std::unique_ptr<Command> command)
 	m_Commands.push_back(std::move(command));
 }
 
-bool dae::InputManager::WasPressedThisFrame(unsigned int button) const
+ControllerInput* dae::InputManager::GetControllerInput()
 {
-	return m_ButtonsPressedThisFrame & button;
-}
-
-bool dae::InputManager::IsButtonPressed(unsigned int button) const
-{
-	return m_CurrentState.Gamepad.wButtons & button;
-}
-
-bool dae::InputManager::WasReleasedThisFrame(unsigned int button) const
-{
-	return m_ButtonsReleasedThisFrame & button;
+	return &m_ControllerInput;
 }
