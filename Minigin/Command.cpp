@@ -2,11 +2,9 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "MoveComponent.h"
+#include "PlayerInput.h"
+#include "ControllerInput.h"
 
-#define GAMEPAD_DPAD_UP 1
-#define GAMEPAD_DPAD_DOWN 2
-#define GAMEPAD_DPAD_LEFT 4
-#define GAMEPAD_DPAD_RIGHT 8
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject& object)
@@ -19,19 +17,20 @@ GameObject* GameObjectCommand::GetGameObject() const
 	return m_GameObject;
 }
 
-MoveObjectCommand::MoveObjectCommand(GameObject& object)
+MoveObjectCommand::MoveObjectCommand(GameObject& object, PlayerInput& input, uint32_t up, uint32_t down, uint32_t left, uint32_t right)
 	:GameObjectCommand(object)
 	,m_MoveComponent{object.GetComponent<MoveComponent>()}
+	,m_PlayerInput{&input}
+	, m_InputButtons{ up, down, left, right }
 {
 }
-
 void MoveObjectCommand::Execute()
 {
 	if (m_MoveComponent == nullptr) m_MoveComponent = GetGameObject()->GetComponent<MoveComponent>();
 	assert(m_MoveComponent != nullptr);
 	auto controllerInput = dae::InputManager::GetInstance().GetControllerInput();
-	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_UP)) m_MoveComponent->Move(MoveDirection::Up);
-	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_DOWN)) m_MoveComponent->Move(MoveDirection::Down);
-	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_LEFT)) m_MoveComponent->Move(MoveDirection::Left);
-	if (controllerInput->IsButtonPressed(GAMEPAD_DPAD_RIGHT)) m_MoveComponent->Move(MoveDirection::Right);
+	if (m_PlayerInput->IsButtonPressed(m_InputButtons[0])) m_MoveComponent->Move(MoveDirection::Up);
+	if (m_PlayerInput->IsButtonPressed(m_InputButtons[1])) m_MoveComponent->Move(MoveDirection::Down);
+	if (m_PlayerInput->IsButtonPressed(m_InputButtons[2])) m_MoveComponent->Move(MoveDirection::Left);
+	if (controllerInput->IsButtonPressed(m_InputButtons[3])) m_MoveComponent->Move(MoveDirection::Right);
 }

@@ -9,6 +9,7 @@
 #include "MoveComponent.h"
 #include "InputManager.h"
 #include "Command.h"
+#include "Xinput.h"
 
 void BurgerTime::Initialize()
 {
@@ -43,7 +44,11 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	go->AddComponent<dae::MoveComponent>();
-	inputManager.AddCommand(std::make_unique<dae::MoveObjectCommand>(*go.get()));
+	inputManager.AddCommand(
+		std::make_unique<dae::MoveObjectCommand>(
+			*go.get(), *dae::InputManager::GetInstance().GetControllerInput()
+		, XINPUT_GAMEPAD_DPAD_UP, XINPUT_GAMEPAD_DPAD_DOWN, XINPUT_GAMEPAD_DPAD_LEFT, XINPUT_GAMEPAD_DPAD_RIGHT)
+	);
 	scene.Add(std::move(go));
-
+	
 }

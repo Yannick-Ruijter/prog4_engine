@@ -1,5 +1,6 @@
 #include "ControllerInput.h"
 
+using namespace dae;
 void ControllerInput::ProcessInput()
 {
 	XINPUT_STATE previousState;

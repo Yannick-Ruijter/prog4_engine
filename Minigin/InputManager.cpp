@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "Command.h"
 
+using namespace dae;
 bool dae::InputManager::ProcessInput()
 {
 	m_ControllerInput.ProcessInput();
