@@ -8,6 +8,7 @@ using namespace dae;
 bool dae::InputManager::ProcessInput()
 {
 	m_ControllerInput.ProcessInput();
+	m_KeyboardInput.ProcessInput();
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_EVENT_QUIT) {
@@ -38,4 +39,9 @@ void dae::InputManager::AddCommand(std::unique_ptr<Command> command)
 ControllerInput* dae::InputManager::GetControllerInput()
 {
 	return &m_ControllerInput;
+}
+
+KeyboardInput* dae::InputManager::GetKeyboardInput()
+{
+	return &m_KeyboardInput;
 }

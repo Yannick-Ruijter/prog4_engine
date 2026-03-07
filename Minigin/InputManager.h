@@ -4,6 +4,7 @@
 #include <memory>
 #include "Command.h"
 #include "ControllerInput.h"
+#include "KeyboardInput.h"
 
 namespace dae
 {
@@ -13,9 +14,11 @@ namespace dae
 		bool ProcessInput();
 		void AddCommand(std::unique_ptr<Command> command);
 		ControllerInput* GetControllerInput();
+		KeyboardInput* GetKeyboardInput();
 	private:
 		std::vector<std::unique_ptr<Command>> m_Commands{};
 		ControllerInput m_ControllerInput{};
+		KeyboardInput m_KeyboardInput{};
 	};
 
 }

@@ -10,6 +10,7 @@
 #include "InputManager.h"
 #include "Command.h"
 #include "Xinput.h"
+#include "SDL3/SDL.h"
 
 void BurgerTime::Initialize()
 {
@@ -43,11 +44,23 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
-	go->AddComponent<dae::MoveComponent>();
+	go->AddComponent<dae::MoveComponent>(200.f);
 	inputManager.AddCommand(
 		std::make_unique<dae::MoveObjectCommand>(
 			*go.get(), *dae::InputManager::GetInstance().GetControllerInput()
 		, XINPUT_GAMEPAD_DPAD_UP, XINPUT_GAMEPAD_DPAD_DOWN, XINPUT_GAMEPAD_DPAD_LEFT, XINPUT_GAMEPAD_DPAD_RIGHT)
+	);
+	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	go->AddComponent<dae::RenderComponent>();
+	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
+	go->AddComponent<dae::MoveComponent>();
+	inputManager.AddCommand(
+		std::make_unique<dae::MoveObjectCommand>(
+			*go.get(), *dae::InputManager::GetInstance().GetKeyboardInput()
+			, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D)
 	);
 	scene.Add(std::move(go));
 	
