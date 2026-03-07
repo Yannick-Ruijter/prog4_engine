@@ -1,4 +1,3 @@
-#include "TrashTheCache.h"
 #include "TrashTheCacheComponent.h"
 #include <imgui.h>
 #include <backends/imgui_impl_sdl3.h>
@@ -27,7 +26,6 @@ void dae::TrashTheCacheComponent::Update(float)
 
 	ShowEx1Screen();
 	ShowEx2Screen();
-
 }
 
 void dae::TrashTheCacheComponent::Render() const

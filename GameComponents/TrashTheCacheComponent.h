@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "imgui_plot.h"
 #include <vector>
+#include <memory>
 namespace dae
 {
 	class GameObject;

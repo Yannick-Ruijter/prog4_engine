@@ -19,7 +19,6 @@
 #include "TransformComponent.h"
 #include "Scene.h"
 #include "BurgerTime.h"
-#include "TrashTheCache.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
