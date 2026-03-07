@@ -10,7 +10,7 @@ namespace dae
 	{
 	public:
 		TrashTheCacheComponent(GameObject& owner);
-		~TrashTheCacheComponent() override;
+		~TrashTheCacheComponent() override = default;
 		void Update(float) override;
 		void Render() const override;
 	private:

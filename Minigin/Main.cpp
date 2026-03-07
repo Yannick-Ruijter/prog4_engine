@@ -1,7 +1,6 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-//TODO: Leak detector is not working, CMAKE ,, find_package(VLD CONFIG) not detecting vld"
 #if _DEBUG
 #if __has_include(<vld.h>)
 #pragma message(">>> VLD HEADER FOUND - including vld.h")

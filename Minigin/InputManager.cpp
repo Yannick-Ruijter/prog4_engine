@@ -7,7 +7,10 @@
 using namespace dae;
 bool dae::InputManager::ProcessInput()
 {
-	m_ControllerInput.ProcessInput();
+	for (int i{ 0 }; i < 4; ++i)
+	{
+		m_ControllerInput[i].ProcessInput();
+	}
 	m_KeyboardInput.ProcessInput();
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
@@ -36,9 +39,10 @@ void dae::InputManager::AddCommand(std::unique_ptr<Command> command)
 	m_Commands.push_back(std::move(command));
 }
 
-ControllerInput* dae::InputManager::GetControllerInput()
+ControllerInput* dae::InputManager::GetControllerInput(int controllerIndex)
 {
-	return &m_ControllerInput;
+	assert(controllerIndex < 4 && "only up to 4 controllers are supported, controllerIndex can not be bigger than 3");
+	return &m_ControllerInput[controllerIndex];
 }
 
 KeyboardInput* dae::InputManager::GetKeyboardInput()

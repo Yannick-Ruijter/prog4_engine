@@ -47,7 +47,7 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::MoveComponent>(200.f);
 	inputManager.AddCommand(
 		std::make_unique<dae::MoveObjectCommand>(
-			*go.get(), *dae::InputManager::GetInstance().GetControllerInput()
+			*go.get(), *dae::InputManager::GetInstance().GetControllerInput(0)
 		, XINPUT_GAMEPAD_DPAD_UP, XINPUT_GAMEPAD_DPAD_DOWN, XINPUT_GAMEPAD_DPAD_LEFT, XINPUT_GAMEPAD_DPAD_RIGHT)
 	);
 	scene.Add(std::move(go));
