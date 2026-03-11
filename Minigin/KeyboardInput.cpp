@@ -1,6 +1,7 @@
 #include "KeyboardInput.h"
 #include <SDL3/SDL.h>
 #include "Binding.h"
+#include "Command.h"
 
 using namespace dae;
 void KeyboardInput::ProcessInput()

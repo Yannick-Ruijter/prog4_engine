@@ -1,6 +1,7 @@
 #include "ControllerInput.h"
 #include <array>
 #include "Binding.h"
+#include "Command.h"
 #if _WIN32
 	#include <Windows.h>
 	#pragma comment(lib, "XInput.lib")
@@ -71,14 +72,6 @@ void ControllerInput::ProcessInput()
 #else
 	m_pSdlImpl->ProcessInput();
 #endif
-	/*XINPUT_STATE previousState;
-	CopyMemory(&previousState, &m_CurrentState, sizeof(XINPUT_STATE));
-	ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
-	XInputGetState(m_ControllerIndex, &m_CurrentState);
-
-	auto buttonChanges = m_CurrentState.Gamepad.wButtons ^ previousState.Gamepad.wButtons;
-	m_ButtonsPressedThisFrame = buttonChanges & m_CurrentState.Gamepad.wButtons;
-	m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);*/
 
 	for (auto& binding : m_Bindings)
 	{

@@ -1,7 +1,6 @@
 #pragma once
 #include "InputInfo.h"
 #include <memory>
-#include "Command.h"
 
 namespace dae
 {
@@ -10,7 +9,7 @@ namespace dae
 	{
 	public:
 		Binding(std::unique_ptr<Command> command, int keybind, InputState triggerState);
-
+		~Binding();
 		std::unique_ptr<Command> m_Command;
 		int m_Keybind;
 		InputState m_TriggerState;

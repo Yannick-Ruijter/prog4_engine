@@ -10,3 +10,5 @@ Binding::Binding(std::unique_ptr<Command> command, int keybind, InputState trigg
 {
 
 }
+
+dae::Binding::~Binding() = default;
