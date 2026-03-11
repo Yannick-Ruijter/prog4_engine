@@ -41,7 +41,7 @@ void BurgerTime::Initialize()
 
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
-	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
+	go->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	go->AddComponent<dae::MoveComponent>();
 
@@ -62,7 +62,7 @@ void BurgerTime::Initialize()
 
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
-	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
+	go->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	go->AddComponent<dae::MoveComponent>(200.f);
 
