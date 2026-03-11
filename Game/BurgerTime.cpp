@@ -9,8 +9,6 @@
 #include "MoveComponent.h"
 #include "InputManager.h"
 #include "Command.h"
-#include "Xinput.h"
-#include "SDL3/SDL.h"
 #include "InputInfo.h"
 
 void BurgerTime::Initialize()
@@ -59,11 +57,7 @@ void BurgerTime::Initialize()
 	inputManager.GetKeyboardInput()->AddBinding(
 		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right),
 		InputKeybinds::D, InputState::Pressed);
-	/*inputManager.AddCommand(
-		std::make_unique<dae::MoveObjectCommand>(
-			*go.get(), *dae::InputManager::GetInstance().GetControllerInput(0)
-		, XINPUT_GAMEPAD_DPAD_UP, XINPUT_GAMEPAD_DPAD_DOWN, XINPUT_GAMEPAD_DPAD_LEFT, XINPUT_GAMEPAD_DPAD_RIGHT)
-	);*/
+
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
