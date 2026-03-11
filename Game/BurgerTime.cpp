@@ -11,6 +11,7 @@
 #include "Command.h"
 #include "Xinput.h"
 #include "SDL3/SDL.h"
+#include "InputInfo.h"
 
 void BurgerTime::Initialize()
 {

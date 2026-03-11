@@ -7,9 +7,14 @@
 #pragma comment(lib, "XInput.lib")
 #include <XInput.h>
 #include "PlayerInput.h"
+#include "InputInfo.h"
+#include <memory>
+#include <vector>
+#include "Binding.h"
 
 namespace dae
 {
+	class Command;
 	class ControllerInput : public PlayerInput {
 	public:
 		ControllerInput(int controllerIndex);
@@ -18,6 +23,8 @@ namespace dae
 		bool WasPressedThisFrame(unsigned int button) const override;
 		bool IsButtonPressed(unsigned int button) const override;
 		bool WasReleasedThisFrame(unsigned int button) const override;
+
+		void AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
 
 	private:
 		int m_ControllerIndex{ 0 };
@@ -28,5 +35,7 @@ namespace dae
 //#else
 		SDL_Gamepad* m_GamePad{};
 //#endif
+
+		std::vector<std::unique_ptr<Binding>> m_Bindings{};
 	};
 }

@@ -1,5 +1,6 @@
 #include "KeyboardInput.h"
 #include <SDL3/SDL.h>
+#include "Binding.h"
 
 using namespace dae;
 void KeyboardInput::ProcessInput()
@@ -29,4 +30,9 @@ bool KeyboardInput::WasReleasedThisFrame(unsigned int button) const
 	bool buttonChange = m_CurrentState[button] ^ m_PreviousState[button];
 
 	return buttonChange && !m_CurrentState[button];
+}
+
+void KeyboardInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
+{
+	m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), keybind, triggerState));
 }
