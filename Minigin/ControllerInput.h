@@ -27,6 +27,7 @@ namespace dae
 		void AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
 
 	private:
+		int ConvertToXInput(InputKeybinds keybind);
 		int m_ControllerIndex{ 0 };
 //#if _WIN32
 		XINPUT_STATE m_CurrentState{};

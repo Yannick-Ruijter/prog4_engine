@@ -46,6 +46,7 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	go->AddComponent<dae::MoveComponent>();
+
 	inputManager.GetKeyboardInput()->AddBinding(
 		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up),
 		InputKeybinds::W, InputState::Pressed);
@@ -70,14 +71,20 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 	go->AddComponent<dae::MoveComponent>(200.f);
-	/*inputManager.GetControllerInput(0)->AddBinding(
+
+	inputManager.GetControllerInput(0)->AddBinding(
 		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up),
-		InputKeybinds::DPAD_UP, InputState::Pressed);*/
-	/*inputManager.AddCommand(
-		std::make_unique<dae::MoveObjectCommand>(
-			*go.get(), *dae::InputManager::GetInstance().GetKeyboardInput()
-			, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D)
-	);*/
+		InputKeybinds::DPAD_UP, InputState::Pressed);
+	inputManager.GetControllerInput(0)->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Down),
+		InputKeybinds::DPAD_DOWN, InputState::Pressed);
+	inputManager.GetControllerInput(0)->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Left),
+		InputKeybinds::DPAD_LEFT, InputState::Pressed);
+	inputManager.GetControllerInput(0)->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right),
+		InputKeybinds::DPAD_RIGHT, InputState::Pressed);
+
 	scene.Add(std::move(go));
 	
 }
