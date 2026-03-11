@@ -15,7 +15,10 @@ void dae::FpsComponent::Update(float deltaTime)
 		if(m_TextComponent == nullptr) m_TextComponent = GetOwner()->GetComponent<TextComponent>();
 		if (m_TextComponent == nullptr) return;
 		m_LastFps = currentFPS;
-		m_TextComponent->SetText(std::format("{:.1f} FPS", m_LastFps));
+		std::string fps = std::to_string(m_LastFps);
+		fps.resize(4);
+		fps += " FPS";
+		m_TextComponent->SetText(fps);
 	}
 }
 

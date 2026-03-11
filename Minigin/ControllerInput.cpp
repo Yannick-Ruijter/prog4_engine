@@ -35,7 +35,8 @@ private:
 class ControllerInput::SdlImpl
 {
 public:
-	ControllerInput::SdlImpl(int controllerIndex);
+	SdlImpl(int controllerIndex);
+	SdlImpl(ControllerInput::SdlImpl&& other) = default;
 	void ProcessInput();
 
 	bool WasPressedThisFrame(unsigned int button) const;
@@ -54,13 +55,13 @@ private:
 #endif
 
 ControllerInput::ControllerInput(int controllerIndex)
-	:m_ControllerIndex{controllerIndex}
-	, m_Bindings{}
 #if _WIN32
-	, m_pXInputImpl{std::make_unique<XInputImpl>()}
+	: m_pXInputImpl{std::make_unique<XInputImpl>()}
 #else
-	, m_pSdlImpl{ std::make_unique<SdlImpl>(controllerIndex)}
+	: m_pSdlImpl{ std::make_unique<SdlImpl>(m_ControllerIndex)}
 #endif
+	,m_ControllerIndex{ controllerIndex }
+	,m_Bindings{}
 {}
 
 dae::ControllerInput::~ControllerInput() = default;
@@ -217,6 +218,7 @@ int ControllerInput::SdlImpl::ConvertToSdlKeybind(InputKeybinds keybind)
 	case InputKeybinds::RIGHT_THUMB: return SDL_GAMEPAD_BUTTON_RIGHT_STICK;
 	case InputKeybinds::LEFT_SHOULDER: return SDL_GAMEPAD_BUTTON_LEFT_SHOULDER;
 	case InputKeybinds::RIGHT_SHOULDER: return SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER;
+	default: return -1;
 	}
 	return -1;
 }

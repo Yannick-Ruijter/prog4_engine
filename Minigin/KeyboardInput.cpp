@@ -4,6 +4,8 @@
 #include "Command.h"
 
 using namespace dae;
+dae::KeyboardInput::KeyboardInput() = default;
+dae::KeyboardInput::~KeyboardInput() = default;
 void KeyboardInput::ProcessInput()
 {
 	m_PreviousState = m_CurrentState;

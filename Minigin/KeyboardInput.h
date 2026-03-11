@@ -3,13 +3,15 @@
 #include "InputInfo.h"
 #include <memory>
 #include <vector>
-#include "Binding.h"
 
 namespace dae
 {
 	class Command;
+	class Binding;
 	class KeyboardInput : public PlayerInput {
 	public:
+		KeyboardInput();
+		~KeyboardInput();
 		void ProcessInput() override;
 
 		bool WasPressedThisFrame(unsigned int button) const override;
