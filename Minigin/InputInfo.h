@@ -11,6 +11,7 @@ enum class InputState
 enum class InputKeybinds
 {
 	//keyboard inputs
+	KEYBOARD_BEGIN,
 	A,
 	B,
 	C,
@@ -37,8 +38,10 @@ enum class InputKeybinds
 	X,
 	Y,
 	Z,
+	KEYBOARD_END, 
 
 	//controller inputs
+	CONTROLLER_BEGIN,
 	DPAD_UP,
 	DPAD_DOWN,
 	DPAD_LEFT,
@@ -48,4 +51,5 @@ enum class InputKeybinds
 	BUTTON_SOUTH,
 	BUTTON_EAST,
 	BUTTON_WEST,
+	CONTROLLER_END,
 };

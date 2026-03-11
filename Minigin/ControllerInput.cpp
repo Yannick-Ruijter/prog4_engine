@@ -38,5 +38,5 @@ bool ControllerInput::WasReleasedThisFrame(unsigned int button) const
 
 void ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
-	m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), keybind, triggerState));
+	m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), (int)keybind, triggerState));
 }

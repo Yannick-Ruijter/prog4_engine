@@ -9,10 +9,10 @@ namespace dae
 	class Binding
 	{
 	public:
-		Binding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState);
+		Binding(std::unique_ptr<Command> command, int keybind, InputState triggerState);
 
 		std::unique_ptr<Command> m_Command;
-		InputKeybinds m_Keybind;
+		int m_Keybind;
 		InputState m_TriggerState;
 	};
 }

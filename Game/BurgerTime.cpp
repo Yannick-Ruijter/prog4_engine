@@ -45,24 +45,39 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
-	go->AddComponent<dae::MoveComponent>(200.f);
-	inputManager.AddCommand(
+	go->AddComponent<dae::MoveComponent>();
+	inputManager.GetKeyboardInput()->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up),
+		InputKeybinds::W, InputState::Pressed);
+	inputManager.GetKeyboardInput()->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Down),
+		InputKeybinds::S, InputState::Pressed);
+	inputManager.GetKeyboardInput()->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Left),
+		InputKeybinds::A, InputState::Pressed);
+	inputManager.GetKeyboardInput()->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right),
+		InputKeybinds::D, InputState::Pressed);
+	/*inputManager.AddCommand(
 		std::make_unique<dae::MoveObjectCommand>(
 			*go.get(), *dae::InputManager::GetInstance().GetControllerInput(0)
 		, XINPUT_GAMEPAD_DPAD_UP, XINPUT_GAMEPAD_DPAD_DOWN, XINPUT_GAMEPAD_DPAD_LEFT, XINPUT_GAMEPAD_DPAD_RIGHT)
-	);
+	);*/
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::TextComponent>("Test", font, SDL_Color{ 255, 0, 0, 255 });
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
-	go->AddComponent<dae::MoveComponent>();
-	inputManager.AddCommand(
+	go->AddComponent<dae::MoveComponent>(200.f);
+	/*inputManager.GetControllerInput(0)->AddBinding(
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up),
+		InputKeybinds::DPAD_UP, InputState::Pressed);*/
+	/*inputManager.AddCommand(
 		std::make_unique<dae::MoveObjectCommand>(
 			*go.get(), *dae::InputManager::GetInstance().GetKeyboardInput()
 			, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D)
-	);
+	);*/
 	scene.Add(std::move(go));
 	
 }

@@ -19,6 +19,8 @@ namespace dae
 		void AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
 
 	private:
+		int ConvertToScancode(InputKeybinds keybind);
+
 		const bool* m_CurrentState{ nullptr };
 		const bool* m_PreviousState{ nullptr };
 

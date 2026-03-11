@@ -26,17 +26,8 @@ bool dae::InputManager::ProcessInput()
 		// etc...
 		ImGui_ImplSDL3_ProcessEvent(&e);
 	}
-
-	for (auto const& command : m_Commands)
-	{
-		command->Execute();
-	}
+	
 	return true;
-}
-
-void dae::InputManager::AddCommand(std::unique_ptr<Command> command)
-{
-	m_Commands.push_back(std::move(command));
 }
 
 ControllerInput* dae::InputManager::GetControllerInput(int controllerIndex)

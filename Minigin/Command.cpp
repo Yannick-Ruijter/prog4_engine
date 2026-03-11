@@ -17,19 +17,14 @@ GameObject* GameObjectCommand::GetGameObject() const
 	return m_GameObject;
 }
 
-MoveObjectCommand::MoveObjectCommand(GameObject& object, PlayerInput& input, uint32_t up, uint32_t down, uint32_t left, uint32_t right)
+MoveObjectCommand::MoveObjectCommand(GameObject& object, MoveDirection direction)
 	:GameObjectCommand(object)
-	,m_MoveComponent{object.GetComponent<MoveComponent>()}
-	,m_PlayerInput{&input}
-	, m_InputButtons{ up, down, left, right }
+	, m_MoveDirection{direction}
 {
 }
 void MoveObjectCommand::Execute()
 {
 	if (m_MoveComponent == nullptr) m_MoveComponent = GetGameObject()->GetComponent<MoveComponent>();
 	assert(m_MoveComponent != nullptr);
-	if (m_PlayerInput->IsButtonPressed(m_InputButtons[0])) m_MoveComponent->Move(MoveDirection::Up);
-	if (m_PlayerInput->IsButtonPressed(m_InputButtons[1])) m_MoveComponent->Move(MoveDirection::Down);
-	if (m_PlayerInput->IsButtonPressed(m_InputButtons[2])) m_MoveComponent->Move(MoveDirection::Left);
-	if (m_PlayerInput->IsButtonPressed(m_InputButtons[3])) m_MoveComponent->Move(MoveDirection::Right);
+	m_MoveComponent->Move(m_MoveDirection);
 }
