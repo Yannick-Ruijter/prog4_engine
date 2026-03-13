@@ -38,7 +38,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
    "GameComponents/MoveComponent.cpp" 
    "Minigin/ControllerInput.cpp" 
    "Minigin/KeyboardInput.cpp" 
-   "Minigin/Binding.cpp")
+   "Minigin/Binding.cpp" "Minigin/TimeManager.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

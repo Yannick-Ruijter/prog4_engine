@@ -13,7 +13,7 @@ namespace dae
 	public:
 		RenderComponent(GameObject& owner);
 		~RenderComponent() override = default;
-		void Update(float) override;
+		void Update() override;
 		void Render() const override;
 
 	private:

@@ -11,7 +11,7 @@ namespace dae
 	public:
 		TrashTheCacheComponent(GameObject& owner);
 		~TrashTheCacheComponent() override = default;
-		void Update(float) override;
+		void Update() override;
 		void Render() const override;
 	private:
 		std::unique_ptr<ImGui::PlotConfig> m_Ex1PlotInfo{ std::make_unique<ImGui::PlotConfig>() };

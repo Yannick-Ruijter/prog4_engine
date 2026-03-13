@@ -9,7 +9,7 @@ namespace dae
 	public:
 		TransformComponent(GameObject& owner, glm::vec3 const& position = {0, 0, 0});
 		~TransformComponent() override = default;
-		void Update(float deltaTime) override;
+		void Update() override;
 		const glm::vec3& GetWorldPosition();
 		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
 		void SetLocalPosition(float x, float y, float z = 0);

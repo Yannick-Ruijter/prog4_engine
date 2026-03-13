@@ -6,7 +6,7 @@
 
 dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner), m_TransformComponent{ owner.GetComponent<TransformComponent>()}, m_Texture2DComponent{nullptr} {}
 
-void dae::RenderComponent::Update(float)
+void dae::RenderComponent::Update()
 {
 	if (m_Texture2DComponent == nullptr) m_Texture2DComponent = GetOwner()->GetComponent<Texture2DComponent>();
 }

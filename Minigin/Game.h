@@ -8,6 +8,6 @@ public:
 	Game();
 	virtual ~Game() = default;
 	virtual void Initialize();
-	virtual void Update(float deltaTime);
+	virtual void Update();
 	virtual void Render();
 };

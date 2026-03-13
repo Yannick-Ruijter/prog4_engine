@@ -10,7 +10,7 @@ namespace dae
 		Component(Component&& other) = delete;
 		Component& operator=(Component const& other) = delete;
 		Component& operator=(Component&& other) = delete;
-		virtual void Update(float deltaTime);
+		virtual void Update();
 		virtual void Render() const;
 	protected:
 		Component(GameObject& owner);

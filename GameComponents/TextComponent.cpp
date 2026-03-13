@@ -10,10 +10,10 @@
 dae::TextComponent::TextComponent(GameObject& owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
 	: Component(owner), m_needsUpdate(true), m_text(text), m_color(color), m_font(std::move(font)), m_TextTexture(nullptr)
 {
-	Update(0.f);
+	Update();
 }
 
-void dae::TextComponent::Update(float)
+void dae::TextComponent::Update()
 {
 	if (m_needsUpdate)
 	{
@@ -49,14 +49,14 @@ void dae::TextComponent::SetText(const std::string& text)
 {
 	m_text = text;
 	m_needsUpdate = true;
-	Update(0.f);
+	Update();
 }
 
 void dae::TextComponent::SetColor(const SDL_Color& color) 
 { 
 	m_color = color; 
 	m_needsUpdate = true;
-	Update(0.f);
+	Update();
 }
 
 //std::shared_ptr<dae::Texture2DComponent> dae::TextComponent::GetTexture() const

@@ -11,7 +11,7 @@ namespace dae
 	class TextComponent : public Component
 	{
 	public:
-		void Update(float deltaTime) override;
+		void Update() override;
 
 		void SetText(const std::string& text);
 		void SetColor(const SDL_Color& color);

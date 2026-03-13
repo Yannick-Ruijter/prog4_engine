@@ -1,17 +1,18 @@
 #include "MoveComponent.h"
 #include "TransformComponent.h"
 #include "GameObject.h"
+#include "TimeManager.h"
 
 using namespace dae;
 MoveComponent::MoveComponent(GameObject& owner, float speed)
 	:Component(owner), m_TransformComponent(owner.GetComponent<TransformComponent>()), m_Speed{speed}
 {}
 
-void dae::MoveComponent::Update(float deltaTime)
+void dae::MoveComponent::Update()
 {
 	if(m_ShouldMove)
 	{
-		m_TransformComponent->SetLocalPosition(m_TransformComponent->GetLocalPosition() + (m_DisplacementBuffer * deltaTime));
+		m_TransformComponent->SetLocalPosition(m_TransformComponent->GetLocalPosition() + (m_DisplacementBuffer * TimeManager::GetInstance().GetDeltaTime()));
 		m_DisplacementBuffer = glm::vec3{};
 		m_ShouldMove = false;
 	}

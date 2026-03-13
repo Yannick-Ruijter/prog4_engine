@@ -5,16 +5,16 @@
 #include "Font.h"
 
 
-void dae::GameObject::Update(float deltaTime)
+void dae::GameObject::Update()
 {
 	for (auto const& child : m_Children)
 	{
-		child->Update(deltaTime);
+		child->Update();
 	}
 
 	for (auto const& component : m_MyComponents)
 	{
-		component->Update(deltaTime);
+		component->Update();
 	}
 }
 

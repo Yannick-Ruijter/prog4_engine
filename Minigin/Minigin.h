@@ -8,7 +8,6 @@ namespace dae
 	class Minigin final
 	{
 		bool m_quit{};
-		float m_DeltaTime{};
 		std::unique_ptr<Game> m_Game{};
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath, std::unique_ptr<Game> game);

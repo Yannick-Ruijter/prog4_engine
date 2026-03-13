@@ -14,7 +14,7 @@ dae::TrashTheCacheComponent::TrashTheCacheComponent(GameObject& owner)
 {
 }
 
-void dae::TrashTheCacheComponent::Update(float)
+void dae::TrashTheCacheComponent::Update()
 {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();

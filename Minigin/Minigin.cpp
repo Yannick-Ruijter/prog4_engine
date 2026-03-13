@@ -12,6 +12,7 @@
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
+#include "TimeManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <chrono>
@@ -101,10 +102,11 @@ void dae::Minigin::Run()
 
 void dae::Minigin::RunOneFrame()
 {
+	TimeManager::GetInstance().Update();
 	auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	m_quit = !InputManager::GetInstance().ProcessInput();
-	m_Game->Update(m_DeltaTime);
-	SceneManager::GetInstance().Update(m_DeltaTime);
+	m_Game->Update();
+	SceneManager::GetInstance().Update();
 	SceneManager::GetInstance().LateUpdate();
 	Renderer::GetInstance().Render();
 	auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -115,5 +117,4 @@ void dae::Minigin::RunOneFrame()
 		currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 		diff = currentTime - startTime;
 	}
-	m_DeltaTime = diff / 1000000000.f;
 }

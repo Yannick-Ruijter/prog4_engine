@@ -8,6 +8,6 @@ dae::GameObject* dae::Component::GetOwner() const
     return m_Owner;
 }
 
-void dae::Component::Update(float) {}
+void dae::Component::Update() {}
 
 void dae::Component::Render() const {}

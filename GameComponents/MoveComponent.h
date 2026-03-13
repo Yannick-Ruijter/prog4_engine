@@ -19,7 +19,7 @@ namespace dae
 	public:
 		MoveComponent(GameObject& owner, float speed = 100.f);
 		~MoveComponent() override = default;
-		void Update(float deltaTime) override;
+		void Update() override;
 		void Move(MoveDirection direction);
 	private:
 		TransformComponent* m_TransformComponent;

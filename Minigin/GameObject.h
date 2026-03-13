@@ -13,7 +13,7 @@ namespace dae
 	class GameObject final 
 	{
 	public:
-		void Update(float deltaTime);
+		void Update();
 		void Render() const;
 
 		void SetParent(GameObject* parent, bool keepCoordinates);
