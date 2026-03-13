@@ -47,7 +47,6 @@ private:
 
 ControllerInput::ControllerInput(int controllerIndex)
 	:m_pImpl{std::make_unique<Impl>(controllerIndex)}
-	,m_ControllerIndex{ controllerIndex }
 	,m_Bindings{}
 {}
 

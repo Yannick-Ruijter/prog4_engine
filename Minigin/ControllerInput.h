@@ -20,11 +20,9 @@ namespace dae
 
 		Binding* AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
 		std::unique_ptr<Binding> UnBind(Binding* binding) override;
+	private:
 		class Impl;
 		std::unique_ptr<Impl> m_pImpl;
-	private:
-		int m_ControllerIndex{ 0 };
-
 		std::vector<std::unique_ptr<Binding>> m_Bindings;
 	};
 }
