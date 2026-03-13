@@ -19,13 +19,8 @@ namespace dae
 		bool WasReleasedThisFrame(unsigned int button) const override;
 
 		void AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
-#if _WIN32
-		class XInputImpl;
-		std::unique_ptr<XInputImpl> m_pXInputImpl;
-#else
-		class SdlImpl;
-		std::unique_ptr<SdlImpl> m_pSdlImpl;
-#endif
+		class Impl;
+		std::unique_ptr<Impl> m_pImpl;
 	private:
 		int m_ControllerIndex{ 0 };
 
