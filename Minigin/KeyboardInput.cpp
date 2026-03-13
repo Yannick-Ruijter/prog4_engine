@@ -42,11 +42,21 @@ bool KeyboardInput::WasReleasedThisFrame(unsigned int button) const
 	return buttonChange && !m_CurrentState[button];
 }
 
-void KeyboardInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
+Binding* KeyboardInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
 	assert(command.get() != nullptr);
 	int scancode = ConvertToScancode(keybind);
 	m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), scancode, triggerState));
+	return m_Bindings.back().get();
+}
+
+std::unique_ptr<Binding> KeyboardInput::UnBind(Binding* binding)
+{
+	auto it = std::find_if(begin(m_Bindings), end(m_Bindings), [binding](const auto& ptr) {return ptr.get() == binding; });
+	if (it == m_Bindings.end()) return nullptr;
+	auto foundBinding = std::move(*it);
+	m_Bindings.erase(it);
+	return foundBinding;
 }
 
 int KeyboardInput::ConvertToScancode(InputKeybinds keybind)

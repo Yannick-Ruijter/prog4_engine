@@ -8,6 +8,7 @@
 #include "ResourceManager.h"
 #include "InputManager.h"
 #include "Command.h"
+#include "Binding.h"
 #include "InputInfo.h"
 
 void BurgerTime::Initialize()

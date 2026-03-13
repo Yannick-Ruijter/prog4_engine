@@ -2,6 +2,7 @@
 #include <array>
 #include "Binding.h"
 #include "Command.h"
+#include <ranges>
 //for testing purposes
 #define SDLTEST 1
 #if _WIN32
@@ -79,9 +80,19 @@ bool ControllerInput::WasReleasedThisFrame(unsigned int button) const
 	return m_pImpl->WasReleasedThisFrame(button);
 }
 
-void ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
+Binding* ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
 	m_Bindings.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState));
+	return m_Bindings.back().get();
+}
+
+std::unique_ptr<Binding> ControllerInput::UnBind(Binding* binding)
+{
+	auto it = std::find_if(begin(m_Bindings), end(m_Bindings), [binding](const auto& ptr) {return ptr.get() == binding; });
+	if (it == m_Bindings.end()) return nullptr;
+	auto foundBinding = std::move(*it);
+	m_Bindings.erase(it);
+	return foundBinding;
 }
 
 ControllerInput::Impl::Impl(int controllerIndex)

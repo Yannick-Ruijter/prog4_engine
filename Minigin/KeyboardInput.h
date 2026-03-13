@@ -18,7 +18,8 @@ namespace dae
 		bool IsButtonPressed(unsigned int button) const override;
 		bool WasReleasedThisFrame(unsigned int button) const override;
 
-		void AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
+		Binding* AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
+		std::unique_ptr<Binding> UnBind(Binding* binding) override;
 
 	private:
 		int ConvertToScancode(InputKeybinds keybind);
