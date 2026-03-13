@@ -6,7 +6,6 @@
 #include "Texture2DComponent.h"
 #include "TransformComponent.h"
 #include "ResourceManager.h"
-#include "MoveComponent.h"
 #include "InputManager.h"
 #include "Command.h"
 #include "InputInfo.h"
@@ -43,7 +42,6 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
-	go->AddComponent<dae::MoveComponent>();
 
 	inputManager.GetKeyboardInput()->AddBinding(
 		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up),
@@ -64,19 +62,18 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
-	go->AddComponent<dae::MoveComponent>(200.f);
 
 	inputManager.GetControllerInput(0)->AddBinding(
-		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up),
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Up, 200.f),
 		InputKeybinds::DPAD_UP, InputState::Pressed);
 	inputManager.GetControllerInput(0)->AddBinding(
-		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Down),
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Down, 200.f),
 		InputKeybinds::DPAD_DOWN, InputState::Pressed);
 	inputManager.GetControllerInput(0)->AddBinding(
-		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Left),
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Left, 200.f),
 		InputKeybinds::DPAD_LEFT, InputState::Pressed);
 	inputManager.GetControllerInput(0)->AddBinding(
-		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right),
+		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right, 200.f),
 		InputKeybinds::DPAD_RIGHT, InputState::Pressed);
 
 	scene.Add(std::move(go));

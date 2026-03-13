@@ -5,8 +5,15 @@
 namespace dae
 {
 	class GameObject;
-	class MoveComponent;
 	class PlayerInput;
+	class TransformComponent;
+	enum class MoveDirection
+	{
+		Up,
+		Down,
+		Left,
+		Right,
+	};
 	class Command
 	{
 	public:
@@ -25,15 +32,18 @@ namespace dae
 		GameObject* m_GameObject;
 	};
 
-	enum class MoveDirection;
+	class TimeManager;
 	class MoveObjectCommand : public GameObjectCommand
 	{
 	public:
-		MoveObjectCommand(GameObject& object, MoveDirection direction);
+		MoveObjectCommand(GameObject& object, MoveDirection direction, float speed = 100.f);
 		void Execute() override;
 		~MoveObjectCommand() override = default;
 	private:
-		MoveDirection m_MoveDirection;
-		MoveComponent* m_MoveComponent{ nullptr };
+		glm::vec3 m_MoveDir{};
+		TransformComponent* m_TransformComponent{ nullptr };
+		TimeManager* m_TimeManager{ nullptr };
+		float m_Speed{};
+
 	};
 }

@@ -35,7 +35,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/BurgerTime.cpp" 
    "GameComponents/TrashTheCacheComponent.cpp" 
    "Minigin/Command.cpp" 
-   "GameComponents/MoveComponent.cpp" 
+    
    "Minigin/ControllerInput.cpp" 
    "Minigin/KeyboardInput.cpp" 
    "Minigin/Binding.cpp" "Minigin/TimeManager.cpp")
