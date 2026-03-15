@@ -1,16 +1,24 @@
 #include "KeyboardInput.h"
-#include <SDL3/SDL.h>
 #include "Binding.h"
 #include "Command.h"
+#include <algorithm>
 
 using namespace dae;
 dae::KeyboardInput::KeyboardInput() = default;
 dae::KeyboardInput::~KeyboardInput() = default;
 void KeyboardInput::ProcessInput()
 {
-	m_PreviousState = m_CurrentState;
+	if (m_PreviousState.get() == nullptr) m_PreviousState = std::make_unique<bool[]>(SDL_SCANCODE_COUNT);
+	/*if(m_CurrentState != nullptr)
+		std::transform(m_CurrentState,
+			m_CurrentState + SDL_SCANCODE_COUNT,
+			begin(m_PreviousState),
+			[&](bool key) { return key != 0; });*/
+	if (m_CurrentState != nullptr)
+		std::memcpy(m_PreviousState.get(), m_CurrentState, SDL_SCANCODE_COUNT);
+	//m_PreviousState = m_CurrentState;
+	SDL_PumpEvents();
 	m_CurrentState = SDL_GetKeyboardState(nullptr);
-
 	for (auto& binding : m_Bindings)
 	{
 		if (binding->m_TriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind)) binding->m_Command->Execute();
@@ -21,8 +29,6 @@ void KeyboardInput::ProcessInput()
 
 bool KeyboardInput::WasPressedThisFrame(unsigned int button) const
 {
-	if (m_PreviousState == nullptr)
-		return m_CurrentState[button];
 	bool buttonChange = m_CurrentState[button] ^ m_PreviousState[button];
 	
 	return buttonChange && m_CurrentState[button];
@@ -35,8 +41,6 @@ bool KeyboardInput::IsButtonPressed(unsigned int button) const
 
 bool KeyboardInput::WasReleasedThisFrame(unsigned int button) const
 {
-	if (m_PreviousState == nullptr)
-		return !m_CurrentState[button];
 	bool buttonChange = m_CurrentState[button] ^ m_PreviousState[button];
 
 	return buttonChange && !m_CurrentState[button];

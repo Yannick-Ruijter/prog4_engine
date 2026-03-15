@@ -46,4 +46,16 @@ namespace dae
 		float m_Speed{};
 
 	};
+
+	class HealthComponent;
+	class DamagePlayer : public GameObjectCommand
+	{
+	public:
+		DamagePlayer(GameObject& object, GameObject& target);
+		void Execute() override;
+		~DamagePlayer() override = default;
+	private:
+		GameObject* m_TargetObject{ nullptr };
+		HealthComponent* m_TargetHealthComponent{ nullptr };
+	};
 }

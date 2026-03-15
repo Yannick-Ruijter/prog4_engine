@@ -8,13 +8,17 @@
 #include <string>
 using namespace dae;
 
-void PlayerLivesObserver::Notify(Event event, GameObject* object)
+dae::PlayerLivesObserver::PlayerLivesObserver(TextComponent* textComponent)
+	:m_TargetTextComponent{textComponent}
+{
+}
+
+void PlayerLivesObserver::Notify(Event event, GameObject* source)
 {
 	if (event == Event::PlayerDeath)
 	{
-		TextComponent* textComponent = object->GetComponent<TextComponent>();
-		HealthComponent* healthComponent = object->GetComponent<HealthComponent>();
+		HealthComponent* healthComponent = source->GetComponent<HealthComponent>();
 		std::string displayText{ "# Lives: " + std::to_string(healthComponent->GetNumberOfLives()) };
-		textComponent->SetText(displayText);
+		m_TargetTextComponent->SetText(displayText);
 	}
 }

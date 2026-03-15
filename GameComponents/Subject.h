@@ -8,11 +8,13 @@ namespace dae {
 	class Subject
 	{
 	public:
+		Subject() = default;
+		~Subject() = default;
 		virtual void AddObserver(Observer* observer);
 		virtual void RemoveObserver(Observer* observer);
+		virtual void NotifyObservers(Event const& event, GameObject* source);
 
 	protected:
-		virtual void NotifyObservers(Event const& event, GameObject* source);
 		std::vector<Observer*> m_Observers{};
 	};
 }

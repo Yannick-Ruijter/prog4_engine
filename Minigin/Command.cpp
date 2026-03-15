@@ -5,6 +5,7 @@
 #include "ControllerInput.h"
 #include "TransformComponent.h"
 #include "TimeManager.h"
+#include "HealthComponent.h"
 
 using namespace dae;
 
@@ -33,4 +34,16 @@ void MoveObjectCommand::Execute()
 {
 	glm::vec3 displacement{ m_MoveDir * m_TimeManager->GetDeltaTime() * m_Speed };
 	m_TransformComponent->SetLocalPosition(m_TransformComponent->GetLocalPosition() + displacement);
+}
+
+dae::DamagePlayer::DamagePlayer(GameObject& object, GameObject& target)
+	:GameObjectCommand(object), m_TargetObject{&target}
+	,m_TargetHealthComponent(target.GetComponent<HealthComponent>())
+{
+	assert(m_TargetHealthComponent != nullptr && "target player for damage command needs a health component");
+}
+
+void dae::DamagePlayer::Execute()
+{
+	m_TargetHealthComponent->Damage();
 }

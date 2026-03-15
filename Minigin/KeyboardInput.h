@@ -3,6 +3,8 @@
 #include "InputInfo.h"
 #include <memory>
 #include <vector>
+#include <SDL3/SDL.h>
+#include <array>
 
 namespace dae
 {
@@ -25,7 +27,7 @@ namespace dae
 		int ConvertToScancode(InputKeybinds keybind);
 
 		const bool* m_CurrentState{ nullptr };
-		const bool* m_PreviousState{ nullptr };
+		std::unique_ptr<bool[]> m_PreviousState{};
 
 		std::vector<std::unique_ptr<Binding>> m_Bindings;
 	};

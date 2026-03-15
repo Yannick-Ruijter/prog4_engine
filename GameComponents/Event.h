@@ -1,6 +1,8 @@
 #pragma once
 
-enum class Event {
-	PlayerDeath,
-	ItemPickedUp
-};
+namespace dae {
+	enum class Event {
+		PlayerDeath,
+		ItemPickedUp
+	};
+}

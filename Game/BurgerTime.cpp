@@ -10,6 +10,13 @@
 #include "Command.h"
 #include "Binding.h"
 #include "InputInfo.h"
+#include "Subject.h"
+#include "PlayerLivesObserver.h"
+#include "HealthComponent.h"
+
+BurgerTime::BurgerTime() = default;
+
+BurgerTime::~BurgerTime() = default;
 
 void BurgerTime::Initialize()
 {
@@ -39,7 +46,20 @@ void BurgerTime::Initialize()
 	go->AddComponent<dae::FpsComponent>();
 	scene.Add(std::move(go));
 
+
+
 	go = std::make_unique<dae::GameObject>();
+	go->AddComponent<dae::RenderComponent>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 120);
+	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font, SDL_Color{ 255, 0, 0, 255 });
+	dae::TextComponent* textComponent = go->GetComponent<dae::TextComponent>();
+	scene.Add(std::move(go));
+
+	go = std::make_unique<dae::GameObject>();
+	m_Player1HealthObserver = std::move(std::make_unique<dae::PlayerLivesObserver>(textComponent));
+	auto livesLostEvent{ std::make_unique<dae::Subject>() };
+	livesLostEvent->AddObserver(m_Player1HealthObserver.get());
+	go->AddComponent<dae::HealthComponent>(std::move(livesLostEvent));
 	go->AddComponent<dae::RenderComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
@@ -56,11 +76,12 @@ void BurgerTime::Initialize()
 	inputManager.GetKeyboardInput()->AddBinding(
 		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right),
 		InputKeybinds::D, InputState::Pressed);
-
+	m_Player2 = go.get();
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::RenderComponent>();
+	go->AddComponent<dae::HealthComponent>();
 	go->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 
@@ -76,7 +97,10 @@ void BurgerTime::Initialize()
 	inputManager.GetControllerInput(0)->AddBinding(
 		std::make_unique<dae::MoveObjectCommand>(*go.get(), dae::MoveDirection::Right, 200.f),
 		InputKeybinds::DPAD_RIGHT, InputState::Pressed);
+	inputManager.GetKeyboardInput()->AddBinding(
+		std::make_unique<dae::DamagePlayer>(*go.get(), *m_Player2)
+		, InputKeybinds::X, InputState::JustPressed);
 
+	m_Player1 = go.get();
 	scene.Add(std::move(go));
-	
 }
