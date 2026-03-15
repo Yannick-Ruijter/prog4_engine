@@ -1,8 +1,8 @@
 #pragma once
 
+enum class Event;
 namespace dae
 {
-	enum class Event;
 	class GameObject;
 	class Observer
 	{

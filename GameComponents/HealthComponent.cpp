@@ -11,3 +11,8 @@ void HealthComponent::Damage()
 	m_NumberOfLives -= 1;
 	//do notify thing
 }
+
+int dae::HealthComponent::GetNumberOfLives() const
+{
+	return m_NumberOfLives;
+}
