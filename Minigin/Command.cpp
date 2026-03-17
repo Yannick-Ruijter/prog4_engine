@@ -38,7 +38,7 @@ void MoveObjectCommand::Execute()
 }
 
 dae::DamagePlayer::DamagePlayer(GameObject& object, GameObject& target)
-	:GameObjectCommand(object), m_TargetObject{&target}
+	:GameObjectCommand(object)
 	,m_TargetHealthComponent(target.GetComponent<HealthComponent>())
 {
 	assert(m_TargetHealthComponent != nullptr && "target player for damage command needs a health component");

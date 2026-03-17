@@ -56,7 +56,6 @@ namespace dae
 		void Execute() override;
 		~DamagePlayer() override = default;
 	private:
-		GameObject* m_TargetObject{ nullptr };
 		HealthComponent* m_TargetHealthComponent{ nullptr };
 	};
 
