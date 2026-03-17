@@ -53,10 +53,12 @@ enum class InputKeybinds
 	RIGHT_THUMB,
 	LEFT_SHOULDER,
 	RIGHT_SHOULDER,
+	EMPTY1, //unknown keybindsc
+	EMPTY2, //unknown keybindsc
 
 	BUTTON_SOUTH,
 	BUTTON_EAST,
-	BUTTON_WEST,
+	BUTTON_WEST,   
 	BUTTON_NORTH,
 	CONTROLLER_END,
 };

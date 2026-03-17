@@ -12,6 +12,7 @@ namespace dae
 		~HealthComponent() override;
 		void Damage();
 		int GetNumberOfLives() const;
+		Subject* GetSubject() const;
 
 	private:
 		int m_NumberOfLives{ 0 };

@@ -22,3 +22,8 @@ int dae::HealthComponent::GetNumberOfLives() const
 {
 	return m_NumberOfLives;
 }
+
+Subject* dae::HealthComponent::GetSubject() const
+{
+	return m_LiveLostEvent.get();
+}

@@ -13,7 +13,7 @@ public:
 	void Initialize() override;
 
 private:
-	std::unique_ptr < dae::Observer> m_Player1HealthObserver{ nullptr };
 	dae::GameObject* m_Player1{ nullptr };
 	dae::GameObject* m_Player2{ nullptr };
+	int m_StartingLives{ 3 };
 };
