@@ -1,4 +1,3 @@
-#pragma once
 #include "LivesDisplayComponent.h"
 #include "HealthComponent.h"
 #include "TextComponent.h"

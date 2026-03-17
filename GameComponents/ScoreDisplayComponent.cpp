@@ -1,4 +1,3 @@
-#pragma once
 #include "ScoreDisplayComponent.h"
 #include "ScoreComponent.h"
 #include "TextComponent.h"

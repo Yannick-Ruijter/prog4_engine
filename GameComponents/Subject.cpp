@@ -1,4 +1,3 @@
-#pragma once
 
 #include "Subject.h"
 #include "Observer.h"

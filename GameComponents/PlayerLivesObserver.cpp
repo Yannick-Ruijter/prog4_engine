@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PlayerLivesObserver.h"
 #include "Event.h"
 #include "GameObject.h"
