@@ -9,7 +9,7 @@ namespace dae {
 	{
 	public:
 		Subject() = default;
-		~Subject() = default;
+		virtual ~Subject() = default;
 		virtual void AddObserver(Observer* observer);
 		virtual void RemoveObserver(Observer* observer);
 		virtual void NotifyObservers(Event const& event, GameObject* source);

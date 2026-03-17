@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <glm/glm.hpp>
+#include <memory>
 
 namespace dae
 {
@@ -57,5 +58,18 @@ namespace dae
 	private:
 		GameObject* m_TargetObject{ nullptr };
 		HealthComponent* m_TargetHealthComponent{ nullptr };
+	};
+
+	class Subject;
+	class PickUpItemCommand : public GameObjectCommand
+	{
+	public:
+		PickUpItemCommand(GameObject& object);
+		void Execute() override;
+		~PickUpItemCommand() override = default;
+		Subject* GetSubject() const;
+	private:
+		std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{ nullptr };
+
 	};
 }

@@ -3,6 +3,7 @@
 namespace dae {
 	enum class Event {
 		PlayerDeath,
-		ItemPickedUp
+		ItemPickedUp,
+		ScoreChanged,
 	};
 }

@@ -6,7 +6,8 @@
 #include "TransformComponent.h"
 #include "TimeManager.h"
 #include "HealthComponent.h"
-
+#include "Subject.h"
+#include "Event.h"
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject& object)
@@ -46,4 +47,21 @@ dae::DamagePlayer::DamagePlayer(GameObject& object, GameObject& target)
 void dae::DamagePlayer::Execute()
 {
 	m_TargetHealthComponent->Damage();
+}
+
+dae::PickUpItemCommand::PickUpItemCommand(GameObject& object)
+	:GameObjectCommand(object)
+	, m_PlayerPickedUpItemEvent{std::make_unique<Subject>()}
+{}
+
+void dae::PickUpItemCommand::Execute()
+{
+	//does nothing else yet since there is no picking up in my game yet and it's currently just increment score
+	//will have functionality here in the future
+	m_PlayerPickedUpItemEvent->NotifyObservers(Event::ItemPickedUp, GetGameObject());
+}
+
+Subject* dae::PickUpItemCommand::GetSubject() const
+{
+	return m_PlayerPickedUpItemEvent.get();
 }
