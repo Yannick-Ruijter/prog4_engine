@@ -22,7 +22,7 @@ namespace dae {
 	class CSteamAchievements
 	{
 	private:
-		std::uint64_t m_iAppID; // Our current AppID
+		[[maybe_unused]] std::uint64_t m_iAppID; // Our current AppID
 		Achievement_t* m_pAchievements; // Achievements data
 		int m_iNumAchievements; // The number of Achievements
 		bool m_bInitialized; // Are we ready to use the API?
