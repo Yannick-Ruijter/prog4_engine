@@ -14,15 +14,16 @@
 #include "PlayerLivesObserver.h"
 #include "HealthComponent.h"
 #include "LivesDisplayComponent.h"
-#include "Binding.h"
 #include "ScoreDisplayComponent.h"
 #include "ScoreComponent.h"
+#include "Achievements.h"
 BurgerTime::BurgerTime() = default;
 
 BurgerTime::~BurgerTime() = default;
 
 void BurgerTime::Initialize()
 {
+	m_Achievements = std::make_unique<dae::Achievements>();
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& inputManager = dae::InputManager::GetInstance();
 	auto go = std::make_unique<dae::GameObject>();
@@ -185,6 +186,11 @@ void BurgerTime::Initialize()
 		go->AddComponent<dae::ScoreDisplayComponent>(*m_Player2->GetComponent<dae::ScoreComponent>());
 		m_Player2->GetComponent< dae::ScoreComponent>()->GetSubject()->AddObserver(go->GetComponent< dae::ScoreDisplayComponent>());
 		scene.Add(std::move(go));
+	}
+
+	{
+		m_Player1->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
+		m_Player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
 	}
 
 }
