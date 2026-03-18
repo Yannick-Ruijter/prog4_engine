@@ -1,7 +1,12 @@
 #include "Achievements.h"
 #include "GameObject.h"
 #include "Event.h"
+#if USE_STEAMWORKS
+#pragma warning (push)
+#pragma warning (disable:4996)
 #include "steam_api.h"
+#pragma warning (pop)
+#endif
 #include "ScoreComponent.h"
 using namespace dae;
 
