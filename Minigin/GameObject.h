@@ -6,7 +6,6 @@
 #include <SDL3/SDL.h>
 #include "Component.h"
 #include <utility>
-#include "TextComponent.h"
 
 namespace dae
 {

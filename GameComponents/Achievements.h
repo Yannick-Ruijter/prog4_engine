@@ -22,5 +22,6 @@ namespace dae
 		std::unique_ptr<CSteamAchievements> m_SteamAchievements{ nullptr };
 
 		int m_ScoreThreshold{ 500 };
+		bool m_FirstWinAchievementUnlocked{ false };
 	};
 }

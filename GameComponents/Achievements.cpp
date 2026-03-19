@@ -14,13 +14,19 @@ Achievements::Achievements()
 	:m_Achievements{ _ACH_ID(static_cast<int>(SteamAchievements::ACH_WIN_ONE_GAME), "Winner") }
 	,m_SteamAchievements{std::make_unique<CSteamAchievements>(m_Achievements.data(), static_cast<int>(m_Achievements.size()))}
 {
+#if USE_STEAMWORKS
+	SteamUserStats()->GetAchievement("ACH_WIN_ONE_GAME", &m_FirstWinAchievementUnlocked);
+#endif
 }
 void Achievements::Notify(Event event, GameObject* source)
 {
 	if (event == Event::ScoreChanged)
 	{
 		ScoreComponent* scoreComponent = source->GetComponent<ScoreComponent>();
-		if (scoreComponent->GetScore() >= m_ScoreThreshold) 
+		if (!m_FirstWinAchievementUnlocked && scoreComponent->GetScore() >= m_ScoreThreshold)
+		{
 			m_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
+			m_FirstWinAchievementUnlocked = true;
+		}
 	}
 }
