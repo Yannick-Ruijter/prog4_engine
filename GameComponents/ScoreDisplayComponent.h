@@ -12,7 +12,7 @@ namespace dae
 	public:
 		ScoreDisplayComponent(GameObject& gameObject, ScoreComponent& targetHealth);
 
-		void Notify(Event event, GameObject* source) override;
+		void Notify(unsigned int eventId, GameObject* source) override;
 	private:
 		ScoreComponent* m_TargetScore{ nullptr };
 		TextComponent* m_TextComponent{ nullptr };

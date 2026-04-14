@@ -7,7 +7,7 @@
 #include "TimeManager.h"
 #include "HealthComponent.h"
 #include "Subject.h"
-#include "Event.h"
+#include "sdbm_hash.h"
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject& object)
@@ -58,7 +58,8 @@ void dae::PickUpItemCommand::Execute()
 {
 	//does nothing else yet since there is no picking up in my game yet and it's currently just increment score
 	//will have functionality here in the future
-	m_PlayerPickedUpItemEvent->NotifyObservers(Event::ItemPickedUp, GetGameObject());
+	m_PlayerPickedUpItemEvent->NotifyObservers("ItemPickedUp"_h, GetGameObject());
+
 }
 
 Subject* dae::PickUpItemCommand::GetSubject() const

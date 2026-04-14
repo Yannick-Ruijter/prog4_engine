@@ -1,6 +1,6 @@
 #include "ScoreComponent.h"
 #include "Subject.h"
-#include "Event.h"
+#include "sdbm_hash.h"
 using namespace dae;
 
 dae::ScoreComponent::ScoreComponent(GameObject& owner, std::unique_ptr<Subject>&& scoreChangedEvent)
@@ -11,7 +11,7 @@ dae::ScoreComponent::ScoreComponent(GameObject& owner, std::unique_ptr<Subject>&
 void ScoreComponent::AddScore(int score)
 {
 	m_CurrentScore += score;
-	m_ScoreChangedEvent->NotifyObservers(Event::ScoreChanged, GetOwner());
+	m_ScoreChangedEvent->NotifyObservers("ScoreChanged"_h, GetOwner());
 }
 
 int dae::ScoreComponent::GetScore() const
@@ -19,9 +19,9 @@ int dae::ScoreComponent::GetScore() const
 	return m_CurrentScore;
 }
 
-void dae::ScoreComponent::Notify(Event event, GameObject*)
+void dae::ScoreComponent::Notify(unsigned int eventId, GameObject*)
 {
-	if (event == Event::ItemPickedUp) AddScore(100);
+	if (eventId == "ItemPickedUp"_h) AddScore(100);
 }
 
 Subject* dae::ScoreComponent::GetSubject() const

@@ -1,6 +1,6 @@
 #include "Achievements.h"
 #include "GameObject.h"
-#include "Event.h"
+#include "sdbm_hash.h"
 #if USE_STEAMWORKS
 #pragma warning (push)
 #pragma warning (disable:4996)
@@ -18,9 +18,9 @@ Achievements::Achievements()
 	SteamUserStats()->GetAchievement("ACH_WIN_ONE_GAME", &m_FirstWinAchievementUnlocked);
 #endif
 }
-void Achievements::Notify(Event event, GameObject* source)
+void Achievements::Notify(unsigned int eventId, GameObject* source)
 {
-	if (event == Event::ScoreChanged)
+	if (eventId == "ScoreChanged"_h)
 	{
 		ScoreComponent* scoreComponent = source->GetComponent<ScoreComponent>();
 		if (!m_FirstWinAchievementUnlocked && scoreComponent->GetScore() >= m_ScoreThreshold)

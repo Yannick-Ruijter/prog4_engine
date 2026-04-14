@@ -12,7 +12,7 @@ namespace dae
 		void AddScore(int score);
 		int GetScore() const;
 
-		void Notify(Event event, GameObject* source);
+		void Notify(unsigned int eventId, GameObject* source);
 		Subject* GetSubject() const;
 	private:
 		std::unique_ptr<Subject> m_ScoreChangedEvent{ nullptr };

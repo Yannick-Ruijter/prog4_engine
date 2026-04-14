@@ -8,6 +8,6 @@ namespace dae
 	{
 	public:
 		virtual ~Observer() = default;
-		virtual void Notify(Event event, GameObject* source) = 0;
+		virtual void Notify(unsigned int eventId, GameObject* source) = 0;
 	};
 }

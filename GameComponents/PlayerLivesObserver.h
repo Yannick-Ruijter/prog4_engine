@@ -13,7 +13,7 @@ namespace dae
 	public:
 		PlayerLivesObserver(TextComponent* textComponent);
 		~PlayerLivesObserver() override = default;
-		void Notify(Event event, GameObject* source) override;
+		void Notify(unsigned int eventId, GameObject* source) override;
 	private:
 		TextComponent* m_TargetTextComponent{ nullptr };
 	};

@@ -1,9 +1,9 @@
 #include "PlayerLivesObserver.h"
-#include "Event.h"
 #include "GameObject.h"
 #include "TextComponent.h"
 #include "HealthComponent.h"
 #include <string>
+#include "sdbm_hash.h"
 using namespace dae;
 
 dae::PlayerLivesObserver::PlayerLivesObserver(TextComponent* textComponent)
@@ -11,9 +11,9 @@ dae::PlayerLivesObserver::PlayerLivesObserver(TextComponent* textComponent)
 {
 }
 
-void PlayerLivesObserver::Notify(Event event, GameObject* source)
+void PlayerLivesObserver::Notify(unsigned int eventId, GameObject* source)
 {
-	if (event == Event::PlayerDeath)
+	if (eventId == "PlayerDeath"_h)
 	{
 		HealthComponent* healthComponent = source->GetComponent<HealthComponent>();
 		std::string displayText{ "# Lives: " + std::to_string(healthComponent->GetNumberOfLives()) };

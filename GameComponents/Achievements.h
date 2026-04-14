@@ -15,7 +15,7 @@ namespace dae
 	{
 	public:
 		Achievements();
-		void Notify(Event event, GameObject* source);
+		void Notify(unsigned int eventId, GameObject* source);
 
 	private:
 		std::vector<Achievement_t> m_Achievements{};

@@ -12,7 +12,7 @@ namespace dae
 	public:
 		LivesDisplayComponent(GameObject& gameObject, HealthComponent& targetHealth);
 
-		void Notify(Event event, GameObject* source) override;
+		void Notify(unsigned int eventId, GameObject* source) override;
 	private:
 		HealthComponent* m_TargetHealth{ nullptr };
 		TextComponent* m_TextComponent{ nullptr };
