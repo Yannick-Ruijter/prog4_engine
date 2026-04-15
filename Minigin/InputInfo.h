@@ -6,6 +6,7 @@ enum class InputState
 	JustPressed,
 	JustReleased,
 	Pressed,
+	None,
 };
 
 enum class InputKeybinds

@@ -24,6 +24,11 @@ void KeyboardInput::ProcessInput()
 		if (binding->m_TriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind)) binding->m_Command->Execute();
 		if (binding->m_TriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind)) binding->m_Command->Execute();
 		if (binding->m_TriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind)) binding->m_Command->Execute();
+
+		if (binding->m_EndTriggerState == InputState::None) continue;
+		if (binding->m_EndTriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind)) binding->m_Command->StopExecution();
+		else if (binding->m_EndTriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind)) binding->m_Command->StopExecution();
+		else if (binding->m_EndTriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind)) binding->m_Command->StopExecution();
 	}
 }
 
@@ -46,11 +51,11 @@ bool KeyboardInput::WasReleasedThisFrame(unsigned int button) const
 	return buttonChange && !m_CurrentState[button];
 }
 
-Binding* KeyboardInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
+Binding* KeyboardInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState)
 {
 	assert(command.get() != nullptr);
 	int scancode = ConvertToScancode(keybind);
-	m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), scancode, triggerState));
+	m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), scancode, triggerState, endTriggerState));
 	return m_Bindings.back().get();
 }
 

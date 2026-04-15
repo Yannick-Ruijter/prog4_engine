@@ -8,6 +8,7 @@
 #include "HealthComponent.h"
 #include "Subject.h"
 #include "sdbm_hash.h"
+#include "PlayerStateComponent.h"
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject& object)
@@ -65,4 +66,36 @@ void dae::PickUpItemCommand::Execute()
 Subject* dae::PickUpItemCommand::GetSubject() const
 {
 	return m_PlayerPickedUpItemEvent.get();
+}
+
+dae::MovePlayerCommand::MovePlayerCommand(GameObject& object, MoveDirection direction, PlayerStateComponent* state, float speed)
+	:MoveObjectCommand(object, direction, speed), m_PlayerState{state}
+	, m_OnPlayerStartedMove{std::make_unique<Subject>()}
+{
+}
+
+void dae::MovePlayerCommand::Execute()
+{
+	switch (m_PlayerState->GetState())
+	{
+	case PlayerState::Idle:
+		[[fallthrough]];
+	case PlayerState::Running:
+		m_OnPlayerStartedMove->NotifyObservers("OnPlayerStartedMoving"_h, GetGameObject());
+		MoveObjectCommand::Execute();
+		break;
+	default:
+		return;
+	}
+}
+
+void dae::MovePlayerCommand::StopExecution()
+{
+	if(m_PlayerState->GetState() == PlayerState::Running) 
+		m_OnPlayerStartedMove->NotifyObservers("OnPlayerStoppedMoving"_h, GetGameObject());
+}
+
+Subject* dae::MovePlayerCommand::GetSubject() const
+{
+	return m_OnPlayerStartedMove.get();
 }

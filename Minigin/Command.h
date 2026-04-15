@@ -8,6 +8,7 @@ namespace dae
 	class GameObject;
 	class PlayerInput;
 	class TransformComponent;
+	class PlayerStateComponent;
 	enum class MoveDirection
 	{
 		Up,
@@ -20,6 +21,7 @@ namespace dae
 	public:
 		virtual ~Command() = default;
 		virtual void Execute() = 0;
+		virtual void StopExecution() = 0;
 	};
 
 	class GameObjectCommand : public Command
@@ -38,7 +40,8 @@ namespace dae
 	{
 	public:
 		MoveObjectCommand(GameObject& object, MoveDirection direction, float speed = 100.f);
-		void Execute() override;
+		virtual void Execute() override;
+		virtual void StopExecution() override {};
 		~MoveObjectCommand() override = default;
 	private:
 		glm::vec3 m_MoveDir{};
@@ -48,23 +51,36 @@ namespace dae
 
 	};
 
+	class Subject;
+	class MovePlayerCommand : public MoveObjectCommand {
+	public:
+		MovePlayerCommand(GameObject& object, MoveDirection direction, PlayerStateComponent* state, float speed = 100.f);
+		void Execute() override;
+		void StopExecution() override;
+		Subject* GetSubject() const;
+	private:
+		PlayerStateComponent* m_PlayerState{ nullptr };
+		std::unique_ptr<Subject> m_OnPlayerStartedMove;
+	};
+
 	class HealthComponent;
 	class DamagePlayer : public GameObjectCommand
 	{
 	public:
 		DamagePlayer(GameObject& object, GameObject& target);
 		void Execute() override;
+		virtual void StopExecution() override {};
 		~DamagePlayer() override = default;
 	private:
 		HealthComponent* m_TargetHealthComponent{ nullptr };
 	};
 
-	class Subject;
 	class PickUpItemCommand : public GameObjectCommand
 	{
 	public:
 		PickUpItemCommand(GameObject& object);
 		void Execute() override;
+		virtual void StopExecution() override {};
 		~PickUpItemCommand() override = default;
 		Subject* GetSubject() const;
 	private:

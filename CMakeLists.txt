@@ -33,16 +33,25 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameComponents/FPSComponent.cpp"
   "GameComponents/OrbitComponent.cpp" 
   "Game/BurgerTime.cpp" 
-   "GameComponents/TrashTheCacheComponent.cpp" 
-   "Minigin/Command.cpp" 
-    
-   "Minigin/ControllerInput.cpp" 
-   "Minigin/KeyboardInput.cpp" 
-   "Minigin/Binding.cpp" "Minigin/TimeManager.cpp" "GameComponents/HealthComponent.cpp"   "GameComponents/Subject.cpp" "GameComponents/PlayerLivesObserver.cpp" "GameComponents/LivesDisplayComponent.cpp" "GameComponents/ScoreComponent.cpp" "GameComponents/ScoreDisplayComponent.cpp" "Minigin/CSteamAchievements.cpp" "GameComponents/Achievements.cpp")
+  "GameComponents/TrashTheCacheComponent.cpp" 
+  "Minigin/Command.cpp"   
+  "Minigin/ControllerInput.cpp" 
+  "Minigin/KeyboardInput.cpp" 
+  "Minigin/Binding.cpp" 
+  "Minigin/TimeManager.cpp"
+  "GameComponents/HealthComponent.cpp"   
+  "GameComponents/Subject.cpp" 
+  "GameComponents/PlayerLivesObserver.cpp" 
+  "GameComponents/LivesDisplayComponent.cpp" 
+  "GameComponents/ScoreComponent.cpp" 
+  "GameComponents/ScoreDisplayComponent.cpp" 
+  "Minigin/CSteamAchievements.cpp" 
+  "GameComponents/Achievements.cpp" 
+  "GameComponents/PlayerStateComponent.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-#target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX) 
+target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX) 
 
 include(FetchContent)
 # add glm

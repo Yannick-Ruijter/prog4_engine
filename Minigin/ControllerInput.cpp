@@ -25,7 +25,7 @@ public:
 	bool IsButtonPressed(unsigned int button) const;
 	bool WasReleasedThisFrame(unsigned int button) const;
 
-	std::unique_ptr<Binding> AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState);
+	std::unique_ptr<Binding> AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState = InputState::None);
 
 private:
 	int m_ControllerIndex{};
@@ -59,8 +59,13 @@ void ControllerInput::ProcessInput()
 	for (auto& binding : m_Bindings)
 	{
 		if (binding->m_TriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind)) binding->m_Command->Execute();
-		if (binding->m_TriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind)) binding->m_Command->Execute();
-		if (binding->m_TriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind)) binding->m_Command->Execute();
+		else if (binding->m_TriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind)) binding->m_Command->Execute();
+		else if (binding->m_TriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind)) binding->m_Command->Execute();
+
+		if (binding->m_EndTriggerState == InputState::None) continue;
+		if (binding->m_EndTriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind)) binding->m_Command->StopExecution();
+		else if (binding->m_EndTriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind)) binding->m_Command->StopExecution();
+		else if (binding->m_EndTriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind)) binding->m_Command->StopExecution();
 	}
 }
 
@@ -79,9 +84,9 @@ bool ControllerInput::WasReleasedThisFrame(unsigned int button) const
 	return m_pImpl->WasReleasedThisFrame(button);
 }
 
-Binding* ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
+Binding* ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState)
 {
-	m_Bindings.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState));
+	m_Bindings.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState, endTriggerState));
 	return m_Bindings.back().get();
 }
 
@@ -155,14 +160,14 @@ bool ControllerInput::Impl::WasReleasedThisFrame(unsigned int button) const
 #endif
 }
 
-std::unique_ptr<Binding> ControllerInput::Impl::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
+std::unique_ptr<Binding> ControllerInput::Impl::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState)
 {
 #if _WIN32
 	int XinputValue = ConvertToXInput(keybind);
-	return std::make_unique<Binding>(std::move(command), XinputValue, triggerState);
+	return std::make_unique<Binding>(std::move(command), XinputValue, triggerState, endTriggerState);
 #else
 	int keybindValue = ConvertToSdlKeybind(keybind);
-	return std::make_unique<Binding>(std::move(command), keybindValue, triggerState);
+	return std::make_unique<Binding>(std::move(command), keybindValue, triggerState, endTriggerState);
 #endif
 }
 

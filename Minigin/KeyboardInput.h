@@ -20,7 +20,7 @@ namespace dae
 		bool IsButtonPressed(unsigned int button) const override;
 		bool WasReleasedThisFrame(unsigned int button) const override;
 
-		Binding* AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
+		Binding* AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState = InputState::None) override;
 		std::unique_ptr<Binding> UnBind(Binding* binding) override;
 
 	private:
