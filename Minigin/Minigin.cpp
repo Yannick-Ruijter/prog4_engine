@@ -7,7 +7,6 @@
 #include <windows.h>
 #endif
 
-
 #if USE_STEAMWORKS
 #pragma warning (push)
 #pragma warning (disable:4996)
