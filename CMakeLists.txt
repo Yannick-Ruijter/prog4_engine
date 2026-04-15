@@ -51,7 +51,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX) 
+#target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX) 
 
 include(FetchContent)
 # add glm
