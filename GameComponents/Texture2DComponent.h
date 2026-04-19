@@ -16,7 +16,7 @@ namespace dae
 		SDL_Texture* GetSDLTexture() const;
 		void SetSDLTexture(SDL_Texture* texture);
 		explicit Texture2DComponent(GameObject& owner, SDL_Texture* texture);
-		explicit Texture2DComponent(GameObject& owner, const std::string& fullPath);
+		explicit Texture2DComponent(GameObject& owner, const std::string& fullPath, int width = 0, int height = 0);
 		~Texture2DComponent() override;
 
 		glm::vec2 GetSize() const;

@@ -10,14 +10,15 @@ dae::PlayerStateComponent::PlayerStateComponent(GameObject& owner)
 
 void dae::PlayerStateComponent::Notify(unsigned int eventId, GameObject*)
 {
-	//add functionality for checking how many starts and stops have been detected to see if we're still moving
 	if (eventId == "OnPlayerStartedMoving"_h)
 	{
+		++m_NrCurrentWalkCommands;
 		m_CurrentPlayerState = PlayerState::Running;
 	}
 	else if (eventId == "OnPlayerStoppedMoving"_h)
 	{
-		m_CurrentPlayerState = PlayerState::Idle;
+		--m_NrCurrentWalkCommands;
+		if(m_NrCurrentWalkCommands <= 0) m_CurrentPlayerState = PlayerState::Idle;
 	}
 }
 

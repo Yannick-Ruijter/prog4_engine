@@ -27,7 +27,7 @@ void dae::Texture2DComponent::SetSDLTexture(SDL_Texture* texture)
     m_Texture = texture;
 }
 
-dae::Texture2DComponent::Texture2DComponent(GameObject& owner, const std::string &fullPath)
+dae::Texture2DComponent::Texture2DComponent(GameObject& owner, const std::string &fullPath, int width, int height)
     :Component(owner)
 {
     SDL_Surface* surface = SDL_LoadPNG(fullPath.c_str());
@@ -37,6 +37,8 @@ dae::Texture2DComponent::Texture2DComponent(GameObject& owner, const std::string
             std::string("Failed to load PNG: ") + SDL_GetError()
         );
     }
+    if(width != 0 && height != 0)
+        surface =  SDL_ScaleSurface(surface, width, height, SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
 
     m_Texture = SDL_CreateTextureFromSurface(
         Renderer::GetInstance().GetSDLRenderer(),

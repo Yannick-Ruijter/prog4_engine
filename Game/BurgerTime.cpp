@@ -34,18 +34,18 @@ void BurgerTime::Initialize()
 	//background stuff
 	{
 		go->AddComponent<dae::RenderComponent>();
-		go->AddComponent<dae::Texture2DComponent>("Data/background.png");
+		go->AddComponent<dae::Texture2DComponent>("Data/Stage0_Background.png", 1032, 800);
 		scene.Add(std::move(go));
 
-		go = std::make_unique<dae::GameObject>();
+		/*go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
 		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(358, 180);
 		go->AddComponent<dae::Texture2DComponent>("Data/logo.png");
-		scene.Add(std::move(go));
+		scene.Add(std::move(go));*/
 
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 20);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 0);
 		go->AddComponent<dae::TextComponent>("Programming 4 Assignment", fontMain, SDL_Color{ 255, 0, 0, 255 });
 		scene.Add(std::move(go));
 
@@ -61,7 +61,7 @@ void BurgerTime::Initialize()
 		m_Player2 = go.get();
 		m_Player2->AddComponent<dae::RenderComponent>();
 		m_Player2->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
-		m_Player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
+		m_Player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
 		m_Player2->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 		m_Player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
 		m_Player2->AddComponent<dae::PlayerStateComponent>();
@@ -71,7 +71,7 @@ void BurgerTime::Initialize()
 		m_Player1 = go.get();
 		m_Player1->AddComponent<dae::RenderComponent>();
 		m_Player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
-		m_Player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png");
+		m_Player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
 		m_Player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{ 200, 200, 0 });
 		m_Player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
 		m_Player1->AddComponent<dae::PlayerStateComponent>();
@@ -151,13 +151,13 @@ void BurgerTime::Initialize()
 	{
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 90);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 650);
 		go->AddComponent<dae::TextComponent>("Use the D-Pad to move Peter Pepper 1, X to inflict damage, A and B to collect points", fontSmall);
 		scene.Add(std::move(go));
 
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 110);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 710);
 		go->AddComponent<dae::TextComponent>("Use the WASD to move Peter Pepper 2, C to inflict damage, Z and X to collect points", fontSmall);
 		scene.Add(std::move(go));
 	}
@@ -166,7 +166,7 @@ void BurgerTime::Initialize()
 		//player 1
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 150);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 650);
 		go->AddComponent<dae::TextComponent>("temp", fontSmall);
 		go->AddComponent<dae::LivesDisplayComponent>(*m_Player1->GetComponent<dae::HealthComponent>());
 		auto livesLostEvent = m_Player1->GetComponent<dae::HealthComponent>()->GetSubject();
@@ -175,7 +175,7 @@ void BurgerTime::Initialize()
 
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 175);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 675);
 		go->AddComponent<dae::TextComponent>("Score: 0", fontSmall);
 		go->AddComponent<dae::ScoreDisplayComponent>(*m_Player1->GetComponent<dae::ScoreComponent>());
 		m_Player1->GetComponent< dae::ScoreComponent>()->GetSubject()->AddObserver(go->GetComponent<dae::ScoreDisplayComponent>());
@@ -184,7 +184,7 @@ void BurgerTime::Initialize()
 		//player 2
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 200);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 710);
 		go->AddComponent<dae::TextComponent>("temp", fontSmall);
 		go->AddComponent<dae::LivesDisplayComponent>(*m_Player2->GetComponent<dae::HealthComponent>());
 		livesLostEvent = m_Player2->GetComponent<dae::HealthComponent>()->GetSubject();
@@ -193,7 +193,7 @@ void BurgerTime::Initialize()
 
 		go = std::make_unique<dae::GameObject>();
 		go->AddComponent<dae::RenderComponent>();
-		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 225);
+		go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 735);
 		go->AddComponent<dae::TextComponent>("Score: 0", fontSmall);
 		go->AddComponent<dae::ScoreDisplayComponent>(*m_Player2->GetComponent<dae::ScoreComponent>());
 		m_Player2->GetComponent< dae::ScoreComponent>()->GetSubject()->AddObserver(go->GetComponent< dae::ScoreDisplayComponent>());

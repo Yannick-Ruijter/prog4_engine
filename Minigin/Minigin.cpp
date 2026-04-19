@@ -75,9 +75,9 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath, std::unique_ptr<Gam
 	}
 
 	g_window = SDL_CreateWindow(
-		"Programming 4 assignment",
-		1024,
-		576,
+		"BurgerTime",
+		1032,
+		800,
 		SDL_WINDOW_OPENGL
 	);
 	if (g_window == nullptr) 

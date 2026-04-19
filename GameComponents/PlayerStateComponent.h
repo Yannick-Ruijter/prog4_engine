@@ -19,5 +19,6 @@ namespace dae {
 		PlayerState GetState() const;
 	private:
 		PlayerState m_CurrentPlayerState{ PlayerState::Idle };
+		int m_NrCurrentWalkCommands{ 0 };
 	};
 }
