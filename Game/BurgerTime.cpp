@@ -18,6 +18,9 @@
 #include "ScoreComponent.hpp"
 #include "Achievements.hpp"
 #include "PlayerStateComponent.hpp"
+#include "ServiceProvider.hpp"
+#include "SDL_SoundSystem.hpp"
+#include <tuple>
 
 BurgerTime::BurgerTime() = default;
 
@@ -25,6 +28,8 @@ BurgerTime::~BurgerTime() = default;
 
 void BurgerTime::Initialize()
 {
+	dae::ServiceProvider::GetInstance().AddService<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{{0, "Data/Sounds/Coin.wav" }});
+	dae::ServiceProvider::GetInstance().GetService<dae::SDL_SoundSystem>()->Play(0, 0.5f);
 	m_Achievements = std::make_unique<dae::Achievements>();
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& inputManager = dae::InputManager::GetInstance();
@@ -205,4 +210,9 @@ void BurgerTime::Initialize()
 		m_Player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
 	}
 
+}
+
+void BurgerTime::Destroy()
+{
+	dae::ServiceProvider::GetInstance().GetService<dae::SDL_SoundSystem>()->Destroy();
 }

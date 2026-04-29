@@ -101,7 +101,7 @@ dae::Minigin::~Minigin()
 #if USE_STEAMWORKS
 	SteamAPI_Shutdown();
 #endif
-
+	m_Game->Destroy();
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;

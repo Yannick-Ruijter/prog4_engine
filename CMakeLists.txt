@@ -75,7 +75,7 @@ target_link_libraries(imgui_plot PUBLIC imgui)
 find_package(SDL3_ttf 3.2.2 CONFIG QUIET)
 if(NOT SDL3_ttf_FOUND)
   if (WIN32)
-    message("sdl not found, retrieving from github")
+    message("sdl ttf not found, retrieving from github...")
     FetchContent_Declare(
       SDL3_ttf
       URL https://www.libsdl.org/projects/SDL_ttf/release/SDL3_ttf-devel-3.2.2-VC.zip
@@ -104,6 +104,26 @@ if(NOT SDL3_ttf_FOUND)
     endif()
     FetchContent_MakeAvailable(SDL3_ttf)
   endif()
+endif()
+
+find_package(SDL3_mixer 3.2.0 CONFIG QUIET)
+if(NOT SDL3_mixer_FOUND)
+  FetchContent_Declare(
+    SDL3_mixer
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+    GIT_TAG release-3.2.0
+    GIT_SHALLOW TRUE
+  )
+  set(SDL3MIXER_INSTALL OFF)
+  if(EMSCRIPTEN)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/emscripten")
+    set(SDL3MIXER_USE_SYSTEM_FREETYPE ON)
+    set(SDL3TTF_VENDORED OFF)
+    set(SDLMIXER_PLUTOSVG OFF)
+    add_compile_options(-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1)
+    add_link_options(-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1)
+  endif()
+  FetchContent_MakeAvailable(SDL3_mixer)
 endif()
 
 if (WIN32)
@@ -142,6 +162,7 @@ target_include_directories(minigin_lib PUBLIC
 target_link_libraries(minigin_lib PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
+  SDL3_mixer::SDL3_mixer
   glm::glm
   imgui
   imgui_plot
@@ -180,7 +201,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameExtras/Achievements.cpp"
   "GameExtras/CustomCommands.cpp"
   "GameExtras/Subject.cpp"
- "GameExtras/SDL_SoundSystem.cpp")
+ "GameExtras/SDL_SoundSystem.cpp" "GameExtras/SoundEventQueue.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
@@ -220,12 +241,15 @@ elseif(WIN32)
 
   add_custom_command(
   TARGET ${TARGET_NAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "$<TARGET_FILE:SDL3::SDL3>"
-      "$<TARGET_FILE_DIR:${TARGET_NAME}>"
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "$<TARGET_FILE:SDL3_ttf::SDL3_ttf>"
-      "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL3::SDL3>"
+        "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL3_ttf::SDL3_ttf>"
+        "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL3_mixer::SDL3_mixer>"
+        "$<TARGET_FILE_DIR:${TARGET_NAME}>"
   VERBATIM
 )
 
@@ -243,6 +267,7 @@ elseif(APPLE)
     COMMAND "${CMAKE_COMMAND}" -E make_directory "$<TARGET_BUNDLE_DIR:${TARGET_NAME}>/Contents/Frameworks"
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL3::SDL3-shared>" "$<TARGET_BUNDLE_DIR:${TARGET_NAME}>/Contents/Frameworks/"
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL3_ttf::SDL3_ttf-shared>" "$<TARGET_BUNDLE_DIR:${TARGET_NAME}>/Contents/Frameworks/"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL3_mixer::SDL3_mixer-shared>" "$<TARGET_BUNDLE_DIR:${TARGET_NAME}>/Contents/Frameworks/"
     COMMAND install_name_tool -change "@rpath/libSDL3_ttf.0.dylib" "@executable_path/../Frameworks/libSDL3_ttf.0.2.2.dylib" "$<TARGET_FILE:${TARGET_NAME}>"
     COMMAND install_name_tool -change "@rpath/libSDL3.0.dylib" "@executable_path/../Frameworks/libSDL3.0.dylib" "$<TARGET_FILE:${TARGET_NAME}>"
   )

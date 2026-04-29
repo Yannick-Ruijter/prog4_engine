@@ -12,7 +12,7 @@ public:
 	BurgerTime();
 	~BurgerTime() override;
 	void Initialize() override;
-
+	void Destroy() override;
 private:
 	dae::GameObject* m_Player1{ nullptr };
 	dae::GameObject* m_Player2{ nullptr };
