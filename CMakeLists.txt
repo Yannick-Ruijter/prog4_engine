@@ -110,7 +110,7 @@ if (WIN32)
 endif()
 
 # Engine
-add_library(minigin_lib STATIC
+add_library(Minigin STATIC
   "Minigin/Font.cpp"
   "Minigin/GameObject.cpp"
   "Minigin/InputManager.cpp"
@@ -122,7 +122,6 @@ add_library(minigin_lib STATIC
   "Minigin/Component.cpp"
   "Minigin/Game.cpp"
   "Minigin/TransformComponent.cpp"
-  
   "Minigin/ControllerInput.cpp"
   "Minigin/KeyboardInput.cpp"
   "Minigin/Binding.cpp"
@@ -130,15 +129,15 @@ add_library(minigin_lib STATIC
   "Minigin/Texture2DComponent.cpp"
 )
 
-target_compile_features(minigin_lib PUBLIC cxx_std_20)
+target_compile_features(Minigin PUBLIC cxx_std_20)
 
-target_include_directories(minigin_lib PUBLIC
+target_include_directories(Minigin PUBLIC
   "${CMAKE_SOURCE_DIR}/Minigin/"
   "${imgui_SOURCE_DIR}"
   "${VLD_INCLUDE_DIR}"
 )
 
-target_link_libraries(minigin_lib PUBLIC
+target_link_libraries(Minigin PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
   glm::glm
@@ -148,17 +147,17 @@ target_link_libraries(minigin_lib PUBLIC
 )
 
 if(MSVC)
-  target_compile_options(minigin_lib PRIVATE /W4 /WX)
+  target_compile_options(Minigin PRIVATE /W4 /WX)
 else()
-  target_compile_options(minigin_lib PRIVATE -Wall -Wextra -Werror)
+  target_compile_options(Minigin PRIVATE -Wall -Wextra -Werror)
 endif()
 
 # Game files
 if(EMSCRIPTEN)
-  set(TARGET_NAME minigin_web)
+  set(TARGET_NAME BurgerTime_Web)
   set(TARGET_PARAM "")
 else()
-  set(TARGET_NAME minigin)
+  set(TARGET_NAME BurgerTime)
   set(TARGET_PARAM WIN32)
 endif()
 
@@ -178,7 +177,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameComponents/ScoreDisplayComponent.cpp"
   "GameComponents/Achievements.cpp"
   "GameComponents/PlayerStateComponent.cpp"
- "GameComponents/CustomCommands.cpp")
+  "GameComponents/CustomCommands.cpp"
+)
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
@@ -188,8 +188,8 @@ target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Data/"
 )
 
-# Linking minigin_lib pulls in all its PUBLIC dependencies automatically
-target_link_libraries(${TARGET_NAME} PRIVATE minigin_lib)
+# Linking Minigin pulls in all its PUBLIC dependencies automatically
+target_link_libraries(${TARGET_NAME} PRIVATE Minigin)
 
 if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
