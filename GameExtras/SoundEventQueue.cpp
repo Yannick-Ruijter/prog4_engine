@@ -23,10 +23,10 @@ void dae::SoundEventQueue::DoAllSounds() {
     m_ConditionVariable.wait(lock, [this] { return !m_Queue.empty() || m_IsSleeping; });
 
     while (!m_Queue.empty()) {
-        auto fn = std::move(m_Queue.front());
+        auto execution = std::move(m_Queue.front());
         m_Queue.pop();
         lock.unlock();
-        fn();
+        execution();
         lock.lock();
     }
 }

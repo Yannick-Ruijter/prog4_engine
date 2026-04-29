@@ -9,6 +9,7 @@
 #include "Subject.hpp"
 #include "sdbm_hash.hpp"
 #include "PlayerStateComponent.hpp"
+#include "SDL_SoundSystem.hpp"
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject& object)
@@ -41,6 +42,7 @@ void MoveObjectCommand::Execute()
 dae::DamagePlayer::DamagePlayer(GameObject& object, GameObject& target)
 	:GameObjectCommand(object)
 	, m_TargetHealthComponent(target.GetComponent<HealthComponent>())
+	, m_Ss{ ServiceProvider::GetInstance().GetService<SDL_SoundSystem>() }
 {
 	assert(m_TargetHealthComponent != nullptr && "target player for damage command needs a health component");
 }
@@ -48,11 +50,13 @@ dae::DamagePlayer::DamagePlayer(GameObject& object, GameObject& target)
 void dae::DamagePlayer::Execute()
 {
 	m_TargetHealthComponent->Damage();
+	m_Ss->Play(0, 0.5f);
 }
 
 dae::PickUpItemCommand::PickUpItemCommand(GameObject& object)
 	:GameObjectCommand(object)
 	, m_PlayerPickedUpItemEvent{ std::make_unique<Subject>() }
+	, m_Ss{ServiceProvider::GetInstance().GetService<SDL_SoundSystem>()}
 {
 }
 
@@ -61,6 +65,7 @@ void dae::PickUpItemCommand::Execute()
 	//does nothing else yet since there is no picking up in my game yet and it's currently just increment score
 	//will have functionality here in the future
 	m_PlayerPickedUpItemEvent->NotifyObservers("ItemPickedUp"_h, GetGameObject());
+	m_Ss->Play(1, 0.5f);
 }
 
 Subject* dae::PickUpItemCommand::GetSubject() const

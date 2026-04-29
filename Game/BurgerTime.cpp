@@ -28,8 +28,7 @@ BurgerTime::~BurgerTime() = default;
 
 void BurgerTime::Initialize()
 {
-	dae::ServiceProvider::GetInstance().AddService<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{{0, "Data/Sounds/Coin.wav" }});
-	dae::ServiceProvider::GetInstance().GetService<dae::SDL_SoundSystem>()->Play(0, 0.5f);
+	dae::ServiceProvider::GetInstance().AddService<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{{0, "Data/Sounds/Coin.wav" }, { 1, "Data/Sounds/Pepper Shake.wav" }});
 	m_Achievements = std::make_unique<dae::Achievements>();
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& inputManager = dae::InputManager::GetInstance();
