@@ -45,7 +45,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameComponents/LivesDisplayComponent.cpp" 
   "GameComponents/ScoreComponent.cpp" 
   "GameComponents/ScoreDisplayComponent.cpp" 
-  "Minigin/CSteamAchievements.cpp" 
+   
   "GameComponents/Achievements.cpp" 
   "GameComponents/PlayerStateComponent.cpp")
 

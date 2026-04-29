@@ -22,6 +22,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+
 int main(int, char*[]) {
 #if __EMSCRIPTEN__
 	fs::path data_location = "";
