@@ -5,56 +5,8 @@ if(EMSCRIPTEN)
   message("Using Emscripten!")
 endif()
 
-if(EMSCRIPTEN)
-  set(TARGET_NAME minigin_web)
-  set(TARGET_PARAM )
-else()
-  set(TARGET_NAME minigin)
-  set(TARGET_PARAM WIN32)
-endif()
-
-# list source files here
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  "Minigin/Font.cpp"
-  "Minigin/GameObject.cpp"
-  "Minigin/InputManager.cpp"
-  "Minigin/Main.cpp"
-  "Minigin/Minigin.cpp"
-  "Minigin/Renderer.cpp"
-  "Minigin/ResourceManager.cpp"
-  "Minigin/Scene.cpp"
-  "Minigin/SceneManager.cpp"
-  "Minigin/Component.cpp"
-  "Minigin/Game.cpp" 
-  "Minigin/TransformComponent.cpp"
-  "GameComponents/TextComponent.cpp"
-  "GameComponents/Texture2DComponent.cpp"
-  "GameComponents/RenderComponent.cpp" 
-  "GameComponents/FPSComponent.cpp"
-  "GameComponents/OrbitComponent.cpp" 
-  "Game/BurgerTime.cpp" 
-  "GameComponents/TrashTheCacheComponent.cpp" 
-  "Minigin/Command.cpp"   
-  "Minigin/ControllerInput.cpp" 
-  "Minigin/KeyboardInput.cpp" 
-  "Minigin/Binding.cpp" 
-  "Minigin/TimeManager.cpp"
-  "GameComponents/HealthComponent.cpp"   
-  "GameComponents/Subject.cpp" 
-  "GameComponents/PlayerLivesObserver.cpp" 
-  "GameComponents/LivesDisplayComponent.cpp" 
-  "GameComponents/ScoreComponent.cpp" 
-  "GameComponents/ScoreDisplayComponent.cpp" 
-   
-  "GameComponents/Achievements.cpp" 
-  "GameComponents/PlayerStateComponent.cpp")
-
-# enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-#target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX) 
-
 include(FetchContent)
-# add glm
+
 find_package(glm CONFIG QUIET)
 if(NOT glm_FOUND)
   FetchContent_Declare(
@@ -66,7 +18,6 @@ if(NOT glm_FOUND)
   FetchContent_MakeAvailable(glm)
 endif()
 
-# Add SDL3
 find_package(SDL3 3.4 CONFIG QUIET)
 if(NOT SDL3_FOUND)
   if (WIN32)
@@ -91,7 +42,6 @@ if(NOT SDL3_FOUND)
   endif()
 endif()
 
-# Dear ImGui
 FetchContent_Declare(
   imgui
   GIT_REPOSITORY https://github.com/ocornut/imgui
@@ -110,31 +60,18 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
 )
 target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
-
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR} ${sdl3_SOURCE_DIR}/include)
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
-# enable c++20 features
 target_compile_features(imgui PUBLIC cxx_std_20)
 
-include(FetchContent)
-# Optional: Set IMGUI_INCLUDE_DIR to the path of imgui sources, if different from the default. 
-# set(IMGUI_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/imgui)
 FetchContent_Declare(
     imgui_plot
     GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git
 )
 FetchContent_MakeAvailable(imgui_plot)
-target_include_directories(imgui_plot PUBLIC
-    ${imgui_plot_SOURCE_DIR}
-)
-
-# Link imgui_plot against imgui
+target_include_directories(imgui_plot PUBLIC ${imgui_plot_SOURCE_DIR})
 target_link_libraries(imgui_plot PUBLIC imgui)
 
-# Link it to your main target
-target_link_libraries(${TARGET_NAME} PRIVATE imgui_plot)
-
-# Add SDL3_ttf
 find_package(SDL3_ttf 3.2.2 CONFIG QUIET)
 if(NOT SDL3_ttf_FOUND)
   if (WIN32)
@@ -169,70 +106,116 @@ if(NOT SDL3_ttf_FOUND)
 endif()
 
 if (WIN32)
-  # Add VLD (Visual Leak Detector) for memory leak detection on Windows
-  #list(APPEND CMAKE_PREFIX_PATH "C:\\Program Files (x86)\\Visual Leak Detector\\cmake")
   find_package(VLD CONFIG)
-  target_include_directories(${TARGET_NAME} PRIVATE ${VLD_INCLUDE_DIRS})
-  target_link_libraries(${TARGET_NAME} PRIVATE ${VLD_LIBRARIES})
 endif()
 
-target_include_directories("${TARGET_NAME}" PUBLIC
+# Engine
+add_library(minigin_lib STATIC
+  "Minigin/Font.cpp"
+  "Minigin/GameObject.cpp"
+  "Minigin/InputManager.cpp"
+  "Minigin/Minigin.cpp"
+  "Minigin/Renderer.cpp"
+  "Minigin/ResourceManager.cpp"
+  "Minigin/Scene.cpp"
+  "Minigin/SceneManager.cpp"
+  "Minigin/Component.cpp"
+  "Minigin/Game.cpp"
+  "Minigin/TransformComponent.cpp"
+  
+  "Minigin/ControllerInput.cpp"
+  "Minigin/KeyboardInput.cpp"
+  "Minigin/Binding.cpp"
+  "Minigin/TimeManager.cpp"
+  "Minigin/Texture2DComponent.cpp"
+)
+
+target_compile_features(minigin_lib PUBLIC cxx_std_20)
+
+target_include_directories(minigin_lib PUBLIC
   "${CMAKE_SOURCE_DIR}/Minigin/"
-  "${CMAKE_SOURCE_DIR}/Data/"
-  "${CMAKE_SOURCE_DIR}/Game/"
-  "${CMAKE_SOURCE_DIR}/GameComponents/"
   "${imgui_SOURCE_DIR}"
   "${VLD_INCLUDE_DIR}"
 )
 
-target_link_libraries("${TARGET_NAME}" PUBLIC
+target_link_libraries(minigin_lib PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
   glm::glm
   imgui
+  imgui_plot
   ${VLD_LIBRARIES}
 )
 
 if(MSVC)
-  # compile at warning level 4 + treat warnings as errors
+  target_compile_options(minigin_lib PRIVATE /W4 /WX)
+else()
+  target_compile_options(minigin_lib PRIVATE -Wall -Wextra -Werror)
+endif()
+
+# Game files
+if(EMSCRIPTEN)
+  set(TARGET_NAME minigin_web)
+  set(TARGET_PARAM "")
+else()
+  set(TARGET_NAME minigin)
+  set(TARGET_PARAM WIN32)
+endif()
+
+add_executable(${TARGET_NAME} ${TARGET_PARAM}
+  "Game/Main.cpp"
+  "Game/BurgerTime.cpp"
+  "GameComponents/TextComponent.cpp"
+  "GameComponents/RenderComponent.cpp"
+  "GameComponents/FPSComponent.cpp"
+  "GameComponents/OrbitComponent.cpp"
+  "GameComponents/TrashTheCacheComponent.cpp"
+  "GameComponents/HealthComponent.cpp"
+  "GameComponents/Subject.cpp"
+  "GameComponents/PlayerLivesObserver.cpp"
+  "GameComponents/LivesDisplayComponent.cpp"
+  "GameComponents/ScoreComponent.cpp"
+  "GameComponents/ScoreDisplayComponent.cpp"
+  "GameComponents/Achievements.cpp"
+  "GameComponents/PlayerStateComponent.cpp"
+ "GameComponents/CustomCommands.cpp")
+
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+
+target_include_directories(${TARGET_NAME} PRIVATE
+  "${CMAKE_SOURCE_DIR}/Game/"
+  "${CMAKE_SOURCE_DIR}/GameComponents/"
+  "${CMAKE_SOURCE_DIR}/Data/"
+)
+
+# Linking minigin_lib pulls in all its PUBLIC dependencies automatically
+target_link_libraries(${TARGET_NAME} PRIVATE minigin_lib)
+
+if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
   target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Werror)
 endif()
 
+
 if(EMSCRIPTEN)
   set(EMSCRIPTEN_COMPILE_FLAGS "${EMSCRIPTEN_LINK_FLAGS} -g")
   set(EMSCRIPTEN_LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS} -sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1 -g -sALLOW_MEMORY_GROWTH --preload-file \"${CMAKE_SOURCE_DIR}/Data@/\"")
-
-  # Use the Emscripten toolchain
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/EmscriptenToolchain.cmake)
-
-  # Additional settings for Emscripten build
   set_target_properties(${TARGET_NAME} PROPERTIES
       COMPILE_FLAGS "${EMSCRIPTEN_COMPILE_FLAGS}"
       LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}"
   )
-
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/web" "$<TARGET_FILE_DIR:${TARGET_NAME}>/"
   )
-
-  # Have emscripten generate a html page too.
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 
 elseif(WIN32)
-  # Set minigin as the default startup project
   set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
-  # Set working directory to output folder
   set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 
-  # Copy SDL dlls to output folder
-  set(SDL_RUNTIME_DLLS
-    SDL3::SDL3
-    SDL3_ttf::SDL3_ttf
-  )
-
-  foreach(dllTarget IN LISTS SDL_RUNTIME_DLLS)
+  foreach(dllTarget IN LISTS SDL3::SDL3 SDL3_ttf::SDL3_ttf)
     add_custom_command(
       TARGET ${TARGET_NAME} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -245,6 +228,7 @@ elseif(WIN32)
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
   )
+
 elseif(APPLE)
   set_target_properties(${TARGET_NAME} PROPERTIES
     MACOSX_BUNDLE TRUE
@@ -258,8 +242,6 @@ elseif(APPLE)
     COMMAND install_name_tool -change "@rpath/libSDL3_ttf.0.dylib" "@executable_path/../Frameworks/libSDL3_ttf.0.2.2.dylib" "$<TARGET_FILE:${TARGET_NAME}>"
     COMMAND install_name_tool -change "@rpath/libSDL3.0.dylib" "@executable_path/../Frameworks/libSDL3.0.dylib" "$<TARGET_FILE:${TARGET_NAME}>"
   )
-
-  # Copy Data folder to output directory after build
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
   )

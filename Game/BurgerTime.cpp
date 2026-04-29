@@ -7,7 +7,7 @@
 #include "TransformComponent.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
-#include "Command.h"
+#include "CustomCommands.h"
 #include "Binding.h"
 #include "InputInfo.h"
 #include "Subject.h"
