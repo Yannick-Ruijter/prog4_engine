@@ -171,20 +171,23 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameComponents/OrbitComponent.cpp"
   "GameComponents/TrashTheCacheComponent.cpp"
   "GameComponents/HealthComponent.cpp"
-  "GameComponents/Subject.cpp"
-  "GameComponents/PlayerLivesObserver.cpp"
   "GameComponents/LivesDisplayComponent.cpp"
   "GameComponents/ScoreComponent.cpp"
   "GameComponents/ScoreDisplayComponent.cpp"
-  "GameComponents/Achievements.cpp"
   "GameComponents/PlayerStateComponent.cpp"
- "GameComponents/CustomCommands.cpp")
+  "GameExtras/PlayerLivesObserver.cpp"
+  "GameExtras/Achievements.cpp"
+  "GameExtras/CustomCommands.cpp"
+  "GameExtras/Subject.cpp"
+  "GameExtras/ServiceProvider.cpp"
+)
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
 target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/"
   "${CMAKE_SOURCE_DIR}/GameComponents/"
+  "${CMAKE_SOURCE_DIR}/GameExtras/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )
 
