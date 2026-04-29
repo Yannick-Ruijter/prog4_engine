@@ -75,6 +75,7 @@ target_link_libraries(imgui_plot PUBLIC imgui)
 find_package(SDL3_ttf 3.2.2 CONFIG QUIET)
 if(NOT SDL3_ttf_FOUND)
   if (WIN32)
+    message("sdl not found, retrieving from github")
     FetchContent_Declare(
       SDL3_ttf
       URL https://www.libsdl.org/projects/SDL_ttf/release/SDL3_ttf-devel-3.2.2-VC.zip
@@ -122,7 +123,6 @@ add_library(minigin_lib STATIC
   "Minigin/Component.cpp"
   "Minigin/Game.cpp"
   "Minigin/TransformComponent.cpp"
-  
   "Minigin/ControllerInput.cpp"
   "Minigin/KeyboardInput.cpp"
   "Minigin/Binding.cpp"
@@ -215,15 +215,16 @@ elseif(WIN32)
   set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
   set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 
-  foreach(dllTarget IN LISTS SDL3::SDL3 SDL3_ttf::SDL3_ttf)
-    add_custom_command(
-      TARGET ${TARGET_NAME} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-          "$<TARGET_FILE:${dllTarget}>"
-          "$<TARGET_FILE_DIR:${TARGET_NAME}>"
-      VERBATIM
-    )
-  endforeach()
+  add_custom_command(
+  TARGET ${TARGET_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      "$<TARGET_FILE:SDL3::SDL3>"
+      "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      "$<TARGET_FILE:SDL3_ttf::SDL3_ttf>"
+      "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+  VERBATIM
+)
 
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
