@@ -1,9 +1,9 @@
-#include "PlayerLivesObserver.h"
-#include "GameObject.h"
-#include "TextComponent.h"
-#include "HealthComponent.h"
+#include "PlayerLivesObserver.hpp"
+#include "GameObject.hpp"
+#include "TextComponent.hpp"
+#include "HealthComponent.hpp"
 #include <string>
-#include "sdbm_hash.h"
+#include "sdbm_hash.hpp"
 using namespace dae;
 
 dae::PlayerLivesObserver::PlayerLivesObserver(TextComponent* textComponent)

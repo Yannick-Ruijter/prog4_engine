@@ -1,4 +1,4 @@
-#include "Component.h"
+#include "Component.hpp"
 #include "assert.h"
 
 dae::Component::Component(GameObject& owner) :m_Owner(&owner) {}

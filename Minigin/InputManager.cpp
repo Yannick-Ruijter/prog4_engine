@@ -1,8 +1,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <SDL3/SDL.h>
 #include <backends/imgui_impl_sdl3.h>
-#include "InputManager.h"
-#include "Command.h"
+#include "InputManager.hpp"
+#include "Command.hpp"
 
 using namespace dae;
 bool dae::InputManager::ProcessInput()

@@ -1,7 +1,7 @@
-#include "HealthComponent.h"
-#include "GameObject.h"
-#include "Subject.h"
-#include "sdbm_hash.h"
+#include "HealthComponent.hpp"
+#include "GameObject.hpp"
+#include "Subject.hpp"
+#include "sdbm_hash.hpp"
 using namespace dae;
 HealthComponent::HealthComponent(GameObject& owner, std::unique_ptr<Subject>&& liveLostEvent, int numberOfLives)
 	:Component{ owner }, m_NumberOfLives{ numberOfLives }, m_LiveLostEvent{std::move(liveLostEvent)}

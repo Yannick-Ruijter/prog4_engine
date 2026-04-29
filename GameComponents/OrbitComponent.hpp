@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Component.hpp"
 #include <glm/glm.hpp>
 
 namespace dae

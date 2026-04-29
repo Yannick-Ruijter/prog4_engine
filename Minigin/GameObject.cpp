@@ -1,8 +1,8 @@
 #include <string>
-#include "GameObject.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
-#include "Font.h"
+#include "GameObject.hpp"
+#include "ResourceManager.hpp"
+#include "Renderer.hpp"
+#include "Font.hpp"
 
 
 void dae::GameObject::Update()

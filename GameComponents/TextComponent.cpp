@@ -1,11 +1,11 @@
 ﻿#include <stdexcept>
 #include <SDL3_ttf/SDL_ttf.h>
-#include "TextComponent.h"
-#include "Renderer.h"
-#include "Font.h"
-#include "Texture2DComponent.h"
-#include "GameObject.h"
-#include "TransformComponent.h"
+#include "TextComponent.hpp"
+#include "Renderer.hpp"
+#include "Font.hpp"
+#include "Texture2DComponent.hpp"
+#include "GameObject.hpp"
+#include "TransformComponent.hpp"
 
 dae::TextComponent::TextComponent(GameObject& owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
 	: Component(owner), m_needsUpdate(true), m_text(text), m_color(color), m_font(std::move(font)), m_TextTexture(nullptr)

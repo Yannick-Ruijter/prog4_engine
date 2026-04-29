@@ -2,8 +2,8 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "Scene.h"
-#include "Singleton.h"
+#include "Scene.hpp"
+#include "Singleton.hpp"
 
 namespace dae
 {

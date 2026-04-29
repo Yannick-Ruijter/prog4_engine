@@ -1,6 +1,6 @@
 #pragma once
-#include "Observer.h"
-#include "Component.h"
+#include "Observer.hpp"
+#include "Component.hpp"
 
 namespace dae {
 	class GameObject;

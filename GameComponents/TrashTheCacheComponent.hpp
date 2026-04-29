@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Component.hpp"
 #include "imgui_plot.h"
 #include <vector>
 #include <memory>

@@ -1,6 +1,6 @@
 #pragma once
-#include "PlayerInput.h"
-#include "InputInfo.h"
+#include "PlayerInput.hpp"
+#include "InputInfo.hpp"
 #include <memory>
 #include <vector>
 #include <SDL3/SDL.h>

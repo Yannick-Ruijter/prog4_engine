@@ -1,6 +1,6 @@
-#include "ScoreComponent.h"
-#include "Subject.h"
-#include "sdbm_hash.h"
+#include "ScoreComponent.hpp"
+#include "Subject.hpp"
+#include "sdbm_hash.hpp"
 using namespace dae;
 
 dae::ScoreComponent::ScoreComponent(GameObject& owner, std::unique_ptr<Subject>&& scoreChangedEvent)

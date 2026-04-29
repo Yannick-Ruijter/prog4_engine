@@ -128,6 +128,7 @@ add_library(minigin_lib STATIC
   "Minigin/Binding.cpp"
   "Minigin/TimeManager.cpp"
   "Minigin/Texture2DComponent.cpp"
+  
 )
 
 target_compile_features(minigin_lib PUBLIC cxx_std_20)
@@ -179,7 +180,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameExtras/Achievements.cpp"
   "GameExtras/CustomCommands.cpp"
   "GameExtras/Subject.cpp"
-  "GameExtras/ServiceProvider.cpp"
 )
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

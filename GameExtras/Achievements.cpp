@@ -1,7 +1,7 @@
-#include "Achievements.h"
-#include "GameObject.h"
-#include "sdbm_hash.h"
-#include "ScoreComponent.h"
+#include "Achievements.hpp"
+#include "GameObject.hpp"
+#include "sdbm_hash.hpp"
+#include "ScoreComponent.hpp"
 using namespace dae;
 
 void Achievements::Notify(unsigned int eventId, GameObject* source)

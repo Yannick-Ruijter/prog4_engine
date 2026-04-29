@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "Scene.h"
+#include "Scene.hpp"
 #include "assert.h"
 using namespace dae;
 

@@ -1,6 +1,6 @@
-#include "TransformComponent.h"
+#include "TransformComponent.hpp"
 #include <memory>
-#include "GameObject.h"
+#include "GameObject.hpp"
 
 dae::TransformComponent::TransformComponent(GameObject& owner, glm::vec3 const& position) : Component(owner), m_LocalPosition{ position }, m_WorldPosition{ position } {}
 

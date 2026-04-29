@@ -1,6 +1,6 @@
-#include "KeyboardInput.h"
-#include "Binding.h"
-#include "Command.h"
+#include "KeyboardInput.hpp"
+#include "Binding.hpp"
+#include "Command.hpp"
 #include <algorithm>
 
 using namespace dae;

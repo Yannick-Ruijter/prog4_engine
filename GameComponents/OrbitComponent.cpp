@@ -1,9 +1,9 @@
 #define _USE_MATH_DEFINES
-#include "OrbitComponent.h"
-#include "TransformComponent.h"
-#include "GameObject.h"
+#include "OrbitComponent.hpp"
+#include "TransformComponent.hpp"
+#include "GameObject.hpp"
 #include <cmath>
-#include "TimeManager.h"
+#include "TimeManager.hpp"
 
 dae::OrbitComponent::OrbitComponent(GameObject& owner, float orbitOffset, float orbitSpeed)
 	:Component(owner), m_OrbitOffset{orbitOffset}, m_OrbitSpeed{orbitSpeed}, m_TimeManager{&TimeManager::GetInstance()}

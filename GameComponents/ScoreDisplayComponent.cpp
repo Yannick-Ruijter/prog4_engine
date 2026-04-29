@@ -1,8 +1,8 @@
-#include "ScoreDisplayComponent.h"
-#include "ScoreComponent.h"
-#include "TextComponent.h"
-#include "GameObject.h"
-#include "sdbm_hash.h"
+#include "ScoreDisplayComponent.hpp"
+#include "ScoreComponent.hpp"
+#include "TextComponent.hpp"
+#include "GameObject.hpp"
+#include "sdbm_hash.hpp"
 
 dae::ScoreDisplayComponent::ScoreDisplayComponent(GameObject& gameObject, ScoreComponent& targetScore)
 	:Component(gameObject), m_TargetScore{ &targetScore }

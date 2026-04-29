@@ -1,10 +1,10 @@
 #pragma once
-#include "Singleton.h"
+#include "Singleton.hpp"
 #include <vector>
 #include <memory>
-#include "Command.h"
-#include "ControllerInput.h"
-#include "KeyboardInput.h"
+#include "Command.hpp"
+#include "ControllerInput.hpp"
+#include "KeyboardInput.hpp"
 
 namespace dae
 {

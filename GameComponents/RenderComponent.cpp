@@ -1,8 +1,8 @@
-#include "Texture2DComponent.h"
-#include "RenderComponent.h"
-#include "GameObject.h"
-#include "TransformComponent.h"
-#include "Renderer.h"
+#include "Texture2DComponent.hpp"
+#include "RenderComponent.hpp"
+#include "GameObject.hpp"
+#include "TransformComponent.hpp"
+#include "Renderer.hpp"
 
 dae::RenderComponent::RenderComponent(GameObject& owner) :Component(owner), m_TransformComponent{ owner.GetComponent<TransformComponent>()}, m_Texture2DComponent{nullptr} {}
 

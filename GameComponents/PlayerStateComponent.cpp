@@ -1,6 +1,6 @@
-#include "PlayerStateComponent.h"
-#include "GameObject.h"
-#include "sdbm_hash.h"
+#include "PlayerStateComponent.hpp"
+#include "GameObject.hpp"
+#include "sdbm_hash.hpp"
 using namespace dae;
 
 dae::PlayerStateComponent::PlayerStateComponent(GameObject& owner)

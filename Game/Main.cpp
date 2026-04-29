@@ -10,14 +10,13 @@
 #endif
 #endif
 
-#include "Minigin.h"
-#include "SceneManager.h"
-#include "ResourceManager.h"
-#include "RenderComponent.h"
-#include "TextComponent.h"
-#include "TransformComponent.h"
-#include "Scene.h"
-#include "BurgerTime.h"
+#include "Minigin.hpp"
+#include "SceneManager.hpp"
+#include "ResourceManager.hpp"
+#include "RenderComponent.hpp"
+#include "TextComponent.hpp"
+#include "Scene.hpp"
+#include "BurgerTime.hpp"
 
 #include <filesystem>
 namespace fs = std::filesystem;

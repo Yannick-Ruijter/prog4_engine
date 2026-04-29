@@ -1,7 +1,7 @@
-#include "ControllerInput.h"
+#include "ControllerInput.hpp"
 #include <array>
-#include "Binding.h"
-#include "Command.h"
+#include "Binding.hpp"
+#include "Command.hpp"
 #include <ranges>
 //for testing purposes
 #define SDLTEST 1

@@ -1,5 +1,5 @@
 #pragma once
-#include "InputInfo.h"
+#include "InputInfo.hpp"
 #include <memory>
 
 namespace dae

@@ -1,9 +1,9 @@
 ﻿#include <stdexcept>
 #include <SDL3_ttf/SDL_ttf.h>
-#include "ResourceManager.h"
-#include "Renderer.h"
-#include "Texture2DComponent.h"
-#include "Font.h"
+#include "ResourceManager.hpp"
+#include "Renderer.hpp"
+#include "Texture2DComponent.hpp"
+#include "Font.hpp"
 
 namespace fs = std::filesystem;
 

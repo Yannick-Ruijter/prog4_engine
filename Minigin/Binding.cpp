@@ -1,5 +1,5 @@
-#include "Binding.h"
-#include "Command.h"
+#include "Binding.hpp"
+#include "Command.hpp"
 
 using namespace dae;
 

@@ -1,6 +1,6 @@
 
 
-#include "Command.h"
+#include "Command.hpp"
 namespace dae
 {
 	class GameObject;

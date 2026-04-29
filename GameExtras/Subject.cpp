@@ -1,6 +1,6 @@
 
-#include "Subject.h"
-#include "Observer.h"
+#include "Subject.hpp"
+#include "Observer.hpp"
 
 using namespace dae;
 

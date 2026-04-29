@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
-#include "Singleton.h"
-#include "Game.h"
+#include "Singleton.hpp"
+#include "Game.hpp"
 
 namespace dae
 {

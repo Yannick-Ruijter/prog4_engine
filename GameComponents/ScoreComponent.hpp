@@ -1,7 +1,7 @@
 #pragma once
-#include "Component.h"
+#include "Component.hpp"
 #include <memory>
-#include "Observer.h"
+#include "Observer.hpp"
 namespace dae
 {
 	class Subject;

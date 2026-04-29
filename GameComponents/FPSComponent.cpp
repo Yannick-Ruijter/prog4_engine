@@ -1,9 +1,9 @@
-#include "FPSComponent.h"
+#include "FPSComponent.hpp"
 #include <memory>
-#include "GameObject.h"
-#include "TextComponent.h"
+#include "GameObject.hpp"
+#include "TextComponent.hpp"
 #include <format>
-#include "TimeManager.h"
+#include "TimeManager.hpp"
 
 dae::FpsComponent::FpsComponent(GameObject& owner)
 	:Component(owner), m_TimeManager{ &TimeManager::GetInstance()} {

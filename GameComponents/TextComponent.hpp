@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "Component.h"
+#include "Component.hpp"
 #include <SDL3/SDL.h>
 
 namespace dae

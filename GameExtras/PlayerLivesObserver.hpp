@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Observer.h"
+#include "Observer.hpp"
 
 
 enum class Event;

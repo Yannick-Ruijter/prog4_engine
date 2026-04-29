@@ -1,9 +1,9 @@
 #include <SDL3/SDL.h>
-#include "Texture2DComponent.h"
-#include "Renderer.h"
+#include "Texture2DComponent.hpp"
+#include "Renderer.hpp"
 #include <stdexcept>
-#include "GameObject.h"
-#include "ResourceManager.h"
+#include "GameObject.hpp"
+#include "ResourceManager.hpp"
 
 dae::Texture2DComponent::~Texture2DComponent()
 {

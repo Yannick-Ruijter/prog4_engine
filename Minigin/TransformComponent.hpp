@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "Component.h"
+#include "Component.hpp"
 namespace dae
 {
 	class GameObject;

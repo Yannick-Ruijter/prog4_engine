@@ -18,12 +18,12 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include "Minigin.h"
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "TimeManager.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
+#include "Minigin.hpp"
+#include "InputManager.hpp"
+#include "SceneManager.hpp"
+#include "TimeManager.hpp"
+#include "Renderer.hpp"
+#include "ResourceManager.hpp"
 #include <chrono>
 
 SDL_Window* g_window{};

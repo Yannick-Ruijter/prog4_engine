@@ -1,8 +1,8 @@
-#include "LivesDisplayComponent.h"
-#include "HealthComponent.h"
-#include "TextComponent.h"
-#include "GameObject.h"
-#include "sdbm_hash.h"
+#include "LivesDisplayComponent.hpp"
+#include "HealthComponent.hpp"
+#include "TextComponent.hpp"
+#include "GameObject.hpp"
+#include "sdbm_hash.hpp"
 
 dae::LivesDisplayComponent::LivesDisplayComponent(GameObject& gameObject, HealthComponent& targetHealth)
 	:Component(gameObject), m_TargetHealth{&targetHealth}

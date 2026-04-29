@@ -2,9 +2,9 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "TransformComponent.h"
+#include "TransformComponent.hpp"
 #include <SDL3/SDL.h>
-#include "Component.h"
+#include "Component.hpp"
 #include <utility>
 
 namespace dae
