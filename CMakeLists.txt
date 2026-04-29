@@ -180,7 +180,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "GameExtras/Achievements.cpp"
   "GameExtras/CustomCommands.cpp"
   "GameExtras/Subject.cpp"
-)
+ "GameExtras/SDL_SoundSystem.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
