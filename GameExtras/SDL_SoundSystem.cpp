@@ -3,6 +3,7 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <stdexcept>
 #include <map>
+#include <iostream>
 using namespace dae;
 
 class dae::Impl {
@@ -14,42 +15,48 @@ public:
 private:
 	std::map<sound_id, std::pair<MIX_Audio*, std::vector<MIX_Track*>>> m_Sounds{};
 	MIX_Mixer* m_Mixer{};
+
+    SoundEventQueue m_Queue{};
+    mutable std::mutex m_Mutex{};
+    std::unique_ptr<Impl> m_pImpl;
+    std::thread m_SoundThread;
+    std::atomic<bool> m_StopThread{ false };
 };
 
 dae::SDL_SoundSystem::SDL_SoundSystem(std::vector<std::pair<sound_id, std::string>> sounds)
 	:m_pImpl{std::make_unique<Impl>(sounds)}
 {
-    m_SoundThread = std::jthread([this](std::stop_token token) {
-        while (!token.stop_requested()) {
-            m_Queue.DoAllSounds();
-        }
-        });
 }
 
 dae::SDL_SoundSystem::~SDL_SoundSystem()
 {
+    if (!m_HasBeenDestroyed) Destroy();
 }
 
 void dae::SDL_SoundSystem::Play(sound_id const id, float const volume)
 {
-    m_Queue.AddToQueue([this, id, volume]() {
-        m_pImpl->Play(id, volume);
-        });
+    m_pImpl->Play(id, volume);
+    
 }
 
 void dae::SDL_SoundSystem::Destroy()
 {
-    m_SoundThread.request_stop();
-    m_Queue.Quit();
-    //i realise that doing this manually with a jthread is weird but i need this one to be destroyed before pimpl is
-    //i also cant do it in the destructor since this class is managed by a Singleton so it gets deleted AFTER SDL_Quit is called
-    //which has to happen after the mix_quit is called
-    m_SoundThread.join();
     m_pImpl->Destroy();
+    m_HasBeenDestroyed = true;
 }
 
 dae::Impl::Impl(std::vector<std::pair<sound_id, std::string>> sounds)
 {
+
+    //using threads instead of jthreads because of emscriptem not supporting them yet
+    m_SoundThread = std::thread([this]() {
+        m_Mutex.lock();
+        while (!m_StopThread) {
+            m_Queue.DoAllSounds();
+        }
+        m_Mutex.unlock();
+        });
+
     MIX_Init();
     m_Mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
     if (!m_Mixer)
@@ -73,37 +80,46 @@ dae::Impl::~Impl()
 
 void dae::Impl::Play(sound_id id, float volume)
 {
-    auto it{ m_Sounds.find(id) };
-    if (it == m_Sounds.end()) return;
+    m_Queue.AddToQueue([this, id, volume]() {
+        auto it{ m_Sounds.find(id) };
+        if (it == m_Sounds.end()) return;
 
-    MIX_Audio* audio = it->second.first;
-    auto& tracks = it->second.second;
+        MIX_Audio* audio = it->second.first;
+        auto& tracks = it->second.second;
 
-    // find a free track
-    MIX_Track* track = nullptr;
-    for (MIX_Track* t : tracks)
-    {
-        if (!MIX_TrackPlaying(t))
+        // find a free track
+        MIX_Track* track = nullptr;
+        for (MIX_Track* t : tracks)
         {
-            track = t;
-            break;
+            if (!MIX_TrackPlaying(t))
+            {
+                track = t;
+                break;
+            }
         }
-    }
 
-    //if we have no free track rn
-    if (!track)
-    {
-        track = MIX_CreateTrack(m_Mixer);
-        tracks.push_back(track);
-    }
+        //if we have no free track rn
+        if (!track)
+        {
+            track = MIX_CreateTrack(m_Mixer);
+            tracks.push_back(track);
+        }
 
-    MIX_SetTrackAudio(track, audio);
-    MIX_SetTrackGain(track, volume);
-    MIX_PlayTrack(track, 0);
+        MIX_SetTrackAudio(track, audio);
+        MIX_SetTrackGain(track, volume);
+        MIX_PlayTrack(track, 0);
+        });
 }
 
 void dae::Impl::Destroy()
 {
+    m_StopThread = true;
+    //i realise i could use a condition variable but this only takes 1 member to do
+    m_Mutex.lock();
+    m_Mutex.unlock();
+    m_Queue.Quit();
+    m_SoundThread.join();
+
     if (!m_Mixer) return;
 
     for (auto& [id, entry] : m_Sounds)

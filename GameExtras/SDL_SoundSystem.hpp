@@ -18,9 +18,7 @@ namespace dae
 		void Play(sound_id const id, float const volume);
 		void Destroy();
 	private:
-
-		SoundEventQueue m_Queue{};
+		bool m_HasBeenDestroyed{ false };
 		std::unique_ptr<Impl> m_pImpl;
-		std::jthread m_SoundThread;
 	};
 }

@@ -9,7 +9,7 @@
 #include "Subject.hpp"
 #include "sdbm_hash.hpp"
 #include "PlayerStateComponent.hpp"
-#include "SDL_SoundSystem.hpp"
+#include "SoundSystem.hpp"
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject& object)
@@ -42,7 +42,7 @@ void MoveObjectCommand::Execute()
 dae::DamagePlayer::DamagePlayer(GameObject& object, GameObject& target)
 	:GameObjectCommand(object)
 	, m_TargetHealthComponent(target.GetComponent<HealthComponent>())
-	, m_Ss{ ServiceProvider::GetInstance().GetService<SDL_SoundSystem>() }
+	, m_Ss{ ServiceProvider::GetInstance().GetService<SoundSystem>() }
 {
 	assert(m_TargetHealthComponent != nullptr && "target player for damage command needs a health component");
 }
@@ -56,7 +56,7 @@ void dae::DamagePlayer::Execute()
 dae::PickUpItemCommand::PickUpItemCommand(GameObject& object)
 	:GameObjectCommand(object)
 	, m_PlayerPickedUpItemEvent{ std::make_unique<Subject>() }
-	, m_Ss{ ServiceProvider::GetInstance().GetService<SDL_SoundSystem>() }
+	, m_Ss{ ServiceProvider::GetInstance().GetService<SoundSystem>() }
 {
 }
 

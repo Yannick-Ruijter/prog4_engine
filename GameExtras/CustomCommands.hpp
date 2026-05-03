@@ -8,7 +8,7 @@ namespace dae
 	class PlayerInput;
 	class TransformComponent;
 	class PlayerStateComponent;
-	class SDL_SoundSystem;
+	class SoundSystem;
 	enum class MoveDirection
 	{
 		Up,
@@ -66,7 +66,7 @@ namespace dae
 		~DamagePlayer() override = default;
 	private:
 		HealthComponent* m_TargetHealthComponent{ nullptr };
-		SDL_SoundSystem* m_Ss;
+		SoundSystem* m_Ss;
 	};
 
 	class PickUpItemCommand : public GameObjectCommand
@@ -79,7 +79,7 @@ namespace dae
 		Subject* GetSubject() const;
 	private:
 		std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{ nullptr };
-		SDL_SoundSystem* m_Ss;
+		SoundSystem* m_Ss;
 
 	};
 }

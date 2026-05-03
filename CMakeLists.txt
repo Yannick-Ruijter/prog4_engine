@@ -218,7 +218,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE Minigin)
 if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
-  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Werror -lpthread)
+  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Werror )
 endif()
 
 
