@@ -13,7 +13,7 @@ namespace dae
 		PlayerState& operator=(PlayerState const& other) = default;
 		PlayerState& operator=(PlayerState&& other) = default;
 
-		virtual ~PlayerState() = default;
+		virtual ~PlayerState();
 		virtual std::unique_ptr<PlayerState> HandleInput();
 		virtual void Update();
 		virtual void OnEnter();

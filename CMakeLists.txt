@@ -48,6 +48,7 @@ FetchContent_Declare(
   GIT_TAG v1.92.5-docking
   GIT_SHALLOW TRUE
 )
+set(IMGUI_BUILD_LIBRARY OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(imgui)
 
 add_library(imgui STATIC
@@ -187,28 +188,34 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Main.cpp"
   "Game/BurgerTime.cpp"
-  "GameComponents/TextComponent.cpp"
-  "GameComponents/RenderComponent.cpp"
-  "GameComponents/FPSComponent.cpp"
-  "GameComponents/OrbitComponent.cpp"
-  "GameComponents/TrashTheCacheComponent.cpp"
-  "GameComponents/HealthComponent.cpp"
-  "GameComponents/LivesDisplayComponent.cpp"
-  "GameComponents/ScoreComponent.cpp"
-  "GameComponents/ScoreDisplayComponent.cpp"
-  "GameComponents/PlayerStateComponent.cpp"
-  "GameExtras/PlayerLivesObserver.cpp"
-  "GameExtras/Achievements.cpp"
-  "GameExtras/CustomCommands.cpp"
-  "GameExtras/Subject.cpp"
- "GameExtras/SDL_SoundSystem.cpp" "GameExtras/SoundEventQueue.cpp" "GameComponents/PlayerComponent.cpp" "GameExtras/PlayerState.cpp")
+  "Game/Components/TextComponent.cpp"
+  "Game/Components/RenderComponent.cpp"
+  "Game/Components/FPSComponent.cpp"
+  "Game/Components/OrbitComponent.cpp"
+  "Game/Components/TrashTheCacheComponent.cpp"
+  "Game/Components/HealthComponent.cpp"
+  "Game/Components/LivesDisplayComponent.cpp"
+  "Game/Components/ScoreComponent.cpp"
+  "Game/Components/ScoreDisplayComponent.cpp"
+  "Game/Components/PlayerStateComponent.cpp"
+  "Game/Extras/PlayerLivesObserver.cpp"
+  "Game/Extras/Achievements.cpp"
+  "Game/Extras/CustomCommands.cpp"
+  "Game/Extras/Subject.cpp"
+  "Game/Extras/SDL_SoundSystem.cpp" 
+  "Game/Extras/SoundEventQueue.cpp" 
+  "Game/Components/PlayerComponent.cpp" 
+  "Game/Extras/PlayerState.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
+file(GLOB_RECURSE GAME_FILES "${CMAKE_SOURCE_DIR}/GAME/*")
+
 target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/"
-  "${CMAKE_SOURCE_DIR}/GameComponents/"
-  "${CMAKE_SOURCE_DIR}/GameExtras/"
+  "${CMAKE_SOURCE_DIR}/Game/Components/"
+  "${CMAKE_SOURCE_DIR}/Game/Extras/"
+  "${CMAKE_SOURCE_DIR}/Game/PlayerStates/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )
 

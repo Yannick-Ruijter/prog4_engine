@@ -1,9 +1,13 @@
 #include "PlayerState.hpp"
 
 using namespace dae;
+dae::PlayerState::~PlayerState()
+{
+	OnExit();
+}
 std::unique_ptr<PlayerState> dae::PlayerState::HandleInput()
 {
-	return std::unique_ptr<PlayerState>();
+	return nullptr;
 }
 
 void dae::PlayerState::Update()
@@ -21,4 +25,5 @@ void dae::PlayerState::OnExit()
 dae::PlayerState::PlayerState(PlayerComponent& player)
 	: m_Player{ &player } 
 {
+	OnEnter();
 }

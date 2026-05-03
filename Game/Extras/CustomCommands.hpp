@@ -66,7 +66,6 @@ namespace dae
 		~DamagePlayer() override = default;
 	private:
 		HealthComponent* m_TargetHealthComponent{ nullptr };
-		SoundSystem* m_Ss;
 	};
 
 	class PickUpItemCommand : public GameObjectCommand
@@ -79,7 +78,6 @@ namespace dae
 		Subject* GetSubject() const;
 	private:
 		std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{ nullptr };
-		SoundSystem* m_Ss;
 
 	};
 }
