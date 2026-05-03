@@ -35,5 +35,6 @@ void dae::PlayerStateWalking::OnExit()
 
 void dae::PlayerStateWalking::Notify(unsigned int eventId, GameObject*)
 {
+	//still need a better way to link commands and states but this works for now
 	if (eventId == "OnPlayerStoppedMoving"_h) m_StoppedMoving = true;
 }

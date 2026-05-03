@@ -207,7 +207,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Components/PlayerComponent.cpp" 
   "Game/PlayerStates/PlayerState.cpp" 
   "Game/PlayerStates/PlayerStateIdle.cpp" 
-  "Game/PlayerStates/PlayerStateWalking.cpp")
+  "Game/PlayerStates/PlayerStateWalking.cpp" "Game/Components/RectColliderComponent.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
