@@ -7,7 +7,6 @@ namespace dae
 	class GameObject;
 	class PlayerInput;
 	class TransformComponent;
-	class PlayerStateComponent;
 	class SoundSystem;
 	enum class MoveDirection
 	{
@@ -47,12 +46,11 @@ namespace dae
 	class Subject;
 	class MovePlayerCommand : public MoveObjectCommand {
 	public:
-		MovePlayerCommand(GameObject& object, MoveDirection direction, PlayerStateComponent* state, float speed = 100.f);
+		MovePlayerCommand(GameObject& object, MoveDirection direction, float speed = 100.f);
 		void Execute() override;
 		void StopExecution() override;
 		Subject* GetSubject() const;
 	private:
-		PlayerStateComponent* m_PlayerState{ nullptr };
 		std::unique_ptr<Subject> m_OnPlayerStartedMove;
 	};
 

@@ -8,7 +8,6 @@
 #include "HealthComponent.hpp"
 #include "Subject.hpp"
 #include "sdbm_hash.hpp"
-#include "PlayerStateComponent.hpp"
 #include "SoundSystem.hpp"
 using namespace dae;
 
@@ -71,31 +70,21 @@ Subject* dae::PickUpItemCommand::GetSubject() const
 	return m_PlayerPickedUpItemEvent.get();
 }
 
-dae::MovePlayerCommand::MovePlayerCommand(GameObject& object, MoveDirection direction, PlayerStateComponent* state, float speed)
-	:MoveObjectCommand(object, direction, speed), m_PlayerState{ state }
+dae::MovePlayerCommand::MovePlayerCommand(GameObject& object, MoveDirection direction, float speed)
+	:MoveObjectCommand(object, direction, speed)
 	, m_OnPlayerStartedMove{ std::make_unique<Subject>() }
 {
 }
 
 void dae::MovePlayerCommand::Execute()
 {
-	switch (m_PlayerState->GetState())
-	{
-	case PlayerState::Idle:
-		[[fallthrough]];
-	case PlayerState::Running:
-		m_OnPlayerStartedMove->NotifyObservers("OnPlayerStartedMoving"_h, GetGameObject());
-		MoveObjectCommand::Execute();
-		break;
-	default:
-		return;
-	}
+	m_OnPlayerStartedMove->NotifyObservers("OnPlayerStartedMoving"_h, GetGameObject());
+	MoveObjectCommand::Execute();
 }
 
 void dae::MovePlayerCommand::StopExecution()
 {
-	if (m_PlayerState->GetState() == PlayerState::Running)
-		m_OnPlayerStartedMove->NotifyObservers("OnPlayerStoppedMoving"_h, GetGameObject());
+	m_OnPlayerStartedMove->NotifyObservers("OnPlayerStoppedMoving"_h, GetGameObject());
 }
 
 Subject* dae::MovePlayerCommand::GetSubject() const

@@ -22,6 +22,10 @@ void dae::PlayerState::OnExit()
 {
 }
 
+void dae::PlayerState::Notify(unsigned int , GameObject* )
+{
+}
+
 dae::PlayerState::PlayerState(PlayerComponent& player)
 	: m_Player{ &player } 
 {

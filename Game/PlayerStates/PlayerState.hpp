@@ -1,11 +1,11 @@
 #pragma once
 #include <memory>
 #include "PlayerComponent.hpp"
-
+#include "Observer.hpp"
 namespace dae
 {
 	class PlayerComponent;
-	class PlayerState
+	class PlayerState : public Observer
 	{
 	public:
 		PlayerState(PlayerState const& other) = default;
@@ -18,7 +18,7 @@ namespace dae
 		virtual void Update();
 		virtual void OnEnter();
 		virtual void OnExit();
-
+		virtual void Notify(unsigned int eventId, GameObject* source);
 	protected:
 		PlayerState(PlayerComponent& player); 
 		PlayerComponent* m_Player;

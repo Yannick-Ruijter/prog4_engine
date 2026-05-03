@@ -197,7 +197,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Components/LivesDisplayComponent.cpp"
   "Game/Components/ScoreComponent.cpp"
   "Game/Components/ScoreDisplayComponent.cpp"
-  "Game/Components/PlayerStateComponent.cpp"
+  
   "Game/Extras/PlayerLivesObserver.cpp"
   "Game/Extras/Achievements.cpp"
   "Game/Extras/CustomCommands.cpp"
@@ -205,7 +205,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Extras/SDL_SoundSystem.cpp" 
   "Game/Extras/SoundEventQueue.cpp" 
   "Game/Components/PlayerComponent.cpp" 
-  "Game/Extras/PlayerState.cpp")
+  "Game/PlayerStates/PlayerState.cpp" 
+  "Game/PlayerStates/PlayerStateIdle.cpp" 
+  "Game/PlayerStates/PlayerStateWalking.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
