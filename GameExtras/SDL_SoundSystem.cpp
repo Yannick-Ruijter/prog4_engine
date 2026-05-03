@@ -3,7 +3,6 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <stdexcept>
 #include <map>
-#include <thread>
 using namespace dae;
 
 class dae::Impl {

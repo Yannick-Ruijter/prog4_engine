@@ -56,7 +56,7 @@ void dae::DamagePlayer::Execute()
 dae::PickUpItemCommand::PickUpItemCommand(GameObject& object)
 	:GameObjectCommand(object)
 	, m_PlayerPickedUpItemEvent{ std::make_unique<Subject>() }
-	, m_Ss{ServiceProvider::GetInstance().GetService<SDL_SoundSystem>()}
+	, m_Ss{ ServiceProvider::GetInstance().GetService<SDL_SoundSystem>() }
 {
 }
 

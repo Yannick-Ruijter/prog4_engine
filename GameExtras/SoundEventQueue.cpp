@@ -8,6 +8,7 @@ void dae::SoundEventQueue::Quit()
     m_ConditionVariable.notify_all();
 }
 
+//yes im converting a lambda to a std::function
 void dae::SoundEventQueue::AddToQueue(std::function<void()> execution)
 {
     {
@@ -22,7 +23,8 @@ void dae::SoundEventQueue::DoAllSounds() {
     std::unique_lock lock{ m_Mutex };
     m_ConditionVariable.wait(lock, [this] { return !m_Queue.empty() || m_IsSleeping; });
 
-    while (!m_Queue.empty()) {
+    while (!m_Queue.empty()) 
+    {
         auto execution = std::move(m_Queue.front());
         m_Queue.pop();
         lock.unlock();
