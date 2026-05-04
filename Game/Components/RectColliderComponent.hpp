@@ -24,5 +24,4 @@ class RectColliderComponent : public Component, public Subject
     RectColliderComponent *m_LastCollision{nullptr};
     static std::vector<RectColliderComponent *> m_Colliders;
 };
-std::vector<RectColliderComponent *> RectColliderComponent::m_Colliders{};
 } // namespace dae

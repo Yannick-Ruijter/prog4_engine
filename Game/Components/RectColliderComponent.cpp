@@ -3,6 +3,7 @@
 #include "sdbm_hash.hpp"
 
 using namespace dae;
+std::vector<RectColliderComponent *> RectColliderComponent::m_Colliders = {};
 RectColliderComponent::RectColliderComponent(GameObject &owner) : Component(owner)
 {
     m_Colliders.push_back(this);
@@ -29,6 +30,7 @@ void dae::RectColliderComponent::Update()
             otherRect.topLeft.y > (m_Rect.topLeft.y + m_Rect.dimensions.y))
             continue;
 
+        m_LastCollision = collider;
         NotifyObservers("OnCollision"_h, GetOwner());
     }
 }
