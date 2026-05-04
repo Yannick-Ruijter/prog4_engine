@@ -17,10 +17,12 @@ namespace dae
         void LateUpdate();
         void Render();
 
+        void SetActiveScene(Scene *scene);
+
       private:
         friend class Singleton<SceneManager>;
         SceneManager() = default;
-        std::vector<std::unique_ptr<Scene>> m_scenes{};
+        std::vector<std::unique_ptr<Scene>> m_Scenes{};
         Scene *m_CurrentScene{nullptr};
     };
 } // namespace dae

@@ -37,6 +37,7 @@ void BurgerTime::Initialize()
             {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}});
     m_Achievements = std::make_unique<dae::Achievements>();
     auto &scene = dae::SceneManager::GetInstance().CreateScene();
+    dae::SceneManager::GetInstance().SetActiveScene(&scene);
     auto &inputManager = dae::InputManager::GetInstance();
     auto go = std::make_unique<dae::GameObject>();
     auto fontMain =

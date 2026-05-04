@@ -1,5 +1,6 @@
 # Format Style Options - Created with Clang Power Tools
 ---
+AllowShortFunctionsOnASingleLine: None
 BreakBeforeBraces: Allman
 IndentWidth: 4
 NamespaceIndentation: All
