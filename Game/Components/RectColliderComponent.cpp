@@ -14,7 +14,7 @@ const Rect &dae::RectColliderComponent::GetRect() const
     return m_Rect;
 }
 
-void dae::RectColliderComponent::Update()
+void dae::RectColliderComponent::LateUpdate()
 {
     for (auto const &collider : m_Colliders)
     {

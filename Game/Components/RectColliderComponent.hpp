@@ -16,7 +16,7 @@ class RectColliderComponent : public Component, public Subject
   public:
     RectColliderComponent(GameObject &owner);
     const Rect &GetRect() const;
-    void Update();
+    void LateUpdate();
     RectColliderComponent *GetLastCollision() const;
 
   private:
