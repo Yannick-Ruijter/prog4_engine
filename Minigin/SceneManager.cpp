@@ -19,7 +19,9 @@ void dae::SceneManager::Render()
 void dae::SceneManager::SetActiveScene(Scene *scene)
 {
     // check if the scene is in the added scenes
-    if (std::find_if(m_Scenes.begin(), m_Scenes.end(), [&](auto &other)
+    if (std::find_if(m_Scenes.begin(),
+                     m_Scenes.end(),
+                     [&](auto &other)
                      { return other.get() == scene; }) != m_Scenes.end())
         m_CurrentScene = scene;
 }

@@ -1,42 +1,44 @@
 
 #include "SDL_SoundSystem.hpp"
 #include <SDL3_mixer/SDL_mixer.h>
-#include <stdexcept>
-#include <map>
 #include <iostream>
+#include <map>
+#include <stdexcept>
 using namespace dae;
 
-class dae::Impl {
-public:
-	Impl(std::vector<std::pair<sound_id, std::string>> sounds);
-	~Impl();
-	void Play(sound_id id, float volume);
+class dae::SDL_SoundSystem::Impl
+{
+  public:
+    Impl(std::vector<std::pair<sound_id, std::string>> sounds);
+    ~Impl() = default;
+    void Play(sound_id id, float volume);
     void Destroy();
-private:
-	std::map<sound_id, std::pair<MIX_Audio*, std::vector<MIX_Track*>>> m_Sounds{};
-	MIX_Mixer* m_Mixer{};
+
+  private:
+    std::map<sound_id, std::pair<MIX_Audio *, std::vector<MIX_Track *>>> m_Sounds{};
+    MIX_Mixer *m_Mixer{};
 
     SoundEventQueue m_Queue{};
     mutable std::mutex m_Mutex{};
     std::unique_ptr<Impl> m_pImpl;
     std::thread m_SoundThread;
-    std::atomic<bool> m_StopThread{ false };
+    std::atomic<bool> m_StopThread{false};
 };
 
 dae::SDL_SoundSystem::SDL_SoundSystem(std::vector<std::pair<sound_id, std::string>> sounds)
-	:m_pImpl{std::make_unique<Impl>(sounds)}
+    : m_pImpl{std::make_unique<Impl>(sounds)}
 {
 }
 
 dae::SDL_SoundSystem::~SDL_SoundSystem()
 {
-    if (!m_HasBeenDestroyed) Destroy();
+    if (!m_HasBeenDestroyed)
+        Destroy();
 }
 
 void dae::SDL_SoundSystem::Play(sound_id const id, float const volume)
 {
     m_pImpl->Play(id, volume);
-    
 }
 
 void dae::SDL_SoundSystem::Destroy()
@@ -45,16 +47,19 @@ void dae::SDL_SoundSystem::Destroy()
     m_HasBeenDestroyed = true;
 }
 
-dae::Impl::Impl(std::vector<std::pair<sound_id, std::string>> sounds)
+dae::SDL_SoundSystem::Impl::Impl(std::vector<std::pair<sound_id, std::string>> sounds)
 {
 
-    //using threads instead of jthreads because of emscriptem not supporting them yet
-    m_SoundThread = std::thread([this]() {
-        m_Mutex.lock();
-        while (!m_StopThread) {
-            m_Queue.DoAllSounds();
-        }
-        m_Mutex.unlock();
+    // using threads instead of jthreads because of emscriptem not supporting them yet
+    m_SoundThread = std::thread(
+        [this]()
+        {
+            m_Mutex.lock();
+            while (!m_StopThread)
+            {
+                m_Queue.DoAllSounds();
+            }
+            m_Mutex.unlock();
         });
 
     MIX_Init();
@@ -65,66 +70,66 @@ dae::Impl::Impl(std::vector<std::pair<sound_id, std::string>> sounds)
         return;
     }
 
-    for (auto const& [id, path] : sounds)
+    for (auto const &[id, path] : sounds)
     {
-        MIX_Audio* clip = MIX_LoadAudio(m_Mixer, path.c_str(), true);
+        MIX_Audio *clip = MIX_LoadAudio(m_Mixer, path.c_str(), true);
         if (!clip)
             SDL_Log("Failed to load audio '%s': %s", path.c_str(), SDL_GetError());
-        m_Sounds.emplace(id, std::pair{ clip, std::vector<MIX_Track*>{} });
+        m_Sounds.emplace(id, std::pair{clip, std::vector<MIX_Track *>{}});
     }
 }
 
-dae::Impl::~Impl()
+void dae::SDL_SoundSystem::Impl::Play(sound_id id, float volume)
 {
-}
-
-void dae::Impl::Play(sound_id id, float volume)
-{
-    m_Queue.AddToQueue([this, id, volume]() {
-        auto it{ m_Sounds.find(id) };
-        if (it == m_Sounds.end()) return;
-
-        MIX_Audio* audio = it->second.first;
-        auto& tracks = it->second.second;
-
-        // find a free track
-        MIX_Track* track = nullptr;
-        for (MIX_Track* t : tracks)
+    m_Queue.AddToQueue(
+        [this, id, volume]()
         {
-            if (!MIX_TrackPlaying(t))
+            auto it{m_Sounds.find(id)};
+            if (it == m_Sounds.end())
+                return;
+
+            MIX_Audio *audio = it->second.first;
+            auto &tracks = it->second.second;
+
+            // find a free track
+            MIX_Track *track = nullptr;
+            for (MIX_Track *t : tracks)
             {
-                track = t;
-                break;
+                if (!MIX_TrackPlaying(t))
+                {
+                    track = t;
+                    break;
+                }
             }
-        }
 
-        //if we have no free track rn
-        if (!track)
-        {
-            track = MIX_CreateTrack(m_Mixer);
-            tracks.push_back(track);
-        }
+            // if we have no free track rn
+            if (!track)
+            {
+                track = MIX_CreateTrack(m_Mixer);
+                tracks.push_back(track);
+            }
 
-        MIX_SetTrackAudio(track, audio);
-        MIX_SetTrackGain(track, volume);
-        MIX_PlayTrack(track, 0);
+            MIX_SetTrackAudio(track, audio);
+            MIX_SetTrackGain(track, volume);
+            MIX_PlayTrack(track, 0);
         });
 }
 
-void dae::Impl::Destroy()
+void dae::SDL_SoundSystem::Impl::Destroy()
 {
     m_StopThread = true;
-    //i realise i could use a condition variable but this only takes 1 member to do
+    // i realise i could use a condition variable but this only takes 1 member to do
     m_Mutex.lock();
     m_Mutex.unlock();
     m_Queue.Quit();
     m_SoundThread.join();
 
-    if (!m_Mixer) return;
+    if (!m_Mixer)
+        return;
 
-    for (auto& [id, entry] : m_Sounds)
+    for (auto &[id, entry] : m_Sounds)
     {
-        for (MIX_Track* track : entry.second)
+        for (MIX_Track *track : entry.second)
         {
             MIX_StopTrack(track, 0);
             MIX_DestroyTrack(track);

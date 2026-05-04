@@ -266,7 +266,6 @@ elseif(WIN32)
         "$<TARGET_FILE_DIR:${TARGET_NAME}>"
   VERBATIM
 )
-
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
   )

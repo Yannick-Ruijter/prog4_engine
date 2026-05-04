@@ -1,7 +1,14 @@
 # Format Style Options - Created with Clang Power Tools
 ---
 AllowShortFunctionsOnASingleLine: None
+AlignAfterOpenBracket: AlwaysBreak
+BinPackArguments: true
+BinPackParameters: true
 BreakBeforeBraces: Allman
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 IndentWidth: 4
 NamespaceIndentation: All
+AllowAllParametersOfDeclarationOnNextLine: false
+ColumnLimit: 120
 ...

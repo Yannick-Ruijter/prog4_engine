@@ -1,0 +1,82 @@
+{
+  "IdleFront": {
+    "startPosX": 16,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 1,
+    "FrameDuration": -1
+  },
+  "IdleBack": {
+    "startPosX": 102,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 1,
+    "FrameDuration": -1
+  },
+  "ClimbingDown": {
+    "startPosX": 0,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 3,
+    "FrameDuration": 8
+  },
+  "ClimbingUp": {
+    "startPosX": 96,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 3,
+    "FrameDuration": 8
+  },
+  "RunningLeft": {
+    "startPosX": 48,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 3,
+    "FrameDuration": 8
+  },
+  "RunningRight": {
+    "startPosX": 0,
+    "startPosY": 32,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 3,
+    "FrameDuration": 8
+  },
+  "AttackUp": {
+    "startPosX": 32,
+    "startPosY": 16,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 1,
+    "FrameDuration": -1
+  },
+  "AttackDown": {
+    "startPosX": 0,
+    "startPosY": 16,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 1,
+    "FrameDuration": -1
+  },
+  "AttackLeft": {
+    "startPosX": 16,
+    "startPosY": 16,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 1,
+    "FrameDuration": -1
+  },
+  "AttackRight": {
+    "startPosX": 48,
+    "startPosY": 32,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 1,
+    "FrameDuration": -1
+  }
+}
