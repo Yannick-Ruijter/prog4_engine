@@ -127,6 +127,9 @@ if(NOT SDL3_mixer_FOUND)
   FetchContent_MakeAvailable(SDL3_mixer)
 endif()
 
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 if (WIN32)
   find_package(VLD CONFIG)
 endif()
@@ -167,6 +170,7 @@ target_link_libraries(Minigin PUBLIC
   glm::glm
   imgui
   imgui_plot
+  nlohmann_json::nlohmann_json
   ${VLD_LIBRARIES}
 )
 
@@ -207,7 +211,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Components/PlayerComponent.cpp" 
   "Game/PlayerStates/PlayerState.cpp" 
   "Game/PlayerStates/PlayerStateIdle.cpp" 
-  "Game/PlayerStates/PlayerStateWalking.cpp" "Game/Components/RectColliderComponent.cpp")
+  "Game/PlayerStates/PlayerStateWalking.cpp" "Game/Components/RectColliderComponent.cpp" "Game/Components/PlayerAnimationComponent.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
@@ -218,6 +222,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/Components/"
   "${CMAKE_SOURCE_DIR}/Game/Extras/"
   "${CMAKE_SOURCE_DIR}/Game/PlayerStates/"
+  "${CMAKE_SOURCE_DIR}/Game/GameStates/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )
 

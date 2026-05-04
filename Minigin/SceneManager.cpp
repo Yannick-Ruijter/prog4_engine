@@ -1,6 +1,5 @@
 #include "SceneManager.hpp"
 #include "Scene.hpp"
-#include "SceneManager.hpp"
 
 void dae::SceneManager::Update()
 {

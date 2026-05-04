@@ -36,6 +36,18 @@ void BurgerTime::Initialize()
         std::vector<std::pair<sound_id, std::string>>{
             {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}});
     m_Achievements = std::make_unique<dae::Achievements>();
+    SetupGameScene();
+}
+
+void BurgerTime::Destroy()
+{
+    dae::ServiceProvider::GetInstance()
+        .GetService<dae::SDL_SoundSystem>()
+        ->Destroy();
+}
+
+void BurgerTime::SetupGameScene()
+{
     auto &scene = dae::SceneManager::GetInstance().CreateScene();
     dae::SceneManager::GetInstance().SetActiveScene(&scene);
     auto &inputManager = dae::InputManager::GetInstance();
@@ -50,12 +62,6 @@ void BurgerTime::Initialize()
         go->AddComponent<dae::Texture2DComponent>("Data/Stage0_Background.png",
                                                   1032, 800);
         scene.Add(std::move(go));
-
-        /*go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(358, 180);
-        go->AddComponent<dae::Texture2DComponent>("Data/logo.png");
-        scene.Add(std::move(go));*/
 
         go = std::make_unique<dae::GameObject>();
         go->AddComponent<dae::RenderComponent>();
@@ -293,11 +299,4 @@ void BurgerTime::Initialize()
             ->GetSubject()
             ->AddObserver(m_Achievements.get());
     }
-}
-
-void BurgerTime::Destroy()
-{
-    dae::ServiceProvider::GetInstance()
-        .GetService<dae::SDL_SoundSystem>()
-        ->Destroy();
 }
