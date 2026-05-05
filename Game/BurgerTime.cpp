@@ -79,6 +79,8 @@ void BurgerTime::SetupGameScene()
         m_Player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
         m_Player2->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 200, 0});
         m_Player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
+        m_Player2->AddComponent<dae::PlayerAnimationComponent>(
+            "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         m_Player2->AddComponent<dae::PlayerComponent>();
         scene.Add(std::move(go));
 

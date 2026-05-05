@@ -1,24 +1,25 @@
 #include "PlayerStateWalking.hpp"
+#include "PlayerAnimationComponent.hpp"
 #include "PlayerStateIdle.hpp"
 #include "sdbm_hash.hpp"
 
 using namespace dae;
 
-dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent& player)
-	:PlayerState(player)
+dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player) : PlayerState(player)
 {
-	OnEnter();
+    OnEnter();
 }
 
 dae::PlayerStateWalking::~PlayerStateWalking()
 {
-	OnExit();
+    OnExit();
 }
 
 std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput()
 {
-	if (m_StoppedMoving) return std::make_unique<PlayerStateIdle>(*m_Player);
-	return nullptr;
+    if (m_StoppedMoving)
+        return std::make_unique<PlayerStateIdle>(*m_Player);
+    return nullptr;
 }
 
 void dae::PlayerStateWalking::Update()
@@ -27,14 +28,16 @@ void dae::PlayerStateWalking::Update()
 
 void dae::PlayerStateWalking::OnEnter()
 {
+    m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
 }
 
 void dae::PlayerStateWalking::OnExit()
 {
 }
 
-void dae::PlayerStateWalking::Notify(unsigned int eventId, GameObject*)
+void dae::PlayerStateWalking::Notify(unsigned int eventId, GameObject *)
 {
-	//still need a better way to link commands and states but this works for now
-	if (eventId == "OnPlayerStoppedMoving"_h) m_StoppedMoving = true;
+    // still need a better way to link commands and states but this works for now
+    if (eventId == "OnPlayerStoppedMoving"_h)
+        m_StoppedMoving = true;
 }

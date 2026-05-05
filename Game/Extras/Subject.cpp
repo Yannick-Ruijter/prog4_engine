@@ -4,20 +4,22 @@
 
 using namespace dae;
 
-void Subject::AddObserver(Observer* observer)
+Subject *Subject::AddObserver(Observer *observer)
 {
-	m_Observers.emplace_back(observer);
+    m_Observers.emplace_back(observer);
+    return this;
 }
 
-void Subject::RemoveObserver(Observer* observer)
+Subject *Subject::RemoveObserver(Observer *observer)
 {
-	m_Observers.erase(std::find(begin(m_Observers), end(m_Observers), observer));
+    m_Observers.erase(std::find(begin(m_Observers), end(m_Observers), observer));
+    return this;
 }
 
-void Subject::NotifyObservers(unsigned int eventId, GameObject* source)
+void Subject::NotifyObservers(unsigned int eventId, GameObject *source)
 {
-	for (auto const& observer : m_Observers)
-	{
-		observer->Notify(eventId, source);
-	}
+    for (auto const &observer : m_Observers)
+    {
+        observer->Notify(eventId, source);
+    }
 }
