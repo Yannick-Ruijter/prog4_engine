@@ -1,11 +1,13 @@
 #include "PlayerStateWalking.hpp"
+#include "CustomCommands.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerStateIdle.hpp"
 #include "sdbm_hash.hpp"
 
 using namespace dae;
 
-dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player) : PlayerState(player)
+dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player, MoveDirection moveDir)
+    : PlayerState(player), m_CurrentMoveDir{moveDir}
 {
     OnEnter();
 }
@@ -28,7 +30,10 @@ void dae::PlayerStateWalking::Update()
 
 void dae::PlayerStateWalking::OnEnter()
 {
-    m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
+    if (m_CurrentMoveDir == MoveDirection::Left)
+        m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
+    else if (m_CurrentMoveDir == MoveDirection::Right)
+        m_Player->GetPlayerAnimation()->SetAnimationState("RunningRight");
 }
 
 void dae::PlayerStateWalking::OnExit()
@@ -38,6 +43,14 @@ void dae::PlayerStateWalking::OnExit()
 void dae::PlayerStateWalking::Notify(unsigned int eventId, GameObject *)
 {
     // still need a better way to link commands and states but this works for now
-    if (eventId == "OnPlayerStoppedMoving"_h)
-        m_StoppedMoving = true;
+    if (eventId == "OnMoveLeftButtonReleased"_h)
+    {
+        if (m_CurrentMoveDir == MoveDirection::Left)
+            m_StoppedMoving = true;
+    }
+    else if (eventId == "OnMoveRightButtonReleased"_h)
+    {
+        if (m_CurrentMoveDir == MoveDirection::Right)
+            m_StoppedMoving = true;
+    }
 }

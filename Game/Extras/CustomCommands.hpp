@@ -1,81 +1,90 @@
-
+#pragma once
 
 #include "Command.hpp"
 #include "ServiceProvider.hpp"
 namespace dae
 {
-	class GameObject;
-	class PlayerInput;
-	class TransformComponent;
-	class SoundSystem;
-	enum class MoveDirection
-	{
-		Up,
-		Down,
-		Left,
-		Right,
-	};
+    class GameObject;
+    class PlayerInput;
+    class TransformComponent;
+    class SoundSystem;
+    enum class MoveDirection
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+    };
 
-	class GameObjectCommand : public Command
-	{
-	public:
-		GameObjectCommand(GameObject& object);
-		virtual ~GameObjectCommand() = default;
-	protected:
-		GameObject* GetGameObject() const;
-	private:
-		GameObject* m_GameObject;
-	};
+    class GameObjectCommand : public Command
+    {
+      public:
+        GameObjectCommand(GameObject &object);
+        virtual ~GameObjectCommand() = default;
 
-	class TimeManager;
-	class MoveObjectCommand : public GameObjectCommand
-	{
-	public:
-		MoveObjectCommand(GameObject& object, MoveDirection direction, float speed = 100.f);
-		virtual void Execute() override;
-		virtual void StopExecution() override {};
-		~MoveObjectCommand() override = default;
-	private:
-		glm::vec3 m_MoveDir{};
-		TransformComponent* m_TransformComponent{ nullptr };
-		TimeManager* m_TimeManager{ nullptr };
-		float m_Speed{};
+      protected:
+        GameObject *GetGameObject() const;
 
-	};
+      private:
+        GameObject *m_GameObject;
+    };
 
-	class Subject;
-	class MovePlayerCommand : public MoveObjectCommand {
-	public:
-		MovePlayerCommand(GameObject& object, MoveDirection direction, float speed = 100.f);
-		void Execute() override;
-		void StopExecution() override;
-		Subject* GetSubject() const;
-	private:
-		std::unique_ptr<Subject> m_OnPlayerStartedMove;
-	};
+    class TimeManager;
+    class MoveObjectCommand : public GameObjectCommand
+    {
+      public:
+        MoveObjectCommand(GameObject &object, MoveDirection direction, float speed = 100.f);
+        virtual void Execute() override;
+        virtual void StopExecution() override {};
+        ~MoveObjectCommand() override = default;
 
-	class HealthComponent;
-	class DamagePlayer : public GameObjectCommand
-	{
-	public:
-		DamagePlayer(GameObject& object, GameObject& target);
-		void Execute() override;
-		virtual void StopExecution() override {};
-		~DamagePlayer() override = default;
-	private:
-		HealthComponent* m_TargetHealthComponent{ nullptr };
-	};
+      private:
+        glm::vec3 m_MoveDir{};
+        TransformComponent *m_TransformComponent{nullptr};
+        TimeManager *m_TimeManager{nullptr};
+        float m_Speed{};
+    };
 
-	class PickUpItemCommand : public GameObjectCommand
-	{
-	public:
-		PickUpItemCommand(GameObject& object);
-		void Execute() override;
-		virtual void StopExecution() override {};
-		~PickUpItemCommand() override = default;
-		Subject* GetSubject() const;
-	private:
-		std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{ nullptr };
+    class Subject;
+    class MovePlayerCommand : public MoveObjectCommand
+    {
+      public:
+        MovePlayerCommand(
+            GameObject &object, MoveDirection direction, unsigned int onExecuteEvent, unsigned int onStopExecuteEvent,
+            float speed = 100.f);
+        void Execute() override;
+        void StopExecution() override;
+        Subject *GetSubject() const;
 
-	};
-}
+      private:
+        std::unique_ptr<Subject> m_OnPlayerStartedMove;
+        unsigned int m_ExecutionEvent;
+        unsigned int m_StopExecutionEvent;
+    };
+
+    class HealthComponent;
+    class DamagePlayer : public GameObjectCommand
+    {
+      public:
+        DamagePlayer(GameObject &object, GameObject &target);
+        void Execute() override;
+        virtual void StopExecution() override {};
+        ~DamagePlayer() override = default;
+
+      private:
+        HealthComponent *m_TargetHealthComponent{nullptr};
+    };
+
+    class PickUpItemCommand : public GameObjectCommand
+    {
+      public:
+        PickUpItemCommand(GameObject &object);
+        void Execute() override;
+        virtual void StopExecution() override {};
+        ~PickUpItemCommand() override = default;
+        Subject *GetSubject() const;
+
+      private:
+        std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{nullptr};
+    };
+} // namespace dae
