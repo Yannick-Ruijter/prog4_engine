@@ -8,8 +8,8 @@ using namespace dae;
 
 PlayerComponent::PlayerComponent(GameObject &owner)
     : Component(owner),
-      m_CurrentState{std::make_unique<PlayerStateIdle>(*this)},
-      m_PlayerAnimation{owner.GetComponent<PlayerAnimationComponent>()}
+      m_PlayerAnimation{owner.GetComponent<PlayerAnimationComponent>()},
+      m_CurrentState{std::make_unique<PlayerStateIdle>(*this)}
 {
     assert(
         m_PlayerAnimation != nullptr &&
