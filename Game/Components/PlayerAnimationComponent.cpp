@@ -66,7 +66,7 @@ dae::PlayerAnimationComponent::Impl::Impl(
     GameObject &owner, std::string const &animationDataPath, std::string const &spriteSheetPath)
     : m_Owner{&owner}
 {
-    m_CurrentPlayerTexture = owner.GetComponent<Texture2DComponent>();
+    m_CurrentPlayerTexture = m_Owner->GetComponent<Texture2DComponent>();
     m_SpriteSheetSurface = SDL_LoadPNG(spriteSheetPath.c_str());
     m_SpriteSheetJson = json::parse(std::ifstream(animationDataPath));
     InitStateInfo();
