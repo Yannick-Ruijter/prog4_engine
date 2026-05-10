@@ -3,6 +3,7 @@
 #include "Command.hpp"
 #include "ControllerInput.hpp"
 #include <array>
+#include <map>
 #include <ranges>
 // for testing purposes
 #define SDLTEST 1
@@ -22,6 +23,10 @@ class ControllerInput::Impl
     Impl(int controllerIndex);
     void ProcessInput();
 
+    bool WasPressedThisFrame(InputKeybinds button) const;
+    bool IsButtonPressed(InputKeybinds button) const;
+    bool WasReleasedThisFrame(InputKeybinds button) const;
+
     bool WasPressedThisFrame(unsigned int button) const;
     bool IsButtonPressed(unsigned int button) const;
     bool WasReleasedThisFrame(unsigned int button) const;
@@ -31,6 +36,7 @@ class ControllerInput::Impl
         InputState endTriggerState = InputState::None);
 
   private:
+    std::map<InputKeybinds, unsigned int> m_KeybindsMapped{};
     int m_ControllerIndex{};
 #if _WIN32
     int ConvertToXInput(InputKeybinds keybind);
@@ -78,19 +84,19 @@ void ControllerInput::ProcessInput()
     }
 }
 
-bool dae::ControllerInput::WasPressedThisFrame(InputKeybinds) const
+bool dae::ControllerInput::WasPressedThisFrame(InputKeybinds button) const
 {
-    return false;
+    return m_pImpl->WasPressedThisFrame(button);
 }
 
-bool dae::ControllerInput::IsButtonPressed(InputKeybinds) const
+bool dae::ControllerInput::IsButtonPressed(InputKeybinds button) const
 {
-    return false;
+    return m_pImpl->IsButtonPressed(button);
 }
 
-bool dae::ControllerInput::WasReleasedThisFrame(InputKeybinds) const
+bool dae::ControllerInput::WasReleasedThisFrame(InputKeybinds button) const
 {
-    return false;
+    return m_pImpl->WasReleasedThisFrame(button);
 }
 
 bool ControllerInput::WasPressedThisFrame(unsigned int button) const
@@ -128,6 +134,17 @@ std::unique_ptr<Binding> ControllerInput::UnBind(Binding *binding)
 
 ControllerInput::Impl::Impl(int controllerIndex) : m_ControllerIndex{controllerIndex}
 {
+    int currentVal{static_cast<int>(InputKeybinds::CONTROLLER_BEGIN) + 1};
+    int endVal{static_cast<int>(InputKeybinds::CONTROLLER_END)};
+    for (; currentVal < endVal; currentVal++)
+    {
+        InputKeybinds current{static_cast<InputKeybinds>(currentVal)};
+#if _WIN32
+        m_KeybindsMapped[current] = ConvertToXInput(current);
+#else
+        m_KeybindsMapped[current] = ConvertToSdlKeybind(current);
+#endif
+    }
 #if _WIN32
 #else
     int numberOfGamepadsConnected{};
@@ -158,6 +175,27 @@ void ControllerInput::Impl::ProcessInput()
         m_States[i] = SDL_GetGamepadButton(m_GamePad, static_cast<SDL_GamepadButton>(i));
     }
 #endif
+}
+
+bool ControllerInput::Impl::WasPressedThisFrame(InputKeybinds button) const
+{
+    if (!m_KeybindsMapped.contains(button))
+        return false;
+    return WasPressedThisFrame(m_KeybindsMapped.at(button));
+}
+
+bool ControllerInput::Impl::IsButtonPressed(InputKeybinds button) const
+{
+    if (!m_KeybindsMapped.contains(button))
+        return false;
+    return IsButtonPressed(m_KeybindsMapped.at(button));
+}
+
+bool ControllerInput::Impl::WasReleasedThisFrame(InputKeybinds button) const
+{
+    if (!m_KeybindsMapped.contains(button))
+        return false;
+    return WasReleasedThisFrame(m_KeybindsMapped.at(button));
 }
 
 bool ControllerInput::Impl::WasPressedThisFrame(unsigned int button) const

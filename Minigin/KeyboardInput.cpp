@@ -5,20 +5,25 @@
 #include <algorithm>
 
 using namespace dae;
-dae::KeyboardInput::KeyboardInput() = default;
+dae::KeyboardInput::KeyboardInput()
+{
+    int currentVal{static_cast<int>(InputKeybinds::KEYBOARD_BEGIN) + 1};
+    int endVal{static_cast<int>(InputKeybinds::KEYBOARD_END)};
+    for (; currentVal < endVal; ++currentVal)
+    {
+        InputKeybinds current{static_cast<InputKeybinds>(currentVal)};
+        m_KeybindsMapped[current] = ConvertToScancode(current);
+    }
+}
 dae::KeyboardInput::~KeyboardInput() = default;
 void KeyboardInput::ProcessInput()
 {
     if (m_PreviousState.get() == nullptr)
         m_PreviousState = std::make_unique<bool[]>(SDL_SCANCODE_COUNT);
-    /*if(m_CurrentState != nullptr)
-            std::transform(m_CurrentState,
-                    m_CurrentState + SDL_SCANCODE_COUNT,
-                    begin(m_PreviousState),
-                    [&](bool key) { return key != 0; });*/
+
     if (m_CurrentState != nullptr)
         std::memcpy(m_PreviousState.get(), m_CurrentState, SDL_SCANCODE_COUNT);
-    // m_PreviousState = m_CurrentState;
+
     SDL_PumpEvents();
     m_CurrentState = SDL_GetKeyboardState(nullptr);
     for (auto &binding : m_Bindings)
@@ -41,19 +46,25 @@ void KeyboardInput::ProcessInput()
     }
 }
 
-bool dae::KeyboardInput::WasPressedThisFrame(InputKeybinds) const
+bool dae::KeyboardInput::WasPressedThisFrame(InputKeybinds button) const
 {
-    return false;
+    if (!m_KeybindsMapped.contains(button))
+        return false;
+    return WasPressedThisFrame(m_KeybindsMapped.at(button));
 }
 
-bool dae::KeyboardInput::IsButtonPressed(InputKeybinds) const
+bool dae::KeyboardInput::IsButtonPressed(InputKeybinds button) const
 {
-    return false;
+    if (!m_KeybindsMapped.contains(button))
+        return false;
+    return IsButtonPressed(m_KeybindsMapped.at(button));
 }
 
-bool dae::KeyboardInput::WasReleasedThisFrame(InputKeybinds) const
+bool dae::KeyboardInput::WasReleasedThisFrame(InputKeybinds button) const
 {
-    return false;
+    if (!m_KeybindsMapped.contains(button))
+        return false;
+    return WasReleasedThisFrame(m_KeybindsMapped.at(button));
 }
 
 bool KeyboardInput::WasPressedThisFrame(unsigned int button) const

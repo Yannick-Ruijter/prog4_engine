@@ -15,9 +15,9 @@ namespace dae
         ~ControllerInput();
         void ProcessInput() override;
 
-        bool WasPressedThisFrame(InputKeybinds) const override;
-        bool IsButtonPressed(InputKeybinds) const override;
-        bool WasReleasedThisFrame(InputKeybinds) const override;
+        bool WasPressedThisFrame(InputKeybinds button) const override;
+        bool IsButtonPressed(InputKeybinds button) const override;
+        bool WasReleasedThisFrame(InputKeybinds button) const override;
 
         bool WasPressedThisFrame(unsigned int button) const override;
         bool IsButtonPressed(unsigned int button) const override;

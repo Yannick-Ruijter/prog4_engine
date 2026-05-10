@@ -24,6 +24,8 @@ dae::PlayerStateIdle::~PlayerStateIdle()
 
 std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput()
 {
+    if (m_Player->GetInput()->WasPressedThisFrame(InputKeybinds::P))
+        return nullptr;
     if (m_StartedMoving)
         return std::make_unique<PlayerStateWalking>(*m_Player, m_CurrentFacingDir);
     else if (m_StartedClimbing)

@@ -3,6 +3,7 @@
 #include "PlayerInput.hpp"
 #include <SDL3/SDL.h>
 #include <array>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -17,9 +18,9 @@ namespace dae
         ~KeyboardInput();
         void ProcessInput() override;
 
-        bool WasPressedThisFrame(InputKeybinds) const override;
-        bool IsButtonPressed(InputKeybinds) const override;
-        bool WasReleasedThisFrame(InputKeybinds) const override;
+        bool WasPressedThisFrame(InputKeybinds button) const override;
+        bool IsButtonPressed(InputKeybinds button) const override;
+        bool WasReleasedThisFrame(InputKeybinds button) const override;
 
         bool WasPressedThisFrame(unsigned int button) const override;
         bool IsButtonPressed(unsigned int button) const override;
@@ -37,5 +38,6 @@ namespace dae
         std::unique_ptr<bool[]> m_PreviousState{};
 
         std::vector<std::unique_ptr<Binding>> m_Bindings;
+        std::map<InputKeybinds, unsigned int> m_KeybindsMapped{};
     };
 } // namespace dae
