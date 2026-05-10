@@ -1,15 +1,17 @@
 #include "PlayerComponent.hpp"
 #include "GameObject.hpp"
 #include "PlayerAnimationComponent.hpp"
+#include "PlayerInput.hpp"
 #include "PlayerState.hpp"
 #include "PlayerStateIdle.hpp"
 #include "sdbm_hash.hpp"
 using namespace dae;
 
-PlayerComponent::PlayerComponent(GameObject &owner)
+PlayerComponent::PlayerComponent(GameObject &owner, PlayerInput *input)
     : Component(owner),
       m_PlayerAnimation{owner.GetComponent<PlayerAnimationComponent>()},
-      m_CurrentState{std::make_unique<PlayerStateIdle>(*this)}
+      m_CurrentState{std::make_unique<PlayerStateIdle>(*this)},
+      m_PlayerInput{input}
 {
     assert(
         m_PlayerAnimation != nullptr &&
@@ -44,4 +46,9 @@ void dae::PlayerComponent::Notify(unsigned int eventId, GameObject *source)
 PlayerAnimationComponent *dae::PlayerComponent::GetPlayerAnimation() const
 {
     return m_PlayerAnimation;
+}
+
+PlayerInput *dae::PlayerComponent::GetInput() const
+{
+    return m_PlayerInput;
 }

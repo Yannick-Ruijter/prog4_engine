@@ -82,7 +82,7 @@ void BurgerTime::SetupGameScene()
         m_Player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player2->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        m_Player2->AddComponent<dae::PlayerComponent>();
+        m_Player2->AddComponent<dae::PlayerComponent>(inputManager.GetKeyboardInput());
         scene.Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
@@ -94,7 +94,7 @@ void BurgerTime::SetupGameScene()
         m_Player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player1->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        m_Player1->AddComponent<dae::PlayerComponent>();
+        m_Player1->AddComponent<dae::PlayerComponent>(inputManager.GetControllerInput(0));
         scene.Add(std::move(go));
     }
 

@@ -7,18 +7,21 @@ namespace dae
 {
     class PlayerAnimationComponent;
     class PlayerState;
+    class PlayerInput;
     class PlayerComponent final : public Component, public Observer
     {
       public:
-        PlayerComponent(GameObject &owner);
+        PlayerComponent(GameObject &owner, PlayerInput *input);
         ~PlayerComponent();
         void Update();
         GameObject *GetPlayer();
         void Notify(unsigned int eventId, GameObject *source);
         PlayerAnimationComponent *GetPlayerAnimation() const;
+        PlayerInput *GetInput() const;
 
       private:
         PlayerAnimationComponent *m_PlayerAnimation;
         std::unique_ptr<PlayerState> m_CurrentState;
+        PlayerInput *m_PlayerInput;
     };
 } // namespace dae
