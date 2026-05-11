@@ -1,49 +1,40 @@
 #pragma once
 
-#include "Singleton.hpp"
+#include "SDL_SoundSystem.hpp"
 #include "Service.hpp"
-#include <vector>
+#include "Singleton.hpp"
+#include "SoundSystem.hpp"
 #include <memory>
+#include <vector>
 
 namespace dae
 {
-	class ServiceProvider final : public Singleton<ServiceProvider>
-	{
-	public:
-		template <typename T, typename ...Args>
-		void AddService(Args&& ...args)
-		{
-			m_Services.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
-		};
+    class NullSoundSystem final : public SoundSystem
+    {
+      public:
+        NullSoundSystem() = default;
+        virtual ~NullSoundSystem() override = default;
+        void Play(const sound_id, const float) override
+        {
+        }
+        void Destroy() override
+        {
+        }
+    };
+    class ServiceProvider final
+    {
+        static std::unique_ptr<SoundSystem> _ss_instance;
 
-		template <typename T>
-		void RemoveService()
-		{
-			T* toBeRemoved = GetService<T>();
-			m_Services.erase(
-				std::remove_if(
-					m_Services.begin(),
-					m_Services.end(),
-					[toBeRemoved](const auto& ptr) { return ptr.get() == toBeRemoved; }
-				),
-				m_Services.end()
-			);
-		};
+      public:
+        static SoundSystem &GetSoundSystem()
+        {
+            return *_ss_instance;
+        }
+        static void RegisterSoundSystem(std::unique_ptr<SoundSystem> &&ss)
+        {
+            _ss_instance = ss == nullptr ? std::make_unique<NullSoundSystem>() : std::move(ss);
+        }
+    };
+} // namespace dae
 
-		template <typename T>
-		T* GetService() const
-		{
-			for (auto const& service : m_Services)
-			{
-				T* castedService = dynamic_cast<T*>(service.get());
-				if (castedService != nullptr) return castedService;
-			}
-			return nullptr;
-		};
-	private:
-		friend class Singleton<ServiceProvider>;
-		ServiceProvider() = default;
-
-		std::vector<std::unique_ptr<Service>> m_Services;
-	};
-}
+inline std::unique_ptr<dae::SoundSystem> dae::ServiceProvider::_ss_instance = std::make_unique<NullSoundSystem>();

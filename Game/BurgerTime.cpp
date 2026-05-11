@@ -34,15 +34,16 @@ BurgerTime::~BurgerTime() = default;
 
 void BurgerTime::Initialize()
 {
-    dae::ServiceProvider::GetInstance().AddService<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{
-        {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}});
+    dae::ServiceProvider::RegisterSoundSystem(
+        std::make_unique<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{
+            {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}}));
     m_Achievements = std::make_unique<dae::Achievements>();
     SetupGameScene();
 }
 
 void BurgerTime::Destroy()
 {
-    dae::ServiceProvider::GetInstance().GetService<dae::SDL_SoundSystem>()->Destroy();
+    dae::ServiceProvider::GetSoundSystem().Destroy();
 }
 
 void BurgerTime::SetupGameScene()

@@ -152,6 +152,8 @@ add_library(Minigin STATIC
   "Minigin/Binding.cpp"
   "Minigin/TimeManager.cpp"
   "Minigin/Texture2DComponent.cpp"
+  "Minigin/SDL_SoundSystem.cpp" 
+  "Minigin/SoundEventQueue.cpp" 
   
 )
 
@@ -206,12 +208,13 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Extras/Achievements.cpp"
   "Game/Extras/CustomCommands.cpp"
   "Game/Extras/Subject.cpp"
-  "Game/Extras/SDL_SoundSystem.cpp" 
-  "Game/Extras/SoundEventQueue.cpp" 
   "Game/Components/PlayerComponent.cpp" 
   "Game/PlayerStates/PlayerState.cpp" 
   "Game/PlayerStates/PlayerStateIdle.cpp" 
-  "Game/PlayerStates/PlayerStateWalking.cpp" "Game/Components/RectColliderComponent.cpp" "Game/Components/PlayerAnimationComponent.cpp" "Game/PlayerStates/PlayerStateClimbing.cpp")
+  "Game/PlayerStates/PlayerStateWalking.cpp"
+  "Game/Components/RectColliderComponent.cpp"
+  "Game/Components/PlayerAnimationComponent.cpp"
+  "Game/PlayerStates/PlayerStateClimbing.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

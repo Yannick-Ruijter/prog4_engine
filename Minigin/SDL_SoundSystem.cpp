@@ -3,6 +3,7 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <stdexcept>
 using namespace dae;
 
