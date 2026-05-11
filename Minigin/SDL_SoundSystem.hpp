@@ -14,8 +14,8 @@ namespace dae
       public:
         SDL_SoundSystem(std::vector<std::pair<sound_id, std::string>> soundsToPreload);
         virtual ~SDL_SoundSystem() override;
-        void Play(sound_id const id, float const volume);
-        void Destroy();
+        void Play(sound_id const id, float const volume) override;
+        void Destroy() override;
 
       private:
         bool m_HasBeenDestroyed{false};
