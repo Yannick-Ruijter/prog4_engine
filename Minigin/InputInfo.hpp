@@ -1,65 +1,73 @@
 #pragma once
 
-
 enum class InputState
 {
-	JustPressed,
-	JustReleased,
-	Pressed,
-	None,
+    JustPressed,
+    JustReleased,
+    Pressed,
+    None,
 };
 
 enum class InputKeybinds
 {
-	//keyboard inputs
-	KEYBOARD_BEGIN,
-	A,
-	B,
-	C,
-	D,
-	E,
-	F,
-	G,
-	H,
-	I,
-	J,
-	K,
-	L,
-	M,
-	N,
-	O,
-	P,
-	Q,
-	R,
-	S,
-	T,
-	U,
-	V,
-	W,
-	X,
-	Y,
-	Z,
-	KEYBOARD_END, 
+    // keyboard inputs
+    KEYBOARD_BEGIN,
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V,
+    W,
+    X,
+    Y,
+    Z,
+    KEYBOARD_END,
 
-	//controller inputs
-	CONTROLLER_BEGIN,
-	DPAD_UP,
-	DPAD_DOWN,
-	DPAD_LEFT,
-	DPAD_RIGHT,
+    // controller inputs
+    CONTROLLER_BEGIN,
+    DPAD_UP,
+    DPAD_DOWN,
+    DPAD_LEFT,
+    DPAD_RIGHT,
 
-	START,
-	BACK,
-	LEFT_THUMB,
-	RIGHT_THUMB,
-	LEFT_SHOULDER,
-	RIGHT_SHOULDER,
-	EMPTY1, //unknown keybindsc
-	EMPTY2, //unknown keybindsc
+    START,
+    BACK,
+    LEFT_THUMB,
+    RIGHT_THUMB,
+    LEFT_SHOULDER,
+    RIGHT_SHOULDER,
+    EMPTY1, // unknown keybindsc
+    EMPTY2, // unknown keybindsc
 
-	BUTTON_SOUTH,
-	BUTTON_EAST,
-	BUTTON_WEST,   
-	BUTTON_NORTH,
-	CONTROLLER_END,
+    BUTTON_SOUTH,
+    BUTTON_EAST,
+    BUTTON_WEST,
+    BUTTON_NORTH,
+    CONTROLLER_END,
+};
+
+enum class InputAction
+{
+    MoveDown,
+    MoveUp,
+    MoveLeft,
+    MoveRight,
+    Attack,
 };
