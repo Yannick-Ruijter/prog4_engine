@@ -47,7 +47,9 @@ std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput()
     }
     else if (input->WasPressedThisFrame(InputAction::MoveDown))
     {
-        if (level->IsOnLadder(worldPos + glm::vec2{0.f, moveSpeed * deltaTime}, charSize))
+        // check both current and grid below the player
+        if (level->IsOnLadder(worldPos + glm::vec2{0.f, moveSpeed * deltaTime}, charSize) ||
+            level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
         {
             return std::make_unique<PlayerStateClimbing>(*m_Player, MoveDirection::Down);
         }

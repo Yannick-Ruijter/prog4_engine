@@ -79,19 +79,11 @@ bool dae::LevelGridComponent::IsOnPlatform(glm::vec2 const &topleft, glm::vec2 s
 bool dae::LevelGridComponent::IsOnLadder(glm::vec2 const &topleft, glm::vec2 size)
 {
 
-    // check if all 4 corners are on ladder grids
+    // check if all bottom corners are on ladders
     // tiles 3 -> 8 are all lader grids
-
-    char topLeftTile{GetTile(topleft)};
-    if (!(topLeftTile >= '3' && topLeftTile <= '8'))
-        return false;
 
     char bottomRightTile{GetTile(topleft + size)};
     if (!(bottomRightTile >= '3' && bottomRightTile <= '8'))
-        return false;
-
-    char topRightTile{GetTile(glm::vec2(topleft.x + size.x, topleft.y))};
-    if (!(topRightTile >= '3' && topRightTile <= '8'))
         return false;
 
     char bottomLeftTile{GetTile(glm::vec2(topleft.x, topleft.y + size.y))};

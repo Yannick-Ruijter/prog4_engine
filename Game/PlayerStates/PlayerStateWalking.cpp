@@ -31,8 +31,7 @@ std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput()
     glm::vec2 charSize{32.f, 32.f};
     float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
 
-    if (!level->IsOnPlatform(
-            m_PlayerTransform->GetWorldPosition() + m_MovementVector * deltaTime * m_Player->GetMoveSpeed(), charSize))
+    if (!level->IsOnPlatform(m_PlayerTransform->GetWorldPosition() + m_MovementVector * deltaTime, charSize))
         return std::make_unique<PlayerStateIdle>(*m_Player);
 
     if (m_CurrentMoveDir == MoveDirection::Left)
@@ -51,8 +50,7 @@ std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput()
 void dae::PlayerStateWalking::Update()
 {
     m_PlayerTransform->SetLocalPosition(
-        m_PlayerTransform->GetLocalPosition() +
-        (m_MovementVector * TimeManager::GetInstance().GetDeltaTime() * m_Player->GetMoveSpeed()));
+        m_PlayerTransform->GetLocalPosition() + (m_MovementVector * TimeManager::GetInstance().GetDeltaTime()));
 }
 
 void dae::PlayerStateWalking::OnEnter()
@@ -60,12 +58,12 @@ void dae::PlayerStateWalking::OnEnter()
     if (m_CurrentMoveDir == MoveDirection::Left)
     {
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
-        m_MovementVector = glm::vec2{-1.f, 0.f};
+        m_MovementVector = glm::vec2{-m_Player->GetMoveSpeed(), 0.f};
     }
     else if (m_CurrentMoveDir == MoveDirection::Right)
     {
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningRight");
-        m_MovementVector = glm::vec2{1.f, 0.f};
+        m_MovementVector = glm::vec2{m_Player->GetMoveSpeed(), 0.f};
     }
 }
 

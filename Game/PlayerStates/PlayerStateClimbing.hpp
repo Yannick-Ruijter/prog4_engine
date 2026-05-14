@@ -1,8 +1,10 @@
 #pragma once
 #include "CustomCommands.hpp"
 #include "PlayerState.hpp"
+#include <glm/glm.hpp>
 namespace dae
 {
+    class TransformComponent;
     class PlayerStateClimbing : public PlayerState
     {
       public:
@@ -14,7 +16,8 @@ namespace dae
         void OnExit();
 
       private:
-        bool m_PlayerStoppedClimbing{false};
+        glm::vec2 m_MovementVector{};
         MoveDirection m_CurrentMoveDir;
+        TransformComponent *m_PlayerTransform;
     };
 } // namespace dae
