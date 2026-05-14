@@ -19,11 +19,13 @@ namespace dae
         PlayerAnimationComponent *GetPlayerAnimation() const;
         PlayerInput *GetInput() const;
         LevelGridComponent *GetLevel() const;
+        float GetMoveSpeed() const;
 
       private:
         PlayerAnimationComponent *m_PlayerAnimation;
         std::unique_ptr<PlayerState> m_CurrentState;
         PlayerInput *m_PlayerInput;
         LevelGridComponent *m_Level;
+        float m_MoveSpeed{100.f};
     };
 } // namespace dae

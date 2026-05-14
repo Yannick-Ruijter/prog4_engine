@@ -51,3 +51,8 @@ LevelGridComponent *dae::PlayerComponent::GetLevel() const
 {
     return m_Level;
 }
+
+float dae::PlayerComponent::GetMoveSpeed() const
+{
+    return m_MoveSpeed;
+}

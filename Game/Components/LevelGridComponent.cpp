@@ -61,11 +61,11 @@ bool dae::LevelGridComponent::IsOnPlatform(glm::vec2 const &topleft, glm::vec2 s
     // first 6 tiles are all platforms
 
     char topLeftTile{GetTile(topleft)};
-    if (topLeftTile > '5')
+    if (topLeftTile > '5' || topLeftTile < '0')
         return false;
 
     char bottomRightTile{GetTile(topleft + size)};
-    if (bottomRightTile > '5')
+    if (bottomRightTile > '5' || bottomRightTile < '0')
         return false;
 
     // check if y is close enough to platform

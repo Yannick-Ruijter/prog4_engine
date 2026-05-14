@@ -64,12 +64,12 @@ void BurgerTime::SetupGameScene()
         charToTexture['0'] = "Data/Tiles/Platform_Ladder_Bottom.png";
         charToTexture['1'] = "Data/Tiles/Platform_Burger_Left.png";
         charToTexture['2'] = "Data/Tiles/Platform_Burger_Right.png";
-        charToTexture['3'] = "Data/Tiles/Ladder.png";
-        charToTexture['4'] = "Data/Tiles/Ladder_Small_Left.png";
-        charToTexture['5'] = "Data/Tiles/Ladder_Small_Right.png";
-        charToTexture['6'] = "Data/Tiles/Platform_Ladder_Top.png";
-        charToTexture['7'] = "Data/Tiles/Platform_Ladder_Small_Left.png";
-        charToTexture['8'] = "Data/Tiles/Platform_Ladder_Small_Right.png";
+        charToTexture['3'] = "Data/Tiles/Platform_Ladder_Top.png";
+        charToTexture['4'] = "Data/Tiles/Platform_Ladder_Small_Left.png";
+        charToTexture['5'] = "Data/Tiles/Platform_Ladder_Small_Right.png";
+        charToTexture['6'] = "Data/Tiles/Ladder.png";
+        charToTexture['7'] = "Data/Tiles/Ladder_Small_Left.png";
+        charToTexture['8'] = "Data/Tiles/Ladder_Small_Right.png";
         charToTexture['9'] = "Data/Tiles/Burger_Bowl_Left.png";
         charToTexture['a'] = "Data/Tiles/Burger_Bowl_Middle.png";
         charToTexture['b'] = "Data/Tiles/Burger_Bowl_Double.png";
@@ -112,7 +112,7 @@ void BurgerTime::SetupGameScene()
         m_Player1->AddComponent<dae::RenderComponent>();
         m_Player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
         m_Player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
-        m_Player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 214, 0});
+        m_Player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{150, 214, 0});
         m_Player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player1->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
