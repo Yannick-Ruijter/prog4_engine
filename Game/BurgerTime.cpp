@@ -56,6 +56,7 @@ void BurgerTime::SetupGameScene()
     auto go = std::make_unique<dae::GameObject>();
     auto fontMain = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
     auto fontSmall = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
+    dae::GameObject *level{};
     // background stuff
     {
         std::unordered_map<char, std::string> charToTexture{};
@@ -72,8 +73,10 @@ void BurgerTime::SetupGameScene()
         charToTexture['a'] = "Data/Tiles/Burger_Bowl_Middle.png";
         charToTexture['b'] = "Data/Tiles/Burger_Bowl_Double.png";
         charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
+
         go->AddComponent<dae::RenderComponent>();
         go->AddComponent<dae::LevelGridComponent>(glm::ivec2{64, 64}, "Data/Levels/Level0.csv", charToTexture);
+        level = go.get();
         scene.Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
@@ -99,7 +102,8 @@ void BurgerTime::SetupGameScene()
         m_Player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player2->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        m_Player2->AddComponent<dae::PlayerComponent>(inputManager.GetKeyboardInput());
+        m_Player2->AddComponent<dae::PlayerComponent>(
+            inputManager.GetKeyboardInput(), level->GetComponent<dae::LevelGridComponent>());
         scene.Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
@@ -111,7 +115,8 @@ void BurgerTime::SetupGameScene()
         m_Player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player1->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        m_Player1->AddComponent<dae::PlayerComponent>(inputManager.GetControllerInput(0));
+        m_Player1->AddComponent<dae::PlayerComponent>(
+            inputManager.GetControllerInput(0), level->GetComponent<dae::LevelGridComponent>());
         scene.Add(std::move(go));
     }
 

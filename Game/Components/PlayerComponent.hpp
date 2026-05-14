@@ -8,10 +8,11 @@ namespace dae
     class PlayerAnimationComponent;
     class PlayerState;
     class PlayerInput;
+    class LevelGridComponent;
     class PlayerComponent final : public Component, public Observer
     {
       public:
-        PlayerComponent(GameObject &owner, PlayerInput *input);
+        PlayerComponent(GameObject &owner, PlayerInput *input, LevelGridComponent *level);
         ~PlayerComponent();
         void Update();
         GameObject *GetPlayer();
@@ -23,5 +24,6 @@ namespace dae
         PlayerAnimationComponent *m_PlayerAnimation;
         std::unique_ptr<PlayerState> m_CurrentState;
         PlayerInput *m_PlayerInput;
+        LevelGridComponent *m_Level;
     };
 } // namespace dae

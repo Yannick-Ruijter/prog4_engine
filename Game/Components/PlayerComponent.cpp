@@ -1,5 +1,6 @@
 #include "PlayerComponent.hpp"
 #include "GameObject.hpp"
+#include "LevelGridComponent.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerInput.hpp"
 #include "PlayerState.hpp"
@@ -7,11 +8,12 @@
 #include "sdbm_hash.hpp"
 using namespace dae;
 
-PlayerComponent::PlayerComponent(GameObject &owner, PlayerInput *input)
+PlayerComponent::PlayerComponent(GameObject &owner, PlayerInput *input, LevelGridComponent *level)
     : Component(owner),
       m_PlayerAnimation{owner.GetComponent<PlayerAnimationComponent>()},
       m_CurrentState{std::make_unique<PlayerStateIdle>(*this)},
-      m_PlayerInput{input}
+      m_PlayerInput{input},
+      m_Level{level}
 {
     assert(
         m_PlayerAnimation != nullptr &&

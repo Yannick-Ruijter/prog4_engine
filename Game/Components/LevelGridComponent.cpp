@@ -54,3 +54,57 @@ void dae::LevelGridComponent::Render() const
         }
     }
 }
+
+bool dae::LevelGridComponent::IsOnPlatform(glm::ivec2 const &topleft, glm::ivec2 size)
+{
+    // check if all 4 corners are on platform grids
+    // first 6 tiles are all platforms
+
+    char topLeftTile{GetTile(topleft)};
+    if (topLeftTile > '5')
+        return false;
+
+    char bottomRightTile{GetTile(topleft + size)};
+    if (bottomRightTile > '5')
+        return false;
+
+    char topRightTile{GetTile(glm::ivec2(topleft.x + size.x, topleft.y))};
+    if (topRightTile > '5')
+        return false;
+
+    char bottomLeftTile{GetTile(glm::ivec2(topleft.x, topleft.y + size.y))};
+    if (bottomLeftTile > '5')
+        return false;
+
+    return true;
+}
+
+bool dae::LevelGridComponent::IsOnLadder(glm::ivec2 const &topleft, glm::ivec2 size)
+{
+
+    // check if all 4 corners are on ladder grids
+    // tiles 3 -> 8 are all lader grids
+
+    char topLeftTile{GetTile(topleft)};
+    if (!(topLeftTile >= '3' && topLeftTile <= '8'))
+        return false;
+
+    char bottomRightTile{GetTile(topleft + size)};
+    if (!(bottomRightTile >= '3' && bottomRightTile <= '8'))
+        return false;
+
+    char topRightTile{GetTile(glm::ivec2(topleft.x + size.x, topleft.y))};
+    if (!(topRightTile >= '3' && topRightTile <= '8'))
+        return false;
+
+    char bottomLeftTile{GetTile(glm::ivec2(topleft.x, topleft.y + size.y))};
+    if (!(bottomLeftTile >= '3' && bottomLeftTile <= '8'))
+        return false;
+
+    return true;
+}
+
+char dae::LevelGridComponent::GetTile(glm::ivec2 const &pos)
+{
+    return m_Grid[pos.y / m_GridSize.y][pos.x / m_GridSize.x];
+}
