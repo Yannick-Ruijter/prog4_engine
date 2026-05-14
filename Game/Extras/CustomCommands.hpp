@@ -2,6 +2,7 @@
 
 #include "Command.hpp"
 #include "ServiceProvider.hpp"
+#include <glm/glm.hpp>
 namespace dae
 {
     class GameObject;
@@ -39,7 +40,7 @@ namespace dae
         ~MoveObjectCommand() override = default;
 
       private:
-        glm::vec3 m_MoveDir{};
+        glm::vec2 m_MoveDir{};
         TransformComponent *m_TransformComponent{nullptr};
         TimeManager *m_TimeManager{nullptr};
         float m_Speed{};

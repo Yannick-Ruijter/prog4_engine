@@ -27,17 +27,17 @@ MoveObjectCommand::MoveObjectCommand(GameObject &object, MoveDirection direction
       m_Speed{speed}
 {
     if (direction == MoveDirection::Up)
-        m_MoveDir = glm::vec3{0.f, -1.f, 0.f};
+        m_MoveDir = glm::vec2{0.f, -1.f};
     if (direction == MoveDirection::Down)
-        m_MoveDir = glm::vec3{0.f, 1.f, 0.f};
+        m_MoveDir = glm::vec2{0.f, 1.f};
     if (direction == MoveDirection::Left)
-        m_MoveDir = glm::vec3{-1.f, 0.f, 0.f};
+        m_MoveDir = glm::vec2{-1.f, 0.f};
     if (direction == MoveDirection::Right)
-        m_MoveDir = glm::vec3{1.f, 0.f, 0.f};
+        m_MoveDir = glm::vec2{1.f, 0.f};
 }
 void MoveObjectCommand::Execute()
 {
-    glm::vec3 displacement{m_MoveDir * m_TimeManager->GetDeltaTime() * m_Speed};
+    glm::vec2 displacement{m_MoveDir * m_TimeManager->GetDeltaTime() * m_Speed};
     m_TransformComponent->SetLocalPosition(m_TransformComponent->GetLocalPosition() + displacement);
 }
 

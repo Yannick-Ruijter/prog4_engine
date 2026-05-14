@@ -67,7 +67,7 @@ dae::GameObject *dae::GameObject::GetParent() const
     return m_Parent;
 }
 
-glm::vec3 dae::GameObject::GetWorldPosition() const
+glm::vec2 dae::GameObject::GetWorldPosition() const
 {
     return m_Transform->GetWorldPosition();
 }
@@ -79,8 +79,9 @@ dae::GameObject::GameObject(GameObject *parent, bool keepCoordinates)
 
 bool dae::GameObject::IsChild(GameObject *object) const
 {
-    return std::find_if(begin(m_Children), end(m_Children),
-                        [object](const auto &ptr) { return ptr.get() == object; }) != end(m_Children);
+    return std::find_if(
+               begin(m_Children), end(m_Children), [object](const auto &ptr) { return ptr.get() == object; }) !=
+           end(m_Children);
 }
 
 void dae::GameObject::RemoveChild(GameObject *object)
@@ -94,7 +95,7 @@ void dae::GameObject::AddChild(GameObject *object)
     m_Children.emplace_back(object);
 }
 
-void dae::GameObject::SetLocalPosition(glm::vec3 const &pos)
+void dae::GameObject::SetLocalPosition(glm::vec2 const &pos)
 {
     m_Transform->SetLocalPosition(pos);
 }

@@ -19,6 +19,7 @@ namespace dae
         void Notify(unsigned int eventId, GameObject *source);
         PlayerAnimationComponent *GetPlayerAnimation() const;
         PlayerInput *GetInput() const;
+        LevelGridComponent *GetLevel() const;
 
       private:
         PlayerAnimationComponent *m_PlayerAnimation;

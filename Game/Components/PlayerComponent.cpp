@@ -54,3 +54,8 @@ PlayerInput *dae::PlayerComponent::GetInput() const
 {
     return m_PlayerInput;
 }
+
+LevelGridComponent *dae::PlayerComponent::GetLevel() const
+{
+    return m_Level;
+}
