@@ -1,50 +1,49 @@
-﻿#include <stdexcept>
+﻿#include <iostream>
 #include <sstream>
-#include <iostream>
+#include <stdexcept>
 
 #if WIN32
-#define WIN32_LEAN_AND_MEAN 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
 #undef USE_STEAMWORKS
 #if USE_STEAMWORKS
-#pragma warning (push)
-#pragma warning (disable:4996)
+#pragma warning(push)
+#pragma warning(disable : 4996)
 #include <steam_api.h>
-#pragma warning (pop)
+#pragma warning(pop)
 #endif
 
-
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
-#include "Minigin.hpp"
 #include "InputManager.hpp"
-#include "SceneManager.hpp"
-#include "TimeManager.hpp"
+#include "Minigin.hpp"
 #include "Renderer.hpp"
 #include "ResourceManager.hpp"
+#include "SceneManager.hpp"
+#include "TimeManager.hpp"
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <chrono>
 
-SDL_Window* g_window{};
+SDL_Window *g_window{};
 
-void LogSDLVersion(const std::string& message, int major, int minor, int patch)
+void LogSDLVersion(const std::string &message, int major, int minor, int patch)
 {
 #if WIN32
-	std::stringstream ss;
-	ss << message << major << "." << minor << "." << patch << "\n";
-	OutputDebugString(ss.str().c_str());
+    std::stringstream ss;
+    ss << message << major << "." << minor << "." << patch << "\n";
+    OutputDebugString(ss.str().c_str());
 #else
-	std::cout << message << major << "." << minor << "." << patch << "\n";
+    std::cout << message << major << "." << minor << "." << patch << "\n";
 #endif
 }
 
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
 
-void LoopCallback(void* arg)
+void LoopCallback(void *arg)
 {
-	static_cast<dae::Minigin*>(arg)->RunOneFrame();
+    static_cast<dae::Minigin *>(arg)->RunOneFrame();
 }
 #endif
 
@@ -53,89 +52,88 @@ void LoopCallback(void* arg)
 // These entries in the debug output help to identify that issue.
 void PrintSDLVersion()
 {
-	LogSDLVersion("Compiled with SDL", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_MICRO_VERSION);
-	int version = SDL_GetVersion();
-	LogSDLVersion("Linked with SDL ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version));
-	// LogSDLVersion("Compiled with SDL_image ",SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_MICRO_VERSION);
-	// version = IMG_Version();
-	// LogSDLVersion("Linked with SDL_image ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version));
-	LogSDLVersion("Compiled with SDL_ttf ",	SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION,SDL_TTF_MICRO_VERSION);
-	version = TTF_Version();
-	LogSDLVersion("Linked with SDL_ttf ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version),	SDL_VERSIONNUM_MICRO(version));
+    LogSDLVersion("Compiled with SDL", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_MICRO_VERSION);
+    int version = SDL_GetVersion();
+    LogSDLVersion(
+        "Linked with SDL ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version),
+        SDL_VERSIONNUM_MICRO(version));
+    // LogSDLVersion("Compiled with SDL_image ",SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION,
+    // SDL_IMAGE_MICRO_VERSION); version = IMG_Version(); LogSDLVersion("Linked with SDL_image ",
+    // SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version));
+    LogSDLVersion("Compiled with SDL_ttf ", SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION, SDL_TTF_MICRO_VERSION);
+    version = TTF_Version();
+    LogSDLVersion(
+        "Linked with SDL_ttf ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version),
+        SDL_VERSIONNUM_MICRO(version));
 }
 
-dae::Minigin::Minigin(const std::filesystem::path& dataPath, std::unique_ptr<Game> game)
-	:m_Game{std::move(game)}
+dae::Minigin::Minigin(const std::filesystem::path &dataPath, std::unique_ptr<Game> game) : m_Game{std::move(game)}
 {
-	PrintSDLVersion();
-	
-	if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
-	{
-		SDL_Log("Renderer error: %s", SDL_GetError());
-		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
-	}
+    PrintSDLVersion();
 
-	g_window = SDL_CreateWindow(
-		"BurgerTime",
-		1032,
-		800,
-		SDL_WINDOW_OPENGL
-	);
-	if (g_window == nullptr) 
-	{
-		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
-	}
+    if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
+    {
+        SDL_Log("Renderer error: %s", SDL_GetError());
+        throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+    }
+
+    g_window = SDL_CreateWindow("BurgerTime", 960, 848, SDL_WINDOW_OPENGL);
+    if (g_window == nullptr)
+    {
+        throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
+    }
 
 #if USE_STEAMWORKS
-	if (!SteamAPI_Init())
-		throw std::runtime_error(std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
+    if (!SteamAPI_Init())
+        throw std::runtime_error(
+            std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
 #endif
 
-	Renderer::GetInstance().Init(g_window, m_Game.get());
-	ResourceManager::GetInstance().Init(dataPath);
-	m_Game->Initialize();
+    Renderer::GetInstance().Init(g_window, m_Game.get());
+    ResourceManager::GetInstance().Init(dataPath);
+    m_Game->Initialize();
 }
 
 dae::Minigin::~Minigin()
 {
 #if USE_STEAMWORKS
-	SteamAPI_Shutdown();
+    SteamAPI_Shutdown();
 #endif
-	m_Game->Destroy();
-	Renderer::GetInstance().Destroy();
-	SDL_DestroyWindow(g_window);
-	g_window = nullptr;
-	SDL_Quit();
+    m_Game->Destroy();
+    Renderer::GetInstance().Destroy();
+    SDL_DestroyWindow(g_window);
+    g_window = nullptr;
+    SDL_Quit();
 }
 
 void dae::Minigin::Run()
 {
 #ifndef __EMSCRIPTEN__
-	while (!m_quit)
-		RunOneFrame();
+    while (!m_quit)
+        RunOneFrame();
 #else
-	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
+    emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
 #endif
 }
 
 void dae::Minigin::RunOneFrame()
 {
 #if USE_STEAMWORKS
-	SteamAPI_RunCallbacks();
-#endif 
-	TimeManager::GetInstance().Update();
-	auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-	m_quit = !InputManager::GetInstance().ProcessInput();
-	m_Game->Update();
-	SceneManager::GetInstance().Update();
-	SceneManager::GetInstance().LateUpdate();
-	Renderer::GetInstance().Render();
-	auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-	auto diff = currentTime - startTime;
-	//force fps to be 60-ish
-	while (diff < 16666666)
-	{
-		currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-		diff = currentTime - startTime;
-	}
+    SteamAPI_RunCallbacks();
+#endif
+    TimeManager::GetInstance().Update();
+    auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    m_quit = !InputManager::GetInstance().ProcessInput();
+    m_Game->Update();
+    SceneManager::GetInstance().Update();
+    SceneManager::GetInstance().LateUpdate();
+    Renderer::GetInstance().Render();
+    auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    auto diff = currentTime - startTime;
+    // force fps to be 60-ish
+    while (diff < 16666666)
+    {
+        currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        diff = currentTime - startTime;
+    }
 }

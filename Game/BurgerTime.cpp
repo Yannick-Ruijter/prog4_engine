@@ -8,6 +8,7 @@
 #include "HealthComponent.hpp"
 #include "InputInfo.hpp"
 #include "InputManager.hpp"
+#include "LevelGridComponent.hpp"
 #include "LivesDisplayComponent.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerComponent.hpp"
@@ -56,8 +57,11 @@ void BurgerTime::SetupGameScene()
     auto fontSmall = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
     // background stuff
     {
+
         go->AddComponent<dae::RenderComponent>();
-        go->AddComponent<dae::Texture2DComponent>("Data/Stage0_Background.png", 1032, 800);
+        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(64.f, 48.f);
+        go->AddComponent<dae::Texture2DComponent>("Data/Stage0_Background.png", 832, 800);
+        go->AddComponent<dae::LevelGridComponent>(glm::ivec2{15, 12}, glm::ivec2{960, 848});
         scene.Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
