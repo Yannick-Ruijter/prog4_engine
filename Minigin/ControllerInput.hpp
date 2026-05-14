@@ -8,20 +8,22 @@ namespace dae
 {
     class Command;
     class Binding;
-    class ControllerInput : public PlayerInput
+    class ControllerInput final : public PlayerInput
     {
       public:
         ControllerInput(int controllerIndex);
         ~ControllerInput();
         void ProcessInput() override;
 
-        bool WasPressedThisFrame(InputKeybinds button) const override;
-        bool IsButtonPressed(InputKeybinds button) const override;
-        bool WasReleasedThisFrame(InputKeybinds button) const override;
+        bool WasPressedThisFrame(InputAction button) const override;
+        bool IsButtonPressed(InputAction button) const override;
+        bool WasReleasedThisFrame(InputAction button) const override;
 
         bool WasPressedThisFrame(unsigned int button) const override;
         bool IsButtonPressed(unsigned int button) const override;
         bool WasReleasedThisFrame(unsigned int button) const override;
+
+        PlayerInput &BindInputAction(InputAction action, InputKeybinds keybind) override;
 
         Binding *AddBinding(
             std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState,

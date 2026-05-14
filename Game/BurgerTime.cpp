@@ -40,6 +40,7 @@ void BurgerTime::Initialize()
         std::make_unique<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{
             {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}}));
     m_Achievements = std::make_unique<dae::Achievements>();
+    SetupKeybinds();
     SetupGameScene();
 }
 
@@ -98,7 +99,7 @@ void BurgerTime::SetupGameScene()
         m_Player2->AddComponent<dae::RenderComponent>();
         m_Player2->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
         m_Player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
-        m_Player2->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 200, 0});
+        m_Player2->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 214, 0});
         m_Player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player2->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
@@ -111,7 +112,7 @@ void BurgerTime::SetupGameScene()
         m_Player1->AddComponent<dae::RenderComponent>();
         m_Player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
         m_Player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
-        m_Player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 200, 0});
+        m_Player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 214, 0});
         m_Player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
         m_Player1->AddComponent<dae::PlayerAnimationComponent>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
@@ -126,37 +127,6 @@ void BurgerTime::SetupGameScene()
     dae::Subject *player2PickUpSubject1{nullptr};
     dae::Subject *player2PickUpSubject2{nullptr};
     {
-        dae::Binding *playerMovingBinding = inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player2, dae::MoveDirection::Up, "OnMoveUpButtonPressed"_h, "OnMoveUpButtonReleased"_h),
-            InputKeybinds::W, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player2->GetComponent<dae::PlayerComponent>());
-
-        playerMovingBinding = inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player2, dae::MoveDirection::Down, "OnMoveDownButtonPressed"_h, "OnMoveDownButtonReleased"_h),
-            InputKeybinds::S, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player2->GetComponent<dae::PlayerComponent>());
-
-        playerMovingBinding = inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player2, dae::MoveDirection::Left, "OnMoveLeftButtonPressed"_h, "OnMoveLeftButtonReleased"_h),
-            InputKeybinds::A, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player2->GetComponent<dae::PlayerComponent>());
-
-        playerMovingBinding = inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player2, dae::MoveDirection::Right, "OnMoveRightButtonPressed"_h, "OnMoveRightButtonReleased"_h),
-            InputKeybinds::D, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player2->GetComponent<dae::PlayerComponent>());
 
         inputManager.GetKeyboardInput()->AddBinding(
             std::make_unique<dae::DamagePlayer>(*m_Player2, *m_Player1), InputKeybinds::C, InputState::JustPressed);
@@ -164,39 +134,6 @@ void BurgerTime::SetupGameScene()
             std::make_unique<dae::PickUpItemCommand>(*m_Player2), InputKeybinds::Z, InputState::JustPressed);
         dae::Binding *player2PickUpBinding2 = inputManager.GetKeyboardInput()->AddBinding(
             std::make_unique<dae::PickUpItemCommand>(*m_Player2), InputKeybinds::X, InputState::JustPressed);
-
-        playerMovingBinding = inputManager.GetControllerInput(0)->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player1, dae::MoveDirection::Up, "OnMoveUpButtonPressed"_h, "OnMoveUpButtonReleased"_h, 200.f),
-            InputKeybinds::DPAD_UP, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player1->GetComponent<dae::PlayerComponent>());
-
-        playerMovingBinding = inputManager.GetControllerInput(0)->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player1, dae::MoveDirection::Down, "OnMoveDownButtonPressed"_h, "OnMoveDownButtonReleased"_h, 200.f),
-            InputKeybinds::DPAD_DOWN, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player1->GetComponent<dae::PlayerComponent>());
-
-        playerMovingBinding = inputManager.GetControllerInput(0)->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player1, dae::MoveDirection::Left, "OnMoveLeftButtonPressed"_h, "OnMoveLeftButtonReleased"_h, 200.f),
-            InputKeybinds::DPAD_LEFT, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player1->GetComponent<dae::PlayerComponent>());
-
-        playerMovingBinding = inputManager.GetControllerInput(0)->AddBinding(
-            std::make_unique<dae::MovePlayerCommand>(
-                *m_Player1, dae::MoveDirection::Right, "OnMoveRightButtonPressed"_h, "OnMoveRightButtonReleased"_h,
-                200.f),
-            InputKeybinds::DPAD_RIGHT, InputState::Pressed, InputState::JustReleased);
-        static_cast<dae::MovePlayerCommand *>(playerMovingBinding->m_Command.get())
-            ->GetSubject()
-            ->AddObserver(m_Player1->GetComponent<dae::PlayerComponent>());
 
         inputManager.GetControllerInput(0)->AddBinding(
             std::make_unique<dae::DamagePlayer>(*m_Player1, *m_Player2), InputKeybinds::BUTTON_WEST,
@@ -286,5 +223,24 @@ void BurgerTime::SetupGameScene()
     {
         m_Player1->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
         m_Player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
+    }
+}
+
+void BurgerTime::SetupKeybinds()
+{
+    auto &inputManager = dae::InputManager::GetInstance();
+    inputManager.GetKeyboardInput()
+        ->BindInputAction(InputAction::MoveUp, InputKeybinds::W)
+        .BindInputAction(InputAction::MoveDown, InputKeybinds::S)
+        .BindInputAction(InputAction::MoveRight, InputKeybinds::D)
+        .BindInputAction(InputAction::MoveLeft, InputKeybinds::A);
+
+    for (int i = 0; i < 4; ++i)
+    {
+        inputManager.GetControllerInput(i)
+            ->BindInputAction(InputAction::MoveUp, InputKeybinds::DPAD_UP)
+            .BindInputAction(InputAction::MoveDown, InputKeybinds::DPAD_DOWN)
+            .BindInputAction(InputAction::MoveRight, InputKeybinds::DPAD_RIGHT)
+            .BindInputAction(InputAction::MoveLeft, InputKeybinds::DPAD_LEFT);
     }
 }

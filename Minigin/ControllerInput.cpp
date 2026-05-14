@@ -23,20 +23,22 @@ class ControllerInput::Impl
     Impl(int controllerIndex);
     void ProcessInput();
 
-    bool WasPressedThisFrame(InputKeybinds button) const;
-    bool IsButtonPressed(InputKeybinds button) const;
-    bool WasReleasedThisFrame(InputKeybinds button) const;
+    bool WasPressedThisFrame(InputAction button) const;
+    bool IsButtonPressed(InputAction button) const;
+    bool WasReleasedThisFrame(InputAction button) const;
 
     bool WasPressedThisFrame(unsigned int button) const;
     bool IsButtonPressed(unsigned int button) const;
     bool WasReleasedThisFrame(unsigned int button) const;
+
+    void BindInputAction(InputAction action, InputKeybinds keybind);
 
     std::unique_ptr<Binding> AddBinding(
         std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState,
         InputState endTriggerState = InputState::None);
 
   private:
-    std::map<InputKeybinds, unsigned int> m_KeybindsMapped{};
+    std::map<InputAction, unsigned int> m_ActionsMapped{};
     int m_ControllerIndex{};
 #if _WIN32
     int ConvertToXInput(InputKeybinds keybind);
@@ -84,17 +86,17 @@ void ControllerInput::ProcessInput()
     }
 }
 
-bool dae::ControllerInput::WasPressedThisFrame(InputKeybinds button) const
+bool dae::ControllerInput::WasPressedThisFrame(InputAction button) const
 {
     return m_pImpl->WasPressedThisFrame(button);
 }
 
-bool dae::ControllerInput::IsButtonPressed(InputKeybinds button) const
+bool dae::ControllerInput::IsButtonPressed(InputAction button) const
 {
     return m_pImpl->IsButtonPressed(button);
 }
 
-bool dae::ControllerInput::WasReleasedThisFrame(InputKeybinds button) const
+bool dae::ControllerInput::WasReleasedThisFrame(InputAction button) const
 {
     return m_pImpl->WasReleasedThisFrame(button);
 }
@@ -112,6 +114,12 @@ bool ControllerInput::IsButtonPressed(unsigned int button) const
 bool ControllerInput::WasReleasedThisFrame(unsigned int button) const
 {
     return m_pImpl->WasReleasedThisFrame(button);
+}
+
+PlayerInput &dae::ControllerInput::BindInputAction(InputAction action, InputKeybinds keybind)
+{
+    m_pImpl->BindInputAction(action, keybind);
+    return *this;
 }
 
 Binding *ControllerInput::AddBinding(
@@ -134,22 +142,10 @@ std::unique_ptr<Binding> ControllerInput::UnBind(Binding *binding)
 
 ControllerInput::Impl::Impl(int controllerIndex) : m_ControllerIndex{controllerIndex}
 {
-    int currentVal{static_cast<int>(InputKeybinds::CONTROLLER_BEGIN) + 1};
-    int endVal{static_cast<int>(InputKeybinds::CONTROLLER_END)};
-    for (; currentVal < endVal; currentVal++)
-    {
-        InputKeybinds current{static_cast<InputKeybinds>(currentVal)};
-#if _WIN32
-        m_KeybindsMapped[current] = ConvertToXInput(current);
-#else
-        m_KeybindsMapped[current] = ConvertToSdlKeybind(current);
-#endif
-    }
 #if _WIN32
 #else
     int numberOfGamepadsConnected{};
     auto joystickIDs = SDL_GetGamepads(&numberOfGamepadsConnected);
-    // assert(controllerIndex < numberOfGamepadsConnected && "There is not enough gamepads connected right now");
     m_GamePad = SDL_OpenGamepad(joystickIDs[m_ControllerIndex]);
     SDL_free(joystickIDs);
 #endif
@@ -177,25 +173,22 @@ void ControllerInput::Impl::ProcessInput()
 #endif
 }
 
-bool ControllerInput::Impl::WasPressedThisFrame(InputKeybinds button) const
+bool ControllerInput::Impl::WasPressedThisFrame(InputAction button) const
 {
-    if (!m_KeybindsMapped.contains(button))
-        return false;
-    return WasPressedThisFrame(m_KeybindsMapped.at(button));
+    assert(m_ActionsMapped.contains(button) && "This action has not been mapped to an input yet");
+    return WasPressedThisFrame(m_ActionsMapped.at(button));
 }
 
-bool ControllerInput::Impl::IsButtonPressed(InputKeybinds button) const
+bool ControllerInput::Impl::IsButtonPressed(InputAction button) const
 {
-    if (!m_KeybindsMapped.contains(button))
-        return false;
-    return IsButtonPressed(m_KeybindsMapped.at(button));
+    assert(m_ActionsMapped.contains(button) && "This action has not been mapped to an input yet");
+    return IsButtonPressed(m_ActionsMapped.at(button));
 }
 
-bool ControllerInput::Impl::WasReleasedThisFrame(InputKeybinds button) const
+bool ControllerInput::Impl::WasReleasedThisFrame(InputAction button) const
 {
-    if (!m_KeybindsMapped.contains(button))
-        return false;
-    return WasReleasedThisFrame(m_KeybindsMapped.at(button));
+    assert(m_ActionsMapped.contains(button) && "This action has not been mapped to an input yet");
+    return WasReleasedThisFrame(m_ActionsMapped.at(button));
 }
 
 bool ControllerInput::Impl::WasPressedThisFrame(unsigned int button) const
@@ -222,6 +215,15 @@ bool ControllerInput::Impl::WasReleasedThisFrame(unsigned int button) const
     return m_ButtonsReleasedThisFrame & button;
 #else
     return m_PreviousStates[button] && !m_States[button];
+#endif
+}
+
+void ControllerInput::Impl::BindInputAction(InputAction action, InputKeybinds keybind)
+{
+#if _WIN32
+    m_ActionsMapped[action] = ConvertToXInput(keybind);
+#else
+    m_ActionsMapped[action] = ConvertToSdlKeybind(keybind);
 #endif
 }
 

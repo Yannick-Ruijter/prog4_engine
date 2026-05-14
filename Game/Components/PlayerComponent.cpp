@@ -37,14 +37,6 @@ GameObject *dae::PlayerComponent::GetPlayer()
     return GetOwner();
 }
 
-void dae::PlayerComponent::Notify(unsigned int eventId, GameObject *source)
-{
-    if (source != GetOwner())
-        return;
-
-    m_CurrentState->Notify(eventId, source);
-}
-
 PlayerAnimationComponent *dae::PlayerComponent::GetPlayerAnimation() const
 {
     return m_PlayerAnimation;

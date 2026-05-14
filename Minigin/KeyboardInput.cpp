@@ -5,16 +5,7 @@
 #include <algorithm>
 
 using namespace dae;
-dae::KeyboardInput::KeyboardInput()
-{
-    int currentVal{static_cast<int>(InputKeybinds::KEYBOARD_BEGIN) + 1};
-    int endVal{static_cast<int>(InputKeybinds::KEYBOARD_END)};
-    for (; currentVal < endVal; ++currentVal)
-    {
-        InputKeybinds current{static_cast<InputKeybinds>(currentVal)};
-        m_KeybindsMapped[current] = ConvertToScancode(current);
-    }
-}
+dae::KeyboardInput::KeyboardInput() = default;
 dae::KeyboardInput::~KeyboardInput() = default;
 void KeyboardInput::ProcessInput()
 {
@@ -46,25 +37,22 @@ void KeyboardInput::ProcessInput()
     }
 }
 
-bool dae::KeyboardInput::WasPressedThisFrame(InputKeybinds button) const
+bool dae::KeyboardInput::WasPressedThisFrame(InputAction button) const
 {
-    if (!m_KeybindsMapped.contains(button))
-        return false;
-    return WasPressedThisFrame(m_KeybindsMapped.at(button));
+    assert(m_ActionsMapped.contains(button) && "This action has not been mapped to an input yet");
+    return WasPressedThisFrame(m_ActionsMapped.at(button));
 }
 
-bool dae::KeyboardInput::IsButtonPressed(InputKeybinds button) const
+bool dae::KeyboardInput::IsButtonPressed(InputAction button) const
 {
-    if (!m_KeybindsMapped.contains(button))
-        return false;
-    return IsButtonPressed(m_KeybindsMapped.at(button));
+    assert(m_ActionsMapped.contains(button) && "This action has not been mapped to an input yet");
+    return IsButtonPressed(m_ActionsMapped.at(button));
 }
 
-bool dae::KeyboardInput::WasReleasedThisFrame(InputKeybinds button) const
+bool dae::KeyboardInput::WasReleasedThisFrame(InputAction button) const
 {
-    if (!m_KeybindsMapped.contains(button))
-        return false;
-    return WasReleasedThisFrame(m_KeybindsMapped.at(button));
+    assert(m_ActionsMapped.contains(button) && "This action has not been mapped to an input yet");
+    return WasReleasedThisFrame(m_ActionsMapped.at(button));
 }
 
 bool KeyboardInput::WasPressedThisFrame(unsigned int button) const
@@ -84,6 +72,12 @@ bool KeyboardInput::WasReleasedThisFrame(unsigned int button) const
     bool buttonChange = m_CurrentState[button] ^ m_PreviousState[button];
 
     return buttonChange && !m_CurrentState[button];
+}
+
+PlayerInput &dae::KeyboardInput::BindInputAction(InputAction action, InputKeybinds keybind)
+{
+    m_ActionsMapped[action] = ConvertToScancode(keybind);
+    return *this;
 }
 
 Binding *KeyboardInput::AddBinding(

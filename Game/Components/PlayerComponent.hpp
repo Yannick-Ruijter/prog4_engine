@@ -9,14 +9,13 @@ namespace dae
     class PlayerState;
     class PlayerInput;
     class LevelGridComponent;
-    class PlayerComponent final : public Component, public Observer
+    class PlayerComponent final : public Component
     {
       public:
         PlayerComponent(GameObject &owner, PlayerInput *input, LevelGridComponent *level);
         ~PlayerComponent();
         void Update();
         GameObject *GetPlayer();
-        void Notify(unsigned int eventId, GameObject *source);
         PlayerAnimationComponent *GetPlayerAnimation() const;
         PlayerInput *GetInput() const;
         LevelGridComponent *GetLevel() const;

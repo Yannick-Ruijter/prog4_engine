@@ -39,18 +39,3 @@ void dae::PlayerStateWalking::OnEnter()
 void dae::PlayerStateWalking::OnExit()
 {
 }
-
-void dae::PlayerStateWalking::Notify(unsigned int eventId, GameObject *)
-{
-    // still need a better way to link commands and states but this works for now
-    if (eventId == "OnMoveLeftButtonReleased"_h)
-    {
-        if (m_CurrentMoveDir == MoveDirection::Left)
-            m_StoppedMoving = true;
-    }
-    else if (eventId == "OnMoveRightButtonReleased"_h)
-    {
-        if (m_CurrentMoveDir == MoveDirection::Right)
-            m_StoppedMoving = true;
-    }
-}

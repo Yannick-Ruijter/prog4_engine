@@ -22,4 +22,6 @@ class BurgerTime : public Game
     dae::GameObject *m_Player2{nullptr};
     std::unique_ptr<dae::Achievements> m_Achievements{nullptr};
     int m_StartingLives{3};
+
+    void SetupKeybinds();
 };

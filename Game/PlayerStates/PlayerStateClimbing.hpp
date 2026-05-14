@@ -12,7 +12,6 @@ namespace dae
         void Update();
         void OnEnter();
         void OnExit();
-        void Notify(unsigned int eventId, GameObject *source);
 
       private:
         bool m_PlayerStoppedClimbing{false};

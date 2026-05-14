@@ -47,17 +47,3 @@ void dae::PlayerStateClimbing::OnExit()
 {
     return;
 }
-
-void dae::PlayerStateClimbing::Notify(unsigned int eventId, GameObject *)
-{
-    if (eventId == "OnMoveUpButtonReleased"_h)
-    {
-        if (m_CurrentMoveDir == MoveDirection::Up)
-            m_PlayerStoppedClimbing = true;
-    }
-    else if (eventId == "OnMoveDownButtonReleased"_h)
-    {
-        if (m_CurrentMoveDir == MoveDirection::Down)
-            m_PlayerStoppedClimbing = true;
-    }
-}

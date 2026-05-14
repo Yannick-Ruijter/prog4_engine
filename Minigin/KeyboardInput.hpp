@@ -11,20 +11,22 @@ namespace dae
 {
     class Command;
     class Binding;
-    class KeyboardInput : public PlayerInput
+    class KeyboardInput final : public PlayerInput
     {
       public:
         KeyboardInput();
         ~KeyboardInput();
         void ProcessInput() override;
 
-        bool WasPressedThisFrame(InputKeybinds button) const override;
-        bool IsButtonPressed(InputKeybinds button) const override;
-        bool WasReleasedThisFrame(InputKeybinds button) const override;
+        bool WasPressedThisFrame(InputAction button) const override;
+        bool IsButtonPressed(InputAction button) const override;
+        bool WasReleasedThisFrame(InputAction button) const override;
 
         bool WasPressedThisFrame(unsigned int button) const override;
         bool IsButtonPressed(unsigned int button) const override;
         bool WasReleasedThisFrame(unsigned int button) const override;
+
+        PlayerInput &BindInputAction(InputAction action, InputKeybinds keybind) override;
 
         Binding *AddBinding(
             std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState,
@@ -38,6 +40,6 @@ namespace dae
         std::unique_ptr<bool[]> m_PreviousState{};
 
         std::vector<std::unique_ptr<Binding>> m_Bindings;
-        std::map<InputKeybinds, unsigned int> m_KeybindsMapped{};
+        std::map<InputAction, unsigned int> m_ActionsMapped{};
     };
 } // namespace dae
