@@ -27,6 +27,7 @@
 #include "Texture2DComponent.hpp"
 #include "TransformComponent.hpp"
 #include "sdbm_hash.hpp"
+#include <map>
 #include <tuple>
 
 BurgerTime::BurgerTime() = default;
@@ -57,11 +58,22 @@ void BurgerTime::SetupGameScene()
     auto fontSmall = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
     // background stuff
     {
-
+        std::unordered_map<char, std::string> charToTexture{};
+        charToTexture['0'] = "Data/Tiles/Platform_Ladder_Bottom.png";
+        charToTexture['1'] = "Data/Tiles/Platform_Burger_Left.png";
+        charToTexture['2'] = "Data/Tiles/Platform_Burger_Right.png";
+        charToTexture['3'] = "Data/Tiles/Ladder.png";
+        charToTexture['4'] = "Data/Tiles/Ladder_Small_Left.png";
+        charToTexture['5'] = "Data/Tiles/Ladder_Small_Right.png";
+        charToTexture['6'] = "Data/Tiles/Platform_Ladder_Top.png";
+        charToTexture['7'] = "Data/Tiles/Platform_Ladder_Small_Left.png";
+        charToTexture['8'] = "Data/Tiles/Platform_Ladder_Small_Right.png";
+        charToTexture['9'] = "Data/Tiles/Burger_Bowl_Left.png";
+        charToTexture['a'] = "Data/Tiles/Burger_Bowl_Middle.png";
+        charToTexture['b'] = "Data/Tiles/Burger_Bowl_Double.png";
+        charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
         go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(64.f, 48.f);
-        go->AddComponent<dae::Texture2DComponent>("Data/Stage0_Background.png", 832, 800);
-        go->AddComponent<dae::LevelGridComponent>(glm::ivec2{15, 12}, glm::ivec2{960, 848});
+        go->AddComponent<dae::LevelGridComponent>(glm::ivec2{64, 64}, "Data/Levels/Level0.csv", charToTexture);
         scene.Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();

@@ -1,30 +1,56 @@
 #include "LevelGridComponent.hpp"
 #include "Renderer.hpp"
-#include <SDL3/SDL.h>
 #include <execution>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
 
 using namespace dae;
 
 LevelGridComponent::LevelGridComponent(
-    GameObject &owner, glm::ivec2 const &gridNumbers, glm::ivec2 const &windowDimensions)
-    : Component(owner), m_GridNumbers{gridNumbers}
+    GameObject &owner, glm::ivec2 const &gridSize, std::string const &levelFile,
+    std::unordered_map<char, std::string> textures)
+    : Component(owner), m_GridSize{gridSize}
 {
-    m_GridDimensions.x = static_cast<float>(windowDimensions.x) / m_GridNumbers.x;
-    m_GridDimensions.y = static_cast<float>(windowDimensions.y) / m_GridNumbers.y;
+    std::ifstream stream{levelFile};
+    std::string line;
+    m_TexturesLoaded[' '] = nullptr;
+    while (std::getline(stream, line))
+    {
+        m_Grid.emplace_back();
+        std::stringstream ss{line};
+        std::string cell;
+
+        while (std::getline(ss, cell, ','))
+        {
+            char currentChar{cell[0]};
+            m_Grid.back().emplace_back(currentChar);
+            if (textures.contains(currentChar) && !m_TexturesLoaded.contains(currentChar))
+            {
+                SDL_Surface *surface = SDL_LoadPNG(textures[currentChar].c_str());
+                surface = SDL_ScaleSurface(surface, gridSize.x, gridSize.y, SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
+                SDL_Texture *texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surface);
+                SDL_DestroySurface(surface);
+                m_TexturesLoaded[currentChar] = texture;
+            }
+        }
+    }
 }
 
 void dae::LevelGridComponent::Render() const
 {
-    SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 255, 0, 255);
-    for (int i = 0; i < m_GridNumbers.x * m_GridNumbers.y; ++i)
+    for (size_t y = 0; y < m_Grid.size(); ++y)
     {
+        for (size_t x = 0; x < m_Grid[y].size(); ++x)
+        {
+            char cell = m_Grid[y][x];
+            if (!m_TexturesLoaded.contains(cell) || m_TexturesLoaded.at(cell) == nullptr)
+                continue;
 
-        SDL_FRect currentRect{
-            .x = (i % m_GridNumbers.x) * m_GridDimensions.x,
-            .y = (i / m_GridNumbers.x) * m_GridDimensions.y,
-            .w = m_GridDimensions.x,
-            .h = m_GridDimensions.y};
-
-        SDL_RenderRect(Renderer::GetInstance().GetSDLRenderer(), &currentRect);
+            SDL_FRect dst{
+                static_cast<float>(x * m_GridSize.x), static_cast<float>(y * m_GridSize.y),
+                static_cast<float>(m_GridSize.x), static_cast<float>(m_GridSize.y)};
+            SDL_RenderTexture(Renderer::GetInstance().GetSDLRenderer(), m_TexturesLoaded.at(cell), nullptr, &dst);
+        }
     }
 }

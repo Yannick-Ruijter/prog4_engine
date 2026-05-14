@@ -154,6 +154,7 @@ add_library(Minigin STATIC
   "Minigin/Texture2DComponent.cpp"
   "Minigin/SDL_SoundSystem.cpp" 
   "Minigin/SoundEventQueue.cpp" 
+  "Minigin/RenderComponent.cpp"
   
 )
 
@@ -195,7 +196,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Main.cpp"
   "Game/BurgerTime.cpp"
   "Game/Components/TextComponent.cpp"
-  "Game/Components/RenderComponent.cpp"
   "Game/Components/FPSComponent.cpp"
   "Game/Components/OrbitComponent.cpp"
   "Game/Components/TrashTheCacheComponent.cpp"

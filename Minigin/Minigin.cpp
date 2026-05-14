@@ -77,7 +77,7 @@ dae::Minigin::Minigin(const std::filesystem::path &dataPath, std::unique_ptr<Gam
         throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
     }
 
-    g_window = SDL_CreateWindow("BurgerTime", 960, 848, SDL_WINDOW_OPENGL);
+    g_window = SDL_CreateWindow("BurgerTime", 960, 960, SDL_WINDOW_OPENGL);
     if (g_window == nullptr)
     {
         throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
