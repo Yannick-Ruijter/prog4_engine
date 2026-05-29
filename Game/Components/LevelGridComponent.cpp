@@ -93,6 +93,13 @@ bool dae::LevelGridComponent::IsOnLadder(glm::vec2 const &topleft, glm::vec2 siz
     return true;
 }
 
+float dae::LevelGridComponent::RoundToPlatformHeight(float yPos)
+{
+    float vertTile = std::floor(yPos / m_GridSize.y);
+    float platformOffset = 55.f;
+    return vertTile * m_GridSize.y + platformOffset;
+}
+
 char dae::LevelGridComponent::GetTile(glm::vec2 const &pos)
 {
     return m_Grid[static_cast<int>(pos.y / m_GridSize.y)][static_cast<int>(pos.x / m_GridSize.x)];

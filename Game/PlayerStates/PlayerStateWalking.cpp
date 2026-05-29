@@ -1,10 +1,10 @@
-#include "PlayerStateWalking.hpp"
 #include "CustomCommands.hpp"
 #include "GameObject.hpp"
 #include "LevelGridComponent.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerInput.hpp"
 #include "PlayerStateIdle.hpp"
+#include "PlayerStateWalking.hpp"
 #include "TimeManager.hpp"
 #include "TransformComponent.hpp"
 #include "sdbm_hash.hpp"
@@ -65,6 +65,18 @@ void dae::PlayerStateWalking::OnEnter()
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningRight");
         m_MovementVector = glm::vec2{m_Player->GetMoveSpeed(), 0.f};
     }
+
+    glm::vec2 charSize{32.f, 32.f};
+    auto level{m_Player->GetLevel()};
+
+    // i know that in my game the players will never be attached to something so i can take the local position
+    auto pos = m_PlayerTransform->GetLocalPosition();
+
+    // this function take the bottom y coord and rounds to the height of the closest platform
+    // that's why I first add and then subtract the char size
+    pos.y = level->RoundToPlatformHeight(pos.y + charSize.y) - charSize.y;
+    // set the new position
+    m_PlayerTransform->SetLocalPosition(pos);
 }
 
 void dae::PlayerStateWalking::OnExit()

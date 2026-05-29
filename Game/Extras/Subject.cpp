@@ -1,6 +1,6 @@
 
-#include "Subject.hpp"
 #include "Observer.hpp"
+#include "Subject.hpp"
 
 using namespace dae;
 
@@ -16,7 +16,7 @@ Subject *Subject::RemoveObserver(Observer *observer)
     return this;
 }
 
-void Subject::NotifyObservers(unsigned int eventId, GameObject *source)
+void Subject::NotifyObservers(EventId eventId, GameObject *source)
 {
     for (auto const &observer : m_Observers)
     {

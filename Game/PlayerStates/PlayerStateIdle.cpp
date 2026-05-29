@@ -1,4 +1,3 @@
-#include "PlayerStateIdle.hpp"
 #include "GameObject.hpp"
 #include "InputInfo.hpp"
 #include "InputManager.hpp"
@@ -6,6 +5,7 @@
 #include "LevelGridComponent.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerStateClimbing.hpp"
+#include "PlayerStateIdle.hpp"
 #include "PlayerStateWalking.hpp"
 #include "Texture2DComponent.hpp"
 #include "TimeManager.hpp"
