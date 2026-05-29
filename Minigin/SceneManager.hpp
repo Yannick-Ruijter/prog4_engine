@@ -8,6 +8,7 @@
 namespace dae
 {
     class Scene;
+    class SceneLoader;
     class SceneManager final : public Singleton<SceneManager>
     {
       public:

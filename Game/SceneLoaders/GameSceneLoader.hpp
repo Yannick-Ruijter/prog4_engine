@@ -29,7 +29,5 @@ namespace dae
 
       private:
         Scene *m_Scene;
-        GameObject *m_Player1;
-        GameObject *m_Player2;
     };
 } // namespace dae
