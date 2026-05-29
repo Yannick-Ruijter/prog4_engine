@@ -1,87 +1,29 @@
-#include "BurgerTime.hpp"
-
-#include "Achievements.hpp"
 #include "Binding.hpp"
-#include "Component.hpp"
 #include "CustomCommands.hpp"
 #include "FPSComponent.hpp"
+#include "GameSceneLoader.hpp"
 #include "HealthComponent.hpp"
-#include "InputInfo.hpp"
 #include "InputManager.hpp"
 #include "LevelGridComponent.hpp"
 #include "LivesDisplayComponent.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerComponent.hpp"
-#include "PlayerLivesObserver.hpp"
-#include "PlayerState.hpp"
-#include "PlayerStateIdle.hpp"
-#include "RectColliderComponent.hpp"
 #include "RenderComponent.hpp"
+#include "ResourceIndexer.h"
 #include "ResourceManager.hpp"
-#include "SDL_SoundSystem.hpp"
+#include "Scene.hpp"
+#include "SceneManager.hpp"
 #include "ScoreComponent.hpp"
 #include "ScoreDisplayComponent.hpp"
-#include "ServiceProvider.hpp"
 #include "Subject.hpp"
 #include "TextComponent.hpp"
-#include "Texture2DComponent.hpp"
-#include "TransformComponent.hpp"
-#include "sdbm_hash.hpp"
-#include <map>
-#include <tuple>
 
-// TODO: Add function for setting up all the scenes
-// create a resetScene function that has to be called whenever they restart from the main scene
-// make the gamescene take the gamemode as param (singleplayer, coop or vs)
-//  create a gamesceneloader class
-//  I can then make the LoadScene function take a sceneloader as argument
-//  and take from that sceneloader the actual scene
-//  the gamesceneloader has static members such as player lives, currentscore and currentlevel so that they don't reset
-//  upon reloading scene Create a class for each scene
-//
-//
-// Create a mainsceneLoader class which also create the main scene
-// find a font for it
-// create a MenuScreenState class
-// create a command for moving to the next button
-// it has the currently selected button
-// a button has a OnCurrentButton function which changes the visuals
-// a button has a visual for onNotCurrentButton function (choose other names)
-// which assigns a different visual for the button
-// each button has for each direction a next button
-// once the quit button was pressed quit
-// once a mode has been chosen, load the gamescene
-//
-// Create a gameOverScene
-// display score and gamemode
-// upon completely dying, ask if they want to save their score
-// If yes, make a visual keyboard pop up (they're all just buttons)
-// and then once they save, write it to a file
-// in all cases, we send them back to the main menu when the game is over
+using namespace dae;
 
-BurgerTime::BurgerTime() = default;
-
-BurgerTime::~BurgerTime() = default;
-
-void BurgerTime::Initialize()
+dae::GameSceneLoader::GameSceneLoader(LevelInfo levelInfo)
 {
-    dae::ServiceProvider::RegisterSoundSystem(
-        std::make_unique<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{
-            {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}}));
-    m_Achievements = std::make_unique<dae::Achievements>();
-    SetupKeybinds();
-    SetupGameScene();
-}
-
-void BurgerTime::Destroy()
-{
-    dae::ServiceProvider::GetSoundSystem().Destroy();
-}
-
-void BurgerTime::SetupGameScene()
-{
-    auto scene = dae::SceneManager::GetInstance().CreateScene();
-    dae::SceneManager::GetInstance().SetActiveScene(scene);
+    m_Scene = dae::SceneManager::GetInstance().CreateScene();
+    // dae::SceneManager::GetInstance().SetActiveScene(m_Scene);
     auto &inputManager = dae::InputManager::GetInstance();
     auto go = std::make_unique<dae::GameObject>();
     auto fontMain = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
@@ -107,26 +49,26 @@ void BurgerTime::SetupGameScene()
         go->AddComponent<dae::RenderComponent>();
         go->AddComponent<dae::LevelGridComponent>(glm::ivec2{64, 64}, "Data/Levels/Level0.csv", charToTexture);
         level = go.get();
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
         go->AddComponent<dae::RenderComponent>();
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 0);
         go->AddComponent<dae::TextComponent>("Programming 4 Assignment", fontMain, SDL_Color{255, 0, 0, 255});
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
         go->AddComponent<dae::RenderComponent>();
         go->AddComponent<dae::TextComponent>("60.0", fontMain, SDL_Color{255, 0, 0, 255});
         go->AddComponent<dae::FpsComponent>();
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
     }
     // create 2 players
     {
         go = std::make_unique<dae::GameObject>();
         m_Player2 = go.get();
         m_Player2->AddComponent<dae::RenderComponent>();
-        m_Player2->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
+        m_Player2->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
         m_Player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
         m_Player2->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 214, 0});
         m_Player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
@@ -134,12 +76,12 @@ void BurgerTime::SetupGameScene()
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         m_Player2->AddComponent<dae::PlayerComponent>(
             inputManager.GetKeyboardInput(), level->GetComponent<dae::LevelGridComponent>());
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
         m_Player1 = go.get();
         m_Player1->AddComponent<dae::RenderComponent>();
-        m_Player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), m_StartingLives);
+        m_Player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
         m_Player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
         m_Player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{150, 214, 0});
         m_Player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
@@ -147,7 +89,7 @@ void BurgerTime::SetupGameScene()
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         m_Player1->AddComponent<dae::PlayerComponent>(
             inputManager.GetControllerInput(0), level->GetComponent<dae::LevelGridComponent>());
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
     }
 
     // add player bindings
@@ -196,7 +138,7 @@ void BurgerTime::SetupGameScene()
             "B to "
             "collect points",
             fontSmall);
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
         go->AddComponent<dae::RenderComponent>();
@@ -206,7 +148,7 @@ void BurgerTime::SetupGameScene()
             "to "
             "collect points",
             fontSmall);
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
     }
     // lives display
     {
@@ -218,7 +160,7 @@ void BurgerTime::SetupGameScene()
         go->AddComponent<dae::LivesDisplayComponent>(*m_Player1->GetComponent<dae::HealthComponent>());
         auto livesLostEvent = m_Player1->GetComponent<dae::HealthComponent>()->GetSubject();
         livesLostEvent->AddObserver(go->GetComponent<dae::LivesDisplayComponent>());
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
         go->AddComponent<dae::RenderComponent>();
@@ -227,7 +169,7 @@ void BurgerTime::SetupGameScene()
         go->AddComponent<dae::ScoreDisplayComponent>(*m_Player1->GetComponent<dae::ScoreComponent>());
         m_Player1->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(
             go->GetComponent<dae::ScoreDisplayComponent>());
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         // player 2
         go = std::make_unique<dae::GameObject>();
@@ -237,7 +179,7 @@ void BurgerTime::SetupGameScene()
         go->AddComponent<dae::LivesDisplayComponent>(*m_Player2->GetComponent<dae::HealthComponent>());
         livesLostEvent = m_Player2->GetComponent<dae::HealthComponent>()->GetSubject();
         livesLostEvent->AddObserver(go->GetComponent<dae::LivesDisplayComponent>());
-        scene->Add(std::move(go));
+        m_Scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
         go->AddComponent<dae::RenderComponent>();
@@ -246,30 +188,15 @@ void BurgerTime::SetupGameScene()
         go->AddComponent<dae::ScoreDisplayComponent>(*m_Player2->GetComponent<dae::ScoreComponent>());
         m_Player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(
             go->GetComponent<dae::ScoreDisplayComponent>());
-        scene->Add(std::move(go));
-    }
-
-    {
-        m_Player1->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
-        m_Player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(m_Achievements.get());
+        m_Scene->Add(std::move(go));
     }
 }
 
-void BurgerTime::SetupKeybinds()
+dae::GameSceneLoader::~GameSceneLoader()
 {
-    auto &inputManager = dae::InputManager::GetInstance();
-    inputManager.GetKeyboardInput()
-        ->BindInputAction(InputAction::MoveUp, InputKeybinds::W)
-        .BindInputAction(InputAction::MoveDown, InputKeybinds::S)
-        .BindInputAction(InputAction::MoveRight, InputKeybinds::D)
-        .BindInputAction(InputAction::MoveLeft, InputKeybinds::A);
+}
 
-    for (int i = 0; i < 4; ++i)
-    {
-        inputManager.GetControllerInput(i)
-            ->BindInputAction(InputAction::MoveUp, InputKeybinds::DPAD_UP)
-            .BindInputAction(InputAction::MoveDown, InputKeybinds::DPAD_DOWN)
-            .BindInputAction(InputAction::MoveRight, InputKeybinds::DPAD_RIGHT)
-            .BindInputAction(InputAction::MoveLeft, InputKeybinds::DPAD_LEFT);
-    }
+Scene *dae::GameSceneLoader::AcquireScene() const
+{
+    return m_Scene;
 }

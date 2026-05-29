@@ -214,7 +214,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/PlayerStates/PlayerStateWalking.cpp"
   "Game/Components/RectColliderComponent.cpp"
   "Game/Components/PlayerAnimationComponent.cpp"
-  "Game/PlayerStates/PlayerStateClimbing.cpp" "Game/Components/LevelGridComponent.cpp")
+  "Game/PlayerStates/PlayerStateClimbing.cpp" 
+  "Game/Components/LevelGridComponent.cpp" 
+  "Game/SceneLoaders/GameSceneLoader.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

@@ -103,6 +103,7 @@ dae::Minigin::~Minigin()
     Renderer::GetInstance().Destroy();
     SDL_DestroyWindow(g_window);
     g_window = nullptr;
+    SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD);
     SDL_Quit();
 }
 

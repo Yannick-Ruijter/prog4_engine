@@ -11,12 +11,14 @@ namespace dae
     class SceneManager final : public Singleton<SceneManager>
     {
       public:
-        Scene &CreateScene();
+        Scene *CreateScene();
 
         void Update();
         void LateUpdate();
         void Render();
 
+        void UnLoadScene(Scene *scene);
+        void LoadScene(Scene *Scene);
         void SetActiveScene(Scene *scene);
 
       private:

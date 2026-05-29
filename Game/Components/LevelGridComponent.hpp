@@ -17,7 +17,7 @@ namespace dae
         virtual void Render() const override;
         bool IsOnPlatform(glm::vec2 const &topleft, glm::vec2 size);
         bool IsOnLadder(glm::vec2 const &topleft, glm::vec2 size);
-        float RoundToPlatformHeight(float height);
+        float RoundToPlatformHeight(float yPos);
 
       private:
         glm::ivec2 m_GridSize{};

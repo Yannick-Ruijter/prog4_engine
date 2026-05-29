@@ -1,5 +1,5 @@
-#include "SceneManager.hpp"
 #include "Scene.hpp"
+#include "SceneManager.hpp"
 
 void dae::SceneManager::Update()
 {
@@ -19,15 +19,13 @@ void dae::SceneManager::Render()
 void dae::SceneManager::SetActiveScene(Scene *scene)
 {
     // check if the scene is in the added scenes
-    if (std::find_if(m_Scenes.begin(),
-                     m_Scenes.end(),
-                     [&](auto &other)
-                     { return other.get() == scene; }) != m_Scenes.end())
+    if (std::find_if(m_Scenes.begin(), m_Scenes.end(), [&](auto &other) { return other.get() == scene; }) !=
+        m_Scenes.end())
         m_CurrentScene = scene;
 }
 
-dae::Scene &dae::SceneManager::CreateScene()
+dae::Scene *dae::SceneManager::CreateScene()
 {
     m_Scenes.emplace_back(new Scene());
-    return *m_Scenes.back();
+    return m_Scenes.back().get();
 }
