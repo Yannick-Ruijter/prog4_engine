@@ -1,9 +1,9 @@
 #pragma once
-#include "SceneLoader.hpp"
 
 namespace dae
 {
     class GameObject;
+    class Scene;
     enum class GameMode
     {
         SinglePlayer,
@@ -20,14 +20,9 @@ namespace dae
         int currentScore = 0;
     };
 
-    class GameSceneLoader : public SceneLoader
+    class GameSceneLoader
     {
       public:
-        GameSceneLoader(LevelInfo levelInfo = {});
-        virtual ~GameSceneLoader() override;
-        virtual Scene *AcquireScene() const override;
-
-      private:
-        Scene *m_Scene;
+        static Scene *LoadScene(LevelInfo levelInfo = {});
     };
 } // namespace dae

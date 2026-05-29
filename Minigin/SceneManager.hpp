@@ -5,6 +5,12 @@
 #include <string>
 #include <vector>
 
+// restrain the type T to always have the function LoadScene that returns a scene*
+template <typename T, typename... Args>
+concept IsSceneLoader = requires(Args &&...args) {
+    { T::LoadScene(std::forward<Args>(args)...) } -> std::same_as<dae::Scene *>;
+};
+
 namespace dae
 {
     class Scene;
@@ -19,7 +25,17 @@ namespace dae
         void Render();
 
         void UnLoadScene(Scene *scene);
-        void LoadScene(Scene *Scene);
+
+        template <typename Loader, typename... Args>
+            requires IsSceneLoader<Loader, Args...>
+        Scene *LoadScene(bool setAsActive, Args &&...args)
+        {
+            auto scene = Loader::LoadScene(std::forward<Args>(args)...);
+            if (setAsActive)
+                SetActiveScene(scene);
+            return scene;
+        }
+
         void SetActiveScene(Scene *scene);
 
       private:

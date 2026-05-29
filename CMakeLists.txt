@@ -227,7 +227,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/Components/"
   "${CMAKE_SOURCE_DIR}/Game/Extras/"
   "${CMAKE_SOURCE_DIR}/Game/PlayerStates/"
-  "${CMAKE_SOURCE_DIR}/Game/GameStates/"
+  "${CMAKE_SOURCE_DIR}/Game/SceneLoaders/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )
 

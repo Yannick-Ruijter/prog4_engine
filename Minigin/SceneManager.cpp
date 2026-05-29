@@ -16,6 +16,12 @@ void dae::SceneManager::Render()
     m_CurrentScene->Render();
 }
 
+void dae::SceneManager::UnLoadScene(Scene *scene)
+{
+    // erase ALL elements that return true
+    std::erase_if(m_Scenes, [&](auto &other) { return other.get() == scene; });
+}
+
 void dae::SceneManager::SetActiveScene(Scene *scene)
 {
     // check if the scene is in the added scenes
