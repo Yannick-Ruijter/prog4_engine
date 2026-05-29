@@ -9,7 +9,8 @@ namespace dae
     class PlayerInput;
     class TransformComponent;
     class SoundSystem;
-    enum class MoveDirection
+    class Subject;
+    enum class Direction
     {
         Up,
         Down,
@@ -34,9 +35,8 @@ namespace dae
     class MoveObjectCommand : public GameObjectCommand
     {
       public:
-        MoveObjectCommand(GameObject &object, MoveDirection direction, float speed = 100.f);
+        MoveObjectCommand(GameObject &object, Direction direction, float speed = 100.f);
         virtual void Execute() override;
-        virtual void StopExecution() override {};
         ~MoveObjectCommand() override = default;
 
       private:
@@ -46,30 +46,12 @@ namespace dae
         float m_Speed{};
     };
 
-    class Subject;
-    class MovePlayerCommand : public MoveObjectCommand
-    {
-      public:
-        MovePlayerCommand(
-            GameObject &object, MoveDirection direction, unsigned int onExecuteEvent, unsigned int onStopExecuteEvent,
-            float speed = 100.f);
-        void Execute() override;
-        void StopExecution() override;
-        Subject *GetSubject() const;
-
-      private:
-        std::unique_ptr<Subject> m_OnPlayerStartedMove;
-        unsigned int m_ExecutionEvent;
-        unsigned int m_StopExecutionEvent;
-    };
-
     class HealthComponent;
     class DamagePlayer : public GameObjectCommand
     {
       public:
         DamagePlayer(GameObject &object, GameObject &target);
         void Execute() override;
-        virtual void StopExecution() override {};
         ~DamagePlayer() override = default;
 
       private:
@@ -80,12 +62,24 @@ namespace dae
     {
       public:
         PickUpItemCommand(GameObject &object);
-        void Execute() override;
-        virtual void StopExecution() override {};
+        virtual void Execute() override;
         ~PickUpItemCommand() override = default;
         Subject *GetSubject() const;
 
       private:
         std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{nullptr};
+    };
+
+    class ButtonComponent;
+    class NavigateButtonCommand : public Command
+    {
+      public:
+        NavigateButtonCommand(Direction dir);
+        static void SetInitialButton(ButtonComponent *button);
+        virtual void Execute() override;
+
+      private:
+        static ButtonComponent *CurrentButton;
+        Direction m_NavigateDir;
     };
 } // namespace dae

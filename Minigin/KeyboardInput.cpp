@@ -1,4 +1,3 @@
-#include "KeyboardInput.hpp"
 #include "Binding.hpp"
 #include "Command.hpp"
 #include "KeyboardInput.hpp"
@@ -25,15 +24,6 @@ void KeyboardInput::ProcessInput()
             binding->m_Command->Execute();
         if (binding->m_TriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind))
             binding->m_Command->Execute();
-
-        if (binding->m_EndTriggerState == InputState::None)
-            continue;
-        if (binding->m_EndTriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind))
-            binding->m_Command->StopExecution();
-        else if (binding->m_EndTriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind))
-            binding->m_Command->StopExecution();
-        else if (binding->m_EndTriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind))
-            binding->m_Command->StopExecution();
     }
 }
 
@@ -80,12 +70,11 @@ PlayerInput &dae::KeyboardInput::BindInputAction(InputAction action, InputKeybin
     return *this;
 }
 
-Binding *KeyboardInput::AddBinding(
-    std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState)
+Binding *KeyboardInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
     assert(command.get() != nullptr);
     int scancode = ConvertToScancode(keybind);
-    m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), scancode, triggerState, endTriggerState));
+    m_Bindings.emplace_back(std::make_unique<Binding>(std::move(command), scancode, triggerState));
     return m_Bindings.back().get();
 }
 

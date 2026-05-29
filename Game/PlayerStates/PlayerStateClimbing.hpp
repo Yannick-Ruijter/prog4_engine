@@ -8,7 +8,7 @@ namespace dae
     class PlayerStateClimbing : public PlayerState
     {
       public:
-        PlayerStateClimbing(PlayerComponent &player, MoveDirection dir);
+        PlayerStateClimbing(PlayerComponent &player, Direction dir);
         ~PlayerStateClimbing();
         std::unique_ptr<PlayerState> HandleInput();
         void Update();
@@ -17,7 +17,7 @@ namespace dae
 
       private:
         glm::vec2 m_MovementVector{};
-        MoveDirection m_CurrentMoveDir;
+        Direction m_CurrentMoveDir;
         TransformComponent *m_PlayerTransform;
     };
 } // namespace dae

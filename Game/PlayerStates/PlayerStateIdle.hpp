@@ -6,7 +6,7 @@ namespace dae
     class PlayerStateIdle : public PlayerState
     {
       public:
-        PlayerStateIdle(PlayerComponent &player, MoveDirection direction = MoveDirection::Down);
+        PlayerStateIdle(PlayerComponent &player, Direction direction = Direction::Down);
         ~PlayerStateIdle();
         std::unique_ptr<PlayerState> HandleInput();
         void Update();
@@ -14,6 +14,6 @@ namespace dae
         void OnExit();
 
       private:
-        MoveDirection m_CurrentFacingDir;
+        Direction m_CurrentFacingDir;
     };
 } // namespace dae

@@ -21,9 +21,8 @@ namespace dae
 
         virtual PlayerInput &BindInputAction(InputAction action, InputKeybinds keybind) = 0;
 
-        virtual Binding *AddBinding(
-            std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState,
-            InputState endTriggerState = InputState::None) = 0;
+        virtual Binding *
+        AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) = 0;
         virtual std::unique_ptr<Binding> UnBind(Binding *binding) = 0;
     };
 } // namespace dae

@@ -15,7 +15,7 @@
 #include "sdbm_hash.hpp"
 using namespace dae;
 
-PlayerStateClimbing::PlayerStateClimbing(PlayerComponent &player, MoveDirection dir)
+PlayerStateClimbing::PlayerStateClimbing(PlayerComponent &player, Direction dir)
     : PlayerState(player),
       m_CurrentMoveDir{dir},
       m_PlayerTransform{player.GetPlayer()->GetComponent<dae::TransformComponent>()}
@@ -41,7 +41,7 @@ std::unique_ptr<PlayerState> dae::PlayerStateClimbing::HandleInput()
         !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
         return std::make_unique<PlayerStateIdle>(*m_Player, m_CurrentMoveDir);
 
-    if (m_CurrentMoveDir == MoveDirection::Up)
+    if (m_CurrentMoveDir == Direction::Up)
     {
         if (input->WasReleasedThisFrame(InputAction::MoveUp))
             return std::make_unique<PlayerStateIdle>(*m_Player, m_CurrentMoveDir);
@@ -62,7 +62,7 @@ void dae::PlayerStateClimbing::Update()
 
 void dae::PlayerStateClimbing::OnEnter()
 {
-    if (m_CurrentMoveDir == MoveDirection::Up)
+    if (m_CurrentMoveDir == Direction::Up)
     {
         m_Player->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
         m_MovementVector = glm::vec2{0.f, -m_Player->GetMoveSpeed()};

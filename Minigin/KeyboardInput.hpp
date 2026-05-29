@@ -28,9 +28,7 @@ namespace dae
 
         PlayerInput &BindInputAction(InputAction action, InputKeybinds keybind) override;
 
-        Binding *AddBinding(
-            std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState,
-            InputState endTriggerState = InputState::None) override;
+        Binding *AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
         std::unique_ptr<Binding> UnBind(Binding *binding) override;
 
       private:

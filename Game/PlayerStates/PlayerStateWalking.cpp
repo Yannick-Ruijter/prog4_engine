@@ -11,7 +11,7 @@
 
 using namespace dae;
 
-dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player, MoveDirection moveDir)
+dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player, Direction moveDir)
     : PlayerState(player),
       m_PlayerTransform{player.GetPlayer()->GetComponent<TransformComponent>()},
       m_CurrentMoveDir{moveDir}
@@ -34,7 +34,7 @@ std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput()
     if (!level->IsOnPlatform(m_PlayerTransform->GetWorldPosition() + m_MovementVector * deltaTime, charSize))
         return std::make_unique<PlayerStateIdle>(*m_Player);
 
-    if (m_CurrentMoveDir == MoveDirection::Left)
+    if (m_CurrentMoveDir == Direction::Left)
     {
         if (input->WasReleasedThisFrame(InputAction::MoveLeft))
             return std::make_unique<PlayerStateIdle>(*m_Player);
@@ -55,12 +55,12 @@ void dae::PlayerStateWalking::Update()
 
 void dae::PlayerStateWalking::OnEnter()
 {
-    if (m_CurrentMoveDir == MoveDirection::Left)
+    if (m_CurrentMoveDir == Direction::Left)
     {
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
         m_MovementVector = glm::vec2{-m_Player->GetMoveSpeed(), 0.f};
     }
-    else if (m_CurrentMoveDir == MoveDirection::Right)
+    else if (m_CurrentMoveDir == Direction::Right)
     {
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningRight");
         m_MovementVector = glm::vec2{m_Player->GetMoveSpeed(), 0.f};

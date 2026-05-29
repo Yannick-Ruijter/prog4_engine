@@ -2,7 +2,6 @@
 
 namespace dae
 {
-    class GameObject;
     class Scene;
     enum class GameMode
     {

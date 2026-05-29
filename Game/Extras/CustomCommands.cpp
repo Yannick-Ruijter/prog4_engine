@@ -1,5 +1,6 @@
-#include "CustomCommands.hpp"
+#include "ButtonComponent.hpp"
 #include "ControllerInput.hpp"
+#include "CustomCommands.hpp"
 #include "GameObject.hpp"
 #include "HealthComponent.hpp"
 #include "InputManager.hpp"
@@ -20,19 +21,19 @@ GameObject *GameObjectCommand::GetGameObject() const
     return m_GameObject;
 }
 
-MoveObjectCommand::MoveObjectCommand(GameObject &object, MoveDirection direction, float speed)
+MoveObjectCommand::MoveObjectCommand(GameObject &object, Direction direction, float speed)
     : GameObjectCommand(object),
       m_TransformComponent{object.GetComponent<TransformComponent>()},
       m_TimeManager{&TimeManager::GetInstance()},
       m_Speed{speed}
 {
-    if (direction == MoveDirection::Up)
+    if (direction == Direction::Up)
         m_MoveDir = glm::vec2{0.f, -1.f};
-    if (direction == MoveDirection::Down)
+    if (direction == Direction::Down)
         m_MoveDir = glm::vec2{0.f, 1.f};
-    if (direction == MoveDirection::Left)
+    if (direction == Direction::Left)
         m_MoveDir = glm::vec2{-1.f, 0.f};
-    if (direction == MoveDirection::Right)
+    if (direction == Direction::Right)
         m_MoveDir = glm::vec2{1.f, 0.f};
 }
 void MoveObjectCommand::Execute()
@@ -71,28 +72,19 @@ Subject *dae::PickUpItemCommand::GetSubject() const
     return m_PlayerPickedUpItemEvent.get();
 }
 
-dae::MovePlayerCommand::MovePlayerCommand(
-    GameObject &object, MoveDirection direction, unsigned int onExecuteEvent, unsigned int onStopExecuteEvent,
-    float speed)
-    : MoveObjectCommand(object, direction, speed),
-      m_OnPlayerStartedMove{std::make_unique<Subject>()},
-      m_ExecutionEvent{onExecuteEvent},
-      m_StopExecutionEvent{onStopExecuteEvent}
+ButtonComponent *NavigateButtonCommand::CurrentButton = nullptr;
+dae::NavigateButtonCommand::NavigateButtonCommand(Direction dir) : m_NavigateDir{dir}
 {
 }
 
-void dae::MovePlayerCommand::Execute()
+void dae::NavigateButtonCommand::SetInitialButton(ButtonComponent *button)
 {
-    m_OnPlayerStartedMove->NotifyObservers(m_ExecutionEvent, GetGameObject());
-    MoveObjectCommand::Execute();
+    CurrentButton = button;
 }
 
-void dae::MovePlayerCommand::StopExecution()
+void dae::NavigateButtonCommand::Execute()
 {
-    m_OnPlayerStartedMove->NotifyObservers(m_StopExecutionEvent, GetGameObject());
-}
-
-Subject *dae::MovePlayerCommand::GetSubject() const
-{
-    return m_OnPlayerStartedMove.get();
+    CurrentButton->LoseFocus();
+    CurrentButton = CurrentButton->GetNeighbor(m_NavigateDir);
+    CurrentButton->GainFocus();
 }

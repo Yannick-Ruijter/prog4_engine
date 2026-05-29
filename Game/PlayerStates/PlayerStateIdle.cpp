@@ -13,7 +13,7 @@
 
 using namespace dae;
 
-PlayerStateIdle::PlayerStateIdle(PlayerComponent &player, MoveDirection direction)
+PlayerStateIdle::PlayerStateIdle(PlayerComponent &player, Direction direction)
     : PlayerState(player), m_CurrentFacingDir{direction}
 {
     OnEnter();
@@ -37,11 +37,11 @@ std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput()
     {
         if (level->IsOnLadder(worldPos + glm::vec2{0.f, -moveSpeed * deltaTime}, charSize))
         {
-            return std::make_unique<PlayerStateClimbing>(*m_Player, MoveDirection::Up);
+            return std::make_unique<PlayerStateClimbing>(*m_Player, Direction::Up);
         }
-        else if (m_CurrentFacingDir != MoveDirection::Up)
+        else if (m_CurrentFacingDir != Direction::Up)
         {
-            m_CurrentFacingDir = MoveDirection::Up;
+            m_CurrentFacingDir = Direction::Up;
             m_Player->GetPlayerAnimation()->SetAnimationState("IdleBack");
         }
     }
@@ -51,11 +51,11 @@ std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput()
         if (level->IsOnLadder(worldPos + glm::vec2{0.f, moveSpeed * deltaTime}, charSize) ||
             level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
         {
-            return std::make_unique<PlayerStateClimbing>(*m_Player, MoveDirection::Down);
+            return std::make_unique<PlayerStateClimbing>(*m_Player, Direction::Down);
         }
-        else if (m_CurrentFacingDir != MoveDirection::Down)
+        else if (m_CurrentFacingDir != Direction::Down)
         {
-            m_CurrentFacingDir = MoveDirection::Down;
+            m_CurrentFacingDir = Direction::Down;
             m_Player->GetPlayerAnimation()->SetAnimationState("IdleFront");
         }
     }
@@ -63,14 +63,14 @@ std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput()
     {
         if (level->IsOnPlatform(worldPos + glm::vec2{-moveSpeed * deltaTime, 0.f}, charSize))
         {
-            return std::make_unique<PlayerStateWalking>(*m_Player, MoveDirection::Left);
+            return std::make_unique<PlayerStateWalking>(*m_Player, Direction::Left);
         }
     }
     else if (input->WasPressedThisFrame(InputAction::MoveRight))
     {
         if (level->IsOnPlatform(worldPos + glm::vec2{moveSpeed * deltaTime, 0.f}, charSize))
         {
-            return std::make_unique<PlayerStateWalking>(*m_Player, MoveDirection::Right);
+            return std::make_unique<PlayerStateWalking>(*m_Player, Direction::Right);
         }
     }
 
@@ -84,9 +84,9 @@ void dae::PlayerStateIdle::Update()
 
 void dae::PlayerStateIdle::OnEnter()
 {
-    if (m_CurrentFacingDir == MoveDirection::Down)
+    if (m_CurrentFacingDir == Direction::Down)
         m_Player->GetPlayerAnimation()->SetAnimationState("IdleFront");
-    else if (m_CurrentFacingDir == MoveDirection::Up)
+    else if (m_CurrentFacingDir == Direction::Up)
         m_Player->GetPlayerAnimation()->SetAnimationState("IdleBack");
 }
 

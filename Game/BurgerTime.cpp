@@ -11,6 +11,7 @@
 #include "InputManager.hpp"
 #include "LevelGridComponent.hpp"
 #include "LivesDisplayComponent.hpp"
+#include "MainSceneLoader.hpp"
 #include "PlayerAnimationComponent.hpp"
 #include "PlayerComponent.hpp"
 #include "PlayerLivesObserver.hpp"
@@ -72,7 +73,8 @@ void BurgerTime::Initialize()
     SetupKeybinds();
 
     // first argument: set scene as active scene
-    dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true);
+    dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(false);
+    dae::SceneManager::GetInstance().LoadScene<dae::MainSceneLoader>(true);
 }
 
 void BurgerTime::Destroy()

@@ -1,4 +1,3 @@
-#include "ControllerInput.hpp"
 #include "Binding.hpp"
 #include "Command.hpp"
 #include "ControllerInput.hpp"
@@ -33,9 +32,8 @@ class ControllerInput::Impl
 
     void BindInputAction(InputAction action, InputKeybinds keybind);
 
-    std::unique_ptr<Binding> AddBinding(
-        std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState,
-        InputState endTriggerState = InputState::None);
+    std::unique_ptr<Binding>
+    AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState);
 
   private:
     std::map<InputAction, unsigned int> m_ActionsMapped{};
@@ -74,15 +72,6 @@ void ControllerInput::ProcessInput()
             binding->m_Command->Execute();
         else if (binding->m_TriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind))
             binding->m_Command->Execute();
-
-        if (binding->m_EndTriggerState == InputState::None)
-            continue;
-        if (binding->m_EndTriggerState == InputState::JustPressed && WasPressedThisFrame(binding->m_Keybind))
-            binding->m_Command->StopExecution();
-        else if (binding->m_EndTriggerState == InputState::JustReleased && WasReleasedThisFrame(binding->m_Keybind))
-            binding->m_Command->StopExecution();
-        else if (binding->m_EndTriggerState == InputState::Pressed && IsButtonPressed(binding->m_Keybind))
-            binding->m_Command->StopExecution();
     }
 }
 
@@ -122,10 +111,9 @@ PlayerInput &dae::ControllerInput::BindInputAction(InputAction action, InputKeyb
     return *this;
 }
 
-Binding *ControllerInput::AddBinding(
-    std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState)
+Binding *ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
-    m_Bindings.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState, endTriggerState));
+    m_Bindings.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState));
     return m_Bindings.back().get();
 }
 
@@ -227,15 +215,15 @@ void ControllerInput::Impl::BindInputAction(InputAction action, InputKeybinds ke
 #endif
 }
 
-std::unique_ptr<Binding> ControllerInput::Impl::AddBinding(
-    std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState, InputState endTriggerState)
+std::unique_ptr<Binding>
+ControllerInput::Impl::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
 #if _WIN32
     int XinputValue = ConvertToXInput(keybind);
-    return std::make_unique<Binding>(std::move(command), XinputValue, triggerState, endTriggerState);
+    return std::make_unique<Binding>(std::move(command), XinputValue, triggerState);
 #else
     int keybindValue = ConvertToSdlKeybind(keybind);
-    return std::make_unique<Binding>(std::move(command), keybindValue, triggerState, endTriggerState);
+    return std::make_unique<Binding>(std::move(command), keybindValue, triggerState);
 #endif
 }
 
