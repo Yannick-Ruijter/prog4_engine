@@ -12,6 +12,7 @@ namespace dae
     class Scene final
     {
       public:
+        static bool DebugOutputEnabled;
         void Add(std::unique_ptr<GameObject> object);
         void Remove(const GameObject &object);
         void RemoveAll();
