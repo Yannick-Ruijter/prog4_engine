@@ -4,6 +4,7 @@
 
 namespace dae {
     class Scene;
+    class GameObject;
     enum class GameMode {
         SinglePlayer,
         Coop,

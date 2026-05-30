@@ -7,14 +7,6 @@
 #include <windows.h>
 #endif
 
-#undef USE_STEAMWORKS
-#if USE_STEAMWORKS
-#pragma warning(push)
-#pragma warning(disable : 4996)
-#include <steam_api.h>
-#pragma warning(pop)
-#endif
-
 #include "InputManager.hpp"
 #include "Minigin.hpp"
 #include "Renderer.hpp"
@@ -27,8 +19,7 @@
 
 SDL_Window *g_window{};
 
-void LogSDLVersion(const std::string &message, int major, int minor, int patch)
-{
+void LogSDLVersion(const std::string &message, int major, int minor, int patch) {
 #if WIN32
     std::stringstream ss;
     ss << message << major << "." << minor << "." << patch << "\n";
@@ -41,8 +32,7 @@ void LogSDLVersion(const std::string &message, int major, int minor, int patch)
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
 
-void LoopCallback(void *arg)
-{
+void LoopCallback(void *arg) {
     static_cast<dae::Minigin *>(arg)->RunOneFrame();
 }
 #endif
@@ -50,8 +40,7 @@ void LoopCallback(void *arg)
 // Why bother with this? Because sometimes students have a different SDL version installed on their pc.
 // That is not a problem unless for some reason the dll's from this project are not copied next to the exe.
 // These entries in the debug output help to identify that issue.
-void PrintSDLVersion()
-{
+void PrintSDLVersion() {
     LogSDLVersion("Compiled with SDL", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_MICRO_VERSION);
     int version = SDL_GetVersion();
     LogSDLVersion(
@@ -67,38 +56,25 @@ void PrintSDLVersion()
         SDL_VERSIONNUM_MICRO(version));
 }
 
-dae::Minigin::Minigin(const std::filesystem::path &dataPath, std::unique_ptr<Game> game) : m_Game{std::move(game)}
-{
+dae::Minigin::Minigin(const std::filesystem::path &dataPath, std::unique_ptr<Game> game) : m_Game{std::move(game)} {
     PrintSDLVersion();
 
-    if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
-    {
+    if (!SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD)) {
         SDL_Log("Renderer error: %s", SDL_GetError());
         throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
     }
 
     g_window = SDL_CreateWindow("BurgerTime", 960, 960, SDL_WINDOW_OPENGL);
-    if (g_window == nullptr)
-    {
+    if (g_window == nullptr) {
         throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
     }
-
-#if USE_STEAMWORKS
-    if (!SteamAPI_Init())
-        throw std::runtime_error(
-            std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
-#endif
 
     Renderer::GetInstance().Init(g_window, m_Game.get());
     ResourceManager::GetInstance().Init(dataPath);
     m_Game->Initialize();
 }
 
-dae::Minigin::~Minigin()
-{
-#if USE_STEAMWORKS
-    SteamAPI_Shutdown();
-#endif
+dae::Minigin::~Minigin() {
     m_Game->Destroy();
     Renderer::GetInstance().Destroy();
     SDL_DestroyWindow(g_window);
@@ -107,8 +83,7 @@ dae::Minigin::~Minigin()
     SDL_Quit();
 }
 
-void dae::Minigin::Run()
-{
+void dae::Minigin::Run() {
 #ifndef __EMSCRIPTEN__
     while (!m_quit)
         RunOneFrame();
@@ -117,12 +92,7 @@ void dae::Minigin::Run()
 #endif
 }
 
-void dae::Minigin::RunOneFrame()
-{
-#if USE_STEAMWORKS
-    SteamAPI_RunCallbacks();
-#endif
-
+void dae::Minigin::RunOneFrame() {
     TimeManager::GetInstance().Update();
     auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     m_quit = !InputManager::GetInstance().ProcessInput();
@@ -133,8 +103,7 @@ void dae::Minigin::RunOneFrame()
     auto currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     auto diff = currentTime - startTime;
     // force fps to be 60-ish
-    while (diff < 16666666)
-    {
+    while (diff < 16666666) {
         currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
         diff = currentTime - startTime;
     }

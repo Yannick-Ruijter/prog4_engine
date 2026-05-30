@@ -10,23 +10,19 @@ using namespace dae;
 LevelGridComponent::LevelGridComponent(
     GameObject &owner, glm::ivec2 const &gridSize, std::string const &levelFile,
     std::unordered_map<char, std::string> textures)
-    : Component(owner), m_GridSize{gridSize}
-{
+    : Component(owner), m_GridSize{gridSize} {
     std::ifstream stream{levelFile};
     std::string line;
     m_TexturesLoaded[' '] = nullptr;
-    while (std::getline(stream, line))
-    {
+    while (std::getline(stream, line)) {
         m_Grid.emplace_back();
         std::stringstream ss{line};
         std::string cell;
 
-        while (std::getline(ss, cell, ','))
-        {
+        while (std::getline(ss, cell, ',')) {
             char currentChar{cell[0]};
             m_Grid.back().emplace_back(currentChar);
-            if (textures.contains(currentChar) && !m_TexturesLoaded.contains(currentChar))
-            {
+            if (textures.contains(currentChar) && !m_TexturesLoaded.contains(currentChar)) {
                 SDL_Surface *surface = SDL_LoadPNG(textures[currentChar].c_str());
                 surface = SDL_ScaleSurface(surface, gridSize.x, gridSize.y, SDL_ScaleMode::SDL_SCALEMODE_PIXELART);
                 SDL_Texture *texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surface);
@@ -37,12 +33,9 @@ LevelGridComponent::LevelGridComponent(
     }
 }
 
-void dae::LevelGridComponent::Render() const
-{
-    for (size_t y = 0; y < m_Grid.size(); ++y)
-    {
-        for (size_t x = 0; x < m_Grid[y].size(); ++x)
-        {
+void dae::LevelGridComponent::Render() const {
+    for (size_t y = 0; y < m_Grid.size(); ++y) {
+        for (size_t x = 0; x < m_Grid[y].size(); ++x) {
             char cell = m_Grid[y][x];
             if (!m_TexturesLoaded.contains(cell) || m_TexturesLoaded.at(cell) == nullptr)
                 continue;
@@ -55,8 +48,7 @@ void dae::LevelGridComponent::Render() const
     }
 }
 
-bool dae::LevelGridComponent::IsOnPlatform(glm::vec2 const &topleft, glm::vec2 size)
-{
+bool dae::LevelGridComponent::IsOnPlatform(glm::vec2 const &topleft, glm::vec2 size) {
     // check if all 2 corners are on platform grids
     // first 6 tiles are all platforms
 
@@ -76,8 +68,7 @@ bool dae::LevelGridComponent::IsOnPlatform(glm::vec2 const &topleft, glm::vec2 s
     return true;
 }
 
-bool dae::LevelGridComponent::IsOnLadder(glm::vec2 const &topleft, glm::vec2 size)
-{
+bool dae::LevelGridComponent::IsOnLadder(glm::vec2 const &topleft, glm::vec2 size) {
 
     // check if all bottom corners are on ladders
     // tiles 3 -> 8 are all lader grids
@@ -93,14 +84,12 @@ bool dae::LevelGridComponent::IsOnLadder(glm::vec2 const &topleft, glm::vec2 siz
     return true;
 }
 
-float dae::LevelGridComponent::RoundToPlatformHeight(float yPos)
-{
+float dae::LevelGridComponent::RoundToPlatformHeight(float yPos) {
     float vertTile = std::floor(yPos / m_GridSize.y);
     float platformOffset = 55.f;
     return vertTile * m_GridSize.y + platformOffset;
 }
 
-char dae::LevelGridComponent::GetTile(glm::vec2 const &pos)
-{
+char dae::LevelGridComponent::GetTile(glm::vec2 const &pos) {
     return m_Grid[static_cast<int>(pos.y / m_GridSize.y)][static_cast<int>(pos.x / m_GridSize.x)];
 }

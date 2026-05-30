@@ -1,7 +1,9 @@
+#include "GameSceneLoader.hpp"
+
 #include "Binding.hpp"
 #include "CustomCommands.hpp"
 #include "FPSComponent.hpp"
-#include "GameSceneLoader.hpp"
+#include "GameObject.hpp"
 #include "HealthComponent.hpp"
 #include "InputManager.hpp"
 #include "LevelGridComponent.hpp"
@@ -10,13 +12,13 @@
 #include "PlayerComponent.hpp"
 #include "RenderComponent.hpp"
 #include "ResourceManager.hpp"
-#include "Scene.hpp"
 #include "SceneManager.hpp"
 #include "ScoreComponent.hpp"
 #include "ScoreDisplayComponent.hpp"
 #include "Subject.hpp"
 #include "TextComponent.hpp"
 #include "burgerLayerComponent.hpp"
+
 #include <fstream>
 #include <sstream>
 

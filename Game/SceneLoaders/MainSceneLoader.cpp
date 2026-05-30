@@ -1,28 +1,18 @@
-#include "Binding.hpp"
+#include "MainSceneLoader.hpp"
+
 #include "ButtonComponent.hpp"
 #include "CustomCommands.hpp"
 #include "FPSComponent.hpp"
 #include "GameSceneLoader.hpp"
-#include "HealthComponent.hpp"
 #include "InputManager.hpp"
-#include "LevelGridComponent.hpp"
-#include "LivesDisplayComponent.hpp"
-#include "MainSceneLoader.hpp"
-#include "PlayerAnimationComponent.hpp"
-#include "PlayerComponent.hpp"
 #include "RenderComponent.hpp"
 #include "ResourceManager.hpp"
-#include "Scene.hpp"
 #include "SceneManager.hpp"
-#include "ScoreComponent.hpp"
-#include "ScoreDisplayComponent.hpp"
-#include "Subject.hpp"
 #include "TextComponent.hpp"
 
 using namespace dae;
 
-Scene *dae::MainSceneLoader::LoadScene()
-{
+Scene *dae::MainSceneLoader::LoadScene() {
     auto scene = dae::SceneManager::GetInstance().CreateScene();
     auto &inputManager = dae::InputManager::GetInstance();
     auto go = std::make_unique<dae::GameObject>();
@@ -88,8 +78,7 @@ Scene *dae::MainSceneLoader::LoadScene()
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 300);
         go->AddComponent<dae::TextComponent>("Quit", fontMain, SDL_Color{255, 0, 0, 255});
         go->AddComponent<dae::ButtonComponent>(
-            [&]()
-            {
+            [&]() {
                 SDL_Event quit_event;
                 quit_event.type = SDL_EVENT_QUIT;
                 SDL_PushEvent(&quit_event);
