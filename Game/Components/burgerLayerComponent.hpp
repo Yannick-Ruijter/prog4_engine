@@ -11,6 +11,6 @@ namespace dae {
       private:
         void CreateChildrenParts(std::vector<GameObject *> const &players, BurgerLayer layer);
         std::vector<LayerPartComponent *> m_LayerParts;
-        int m_NumberOfPartsSteppedOn{0};
+        uint32_t m_NumberOfPartsSteppedOn{0};
     };
 } // namespace dae

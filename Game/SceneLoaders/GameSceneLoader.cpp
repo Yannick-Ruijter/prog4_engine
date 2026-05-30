@@ -18,6 +18,7 @@
 #include "TextComponent.hpp"
 #include "burgerLayerComponent.hpp"
 #include <fstream>
+#include <sstream>
 
 using namespace dae;
 
@@ -208,7 +209,8 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 
 void dae::GameSceneLoader::LoadSpriteMap(
     Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players) {
-    std::ifstream stream{"Data/Levels/Level0_Burgers.csv"};
+    std::string const &filePath{"Data/Levels/Level0_Burgers.csv"};
+    std::ifstream stream{filePath};
     std::string line;
     glm::ivec2 gridCoord{};
     std::unordered_map<char, BurgerLayer> layers{
@@ -219,7 +221,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
     };
 
     std::unordered_map<char, GameObject *> charToPlayers;
-    for (int i = 0; i < players.size(); i++) {
+    for (uint32_t i = 0; i < players.size(); i++) {
         charToPlayers[char('a' + i)] = players[i];
     }
 
