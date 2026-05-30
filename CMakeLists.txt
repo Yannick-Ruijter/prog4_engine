@@ -109,22 +109,31 @@ endif()
 
 find_package(SDL3_mixer 3.2.0 CONFIG QUIET)
 if(NOT SDL3_mixer_FOUND)
-  FetchContent_Declare(
-    SDL3_mixer
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
-    GIT_TAG release-3.2.0
-    GIT_SHALLOW TRUE
-  )
-  set(SDL3MIXER_INSTALL OFF)
-  if(EMSCRIPTEN)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/emscripten")
-    set(SDL3MIXER_USE_SYSTEM_FREETYPE ON)
-    set(SDL3TTF_VENDORED OFF)
-    set(SDLMIXER_PLUTOSVG OFF)
-    add_compile_options(-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1)
-    add_link_options(-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1)
-  endif()
-  FetchContent_MakeAvailable(SDL3_mixer)
+    if(WIN32)
+        message("sdl mixer not found, retrieving from github...")
+        FetchContent_Declare(
+          SDL3_mixer
+          URL https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.0/SDL3_mixer-devel-3.2.0-VC.zip
+          DOWNLOAD_NO_PROGRESS ON
+          DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
+        )
+        FetchContent_MakeAvailable(SDL3_mixer)
+        list(PREPEND CMAKE_PREFIX_PATH "${sdl3_mixer_SOURCE_DIR}")
+        find_package(SDL3_mixer CONFIG REQUIRED)
+    else()
+        FetchContent_Declare(
+        SDL3_mixer
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+        GIT_TAG release-3.2.0
+        GIT_SHALLOW TRUE
+        )
+        set(SDL3MIXER_INSTALL OFF)
+        if(EMSCRIPTEN)
+            list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/emscripten")
+            set(SDL3MIXER_USE_SYSTEM_FREETYPE ON)
+        endif()
+        FetchContent_MakeAvailable(SDL3_mixer)
+    endif()
 endif()
 
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
