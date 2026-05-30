@@ -4,7 +4,7 @@
 #include "burgerLayerComponent.hpp"
 using namespace dae;
 
-int LayerPartComponent::CollisionDistanceSquared = 10000;
+int LayerPartComponent::CollisionDistanceSquared = 1000;
 
 void LayerPartComponent::SetCollisionDistance(int dist) {
     CollisionDistanceSquared = dist * dist;
@@ -29,7 +29,8 @@ void LayerPartComponent::Update() {
             GetOwner()->GetParent()->GetComponent<BurgerLayerComponent>();
             m_IsSteppedOn = true;
             auto localPos = m_Transform->GetLocalPosition();
-            localPos.y += 20.f;
+            float steppedOnOffset{5.f};
+            localPos.y += steppedOnOffset;
             m_Transform->SetLocalPosition(localPos);
         }
     }

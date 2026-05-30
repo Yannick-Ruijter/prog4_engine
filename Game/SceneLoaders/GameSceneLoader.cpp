@@ -17,6 +17,7 @@
 #include "Subject.hpp"
 #include "TextComponent.hpp"
 #include "burgerLayerComponent.hpp"
+#include <fstream>
 
 using namespace dae;
 
@@ -28,10 +29,8 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     auto fontMain = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
     auto fontSmall = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
 
-    GameObject *player1;
-    GameObject *player2;
-
     dae::GameObject *level{};
+    glm::ivec2 const tileSize{64, 64};
     // background stuff
     {
         std::unordered_map<char, std::string> charToTexture{};
@@ -50,7 +49,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
 
         go->AddComponent<dae::RenderComponent>();
-        go->AddComponent<dae::LevelGridComponent>(glm::ivec2{64, 64}, "Data/Levels/Level0.csv", charToTexture);
+        go->AddComponent<dae::LevelGridComponent>(tileSize, "Data/Levels/Level0.csv", charToTexture);
         level = go.get();
         scene->Add(std::move(go));
 
@@ -66,10 +65,10 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         go->AddComponent<dae::FpsComponent>();
         scene->Add(std::move(go));
     }
+    auto player1 = std::make_unique<GameObject>();
+    auto player2 = std::make_unique<GameObject>();
     // create 2 players
     {
-        go = std::make_unique<dae::GameObject>();
-        player2 = go.get();
         player2->AddComponent<dae::RenderComponent>();
         player2->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
         player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
@@ -79,10 +78,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         player2->AddComponent<dae::PlayerComponent>(
             inputManager.GetKeyboardInput(), level->GetComponent<dae::LevelGridComponent>());
-        scene->Add(std::move(go));
 
-        go = std::make_unique<dae::GameObject>();
-        player1 = go.get();
         player1->AddComponent<dae::RenderComponent>();
         player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
         player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
@@ -92,7 +88,6 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         player1->AddComponent<dae::PlayerComponent>(
             inputManager.GetControllerInput(0), level->GetComponent<dae::LevelGridComponent>());
-        scene->Add(std::move(go));
     }
 
     // add player bindings
@@ -204,13 +199,55 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         scene->Add(std::move(go));
     }
 
-    // manually add paddy
-    {
-        go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(300, 110);
-        go->AddComponent<dae::BurgerLayerComponent>(BurgerLayer::Cheese, std::vector<GameObject *>{player1, player2});
-        scene->Add(std::move(go));
-    }
+    LoadSpriteMap(scene, tileSize, std::vector<GameObject *>{player1.get(), player2.get()});
+
+    scene->Add(std::move(player1));
+    scene->Add(std::move(player2));
     return scene;
+}
+
+void dae::GameSceneLoader::LoadSpriteMap(
+    Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players) {
+    std::ifstream stream{"Data/Levels/Level0_Burgers.csv"};
+    std::string line;
+    glm::ivec2 gridCoord{};
+    std::unordered_map<char, BurgerLayer> layers{
+        {'0', BurgerLayer::TopPaddy},
+        {'1', BurgerLayer::Cheese},
+        {'2', BurgerLayer::Salad},
+        {'3', BurgerLayer::BottomPaddy},
+    };
+
+    std::unordered_map<char, GameObject *> charToPlayers;
+    for (int i = 0; i < players.size(); i++) {
+        charToPlayers[char('a' + i)] = players[i];
+    }
+
+    while (std::getline(stream, line)) {
+        std::stringstream ss{line};
+        std::string cell;
+
+        // goes over every character between ','
+        while (std::getline(ss, cell, ',')) {
+            char currentChar{cell[0]};
+            if (charToPlayers.contains(currentChar)) {
+                glm::vec2 pos{gridCoord * tileSize + tileSize / 4};
+                auto playerTransform = charToPlayers.at(currentChar)->GetComponent<TransformComponent>();
+                playerTransform->SetLocalPosition(pos);
+            }
+            if (layers.contains(currentChar)) {
+                glm::vec2 pos{gridCoord * tileSize};
+                pos.x += tileSize.x / 3;
+                pos.y += tileSize.y / 1.75f;
+                auto go = std::make_unique<GameObject>();
+                go->AddComponent<dae::RenderComponent>();
+                go->GetComponent<dae::TransformComponent>()->SetLocalPosition(pos);
+                go->AddComponent<dae::BurgerLayerComponent>(layers.at(currentChar), players);
+                scene->Add(std::move(go));
+            }
+            gridCoord.x++;
+        }
+        gridCoord.x = 0;
+        gridCoord.y++;
+    }
 }
