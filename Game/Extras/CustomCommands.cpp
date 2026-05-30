@@ -72,12 +72,12 @@ Subject *dae::PickUpItemCommand::GetSubject() const
     return m_PlayerPickedUpItemEvent.get();
 }
 
-ButtonComponent *NavigateButtonCommand::CurrentButton = nullptr;
+ButtonComponent *ButtonCommand::CurrentButton = nullptr;
 dae::NavigateButtonCommand::NavigateButtonCommand(Direction dir) : m_NavigateDir{dir}
 {
 }
 
-void dae::NavigateButtonCommand::SetInitialButton(ButtonComponent *button)
+void dae::ButtonCommand::SetInitialButton(ButtonComponent *button)
 {
     CurrentButton = button;
 }
@@ -87,4 +87,9 @@ void dae::NavigateButtonCommand::Execute()
     CurrentButton->LoseFocus();
     CurrentButton = CurrentButton->GetNeighbor(m_NavigateDir);
     CurrentButton->GainFocus();
+}
+
+void dae::PressButtonCommand::Execute()
+{
+    CurrentButton->Execute();
 }

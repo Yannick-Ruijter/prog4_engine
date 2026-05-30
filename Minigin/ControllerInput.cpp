@@ -62,6 +62,7 @@ dae::ControllerInput::~ControllerInput() = default;
 
 void ControllerInput::ProcessInput()
 {
+    UpdateBindings();
     m_pImpl->ProcessInput();
 
     for (auto &binding : m_Bindings)
@@ -113,19 +114,49 @@ PlayerInput &dae::ControllerInput::BindInputAction(InputAction action, InputKeyb
 
 Binding *ControllerInput::AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState)
 {
-    m_Bindings.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState));
-    return m_Bindings.back().get();
+
+    // i save it here into this array to already be able to return the binding to the caller
+    auto binding = m_BindingsToAdd.emplace_back(m_pImpl->AddBinding(std::move(command), keybind, triggerState)).get();
+
+    // adding it to the queue of commands to execute when possible
+    // we do this because this might be called while looping over the bindings
+    m_BindingCommandQueue.emplace(
+        [&, binding]()
+        {
+            auto it = std::find_if(
+                m_BindingsToAdd.begin(), m_BindingsToAdd.end(),
+                [binding](auto &other) { return other.get() == binding; });
+
+            if (it != m_BindingsToAdd.end())
+            {
+                m_Bindings.emplace_back(std::move(*it));
+                std::erase(m_BindingsToAdd, *it);
+            }
+        });
+    return binding;
 }
 
-std::unique_ptr<Binding> ControllerInput::UnBind(Binding *binding)
+void ControllerInput::UnBind(Binding *binding)
 {
-    auto it =
-        std::find_if(begin(m_Bindings), end(m_Bindings), [binding](const auto &ptr) { return ptr.get() == binding; });
-    if (it == m_Bindings.end())
-        return nullptr;
-    auto foundBinding = std::move(*it);
-    m_Bindings.erase(it);
-    return foundBinding;
+    // adding it to the queue of commands to execute when possible
+    // we do this because this might be called while looping over the bindings
+    // clang-format off
+    m_BindingCommandQueue.emplace(
+        [&, binding]() 
+        {
+            std::erase_if(m_Bindings, [&, binding](auto &other) { return other.get() == binding; }); 
+        });
+    // clang format on
+}
+
+void dae::ControllerInput::UpdateBindings()
+{
+    while (!m_BindingCommandQueue.empty())
+    {
+        //it's a function
+        m_BindingCommandQueue.front()();
+        m_BindingCommandQueue.pop();
+    }
 }
 
 ControllerInput::Impl::Impl(int controllerIndex) : m_ControllerIndex{controllerIndex}

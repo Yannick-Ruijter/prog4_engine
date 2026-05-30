@@ -10,27 +10,28 @@
 #endif
 #endif
 
-#include "Minigin.hpp"
-#include "SceneManager.hpp"
-#include "ResourceManager.hpp"
-#include "RenderComponent.hpp"
-#include "TextComponent.hpp"
-#include "Scene.hpp"
 #include "BurgerTime.hpp"
+#include "Minigin.hpp"
+#include "RenderComponent.hpp"
+#include "ResourceManager.hpp"
+#include "Scene.hpp"
+#include "SceneManager.hpp"
+#include "TextComponent.hpp"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
-
-int main(int, char*[]) {
+int main(int, char *[])
+{
 #if __EMSCRIPTEN__
-	fs::path data_location = "";
+    fs::path data_location = "";
 #else
-	fs::path data_location = "./Data/";
-	if(!fs::exists(data_location))
-		data_location = "../Data/";
+    fs::path data_location = "./Data/";
+    if (!fs::exists(data_location))
+        data_location = "../Data/";
 #endif
-	dae::Minigin engine(data_location, std::make_unique<BurgerTime>());
-	engine.Run();
+    dae::Minigin engine(data_location, std::make_unique<BurgerTime>());
+    engine.Run();
+
     return 0;
 }

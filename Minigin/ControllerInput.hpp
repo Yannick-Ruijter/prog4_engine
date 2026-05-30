@@ -2,6 +2,7 @@
 #include "InputInfo.hpp"
 #include "PlayerInput.hpp"
 #include <memory>
+#include <queue>
 #include <vector>
 
 namespace dae
@@ -26,11 +27,14 @@ namespace dae
         PlayerInput &BindInputAction(InputAction action, InputKeybinds keybind) override;
 
         Binding *AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) override;
-        std::unique_ptr<Binding> UnBind(Binding *binding) override;
+        void UnBind(Binding *binding) override;
 
       private:
+        void UpdateBindings();
         class Impl;
         std::unique_ptr<Impl> m_pImpl;
         std::vector<std::unique_ptr<Binding>> m_Bindings;
+        std::vector<std::unique_ptr<Binding>> m_BindingsToAdd;
+        std::queue<std::function<void()>> m_BindingCommandQueue{};
     };
 } // namespace dae

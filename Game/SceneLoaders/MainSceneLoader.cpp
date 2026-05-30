@@ -2,6 +2,7 @@
 #include "ButtonComponent.hpp"
 #include "CustomCommands.hpp"
 #include "FPSComponent.hpp"
+#include "GameSceneLoader.hpp"
 #include "HealthComponent.hpp"
 #include "InputManager.hpp"
 #include "LevelGridComponent.hpp"
@@ -59,7 +60,8 @@ Scene *dae::MainSceneLoader::LoadScene()
         go->AddComponent<dae::RenderComponent>();
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 150);
         go->AddComponent<dae::TextComponent>("Single Player", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(focusedColor, idleColor);
+        go->AddComponent<dae::ButtonComponent>(
+            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true); }, focusedColor, idleColor);
         singlePlayerButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -67,7 +69,8 @@ Scene *dae::MainSceneLoader::LoadScene()
         go->AddComponent<dae::RenderComponent>();
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 200);
         go->AddComponent<dae::TextComponent>("Coop", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(focusedColor, idleColor);
+        go->AddComponent<dae::ButtonComponent>(
+            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true); }, focusedColor, idleColor);
         coopButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -75,7 +78,8 @@ Scene *dae::MainSceneLoader::LoadScene()
         go->AddComponent<dae::RenderComponent>();
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 250);
         go->AddComponent<dae::TextComponent>("Pvp", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(focusedColor, idleColor);
+        go->AddComponent<dae::ButtonComponent>(
+            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true); }, focusedColor, idleColor);
         pvpButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -83,7 +87,14 @@ Scene *dae::MainSceneLoader::LoadScene()
         go->AddComponent<dae::RenderComponent>();
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 300);
         go->AddComponent<dae::TextComponent>("Quit", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(focusedColor, idleColor);
+        go->AddComponent<dae::ButtonComponent>(
+            [&]()
+            {
+                SDL_Event quit_event;
+                quit_event.type = SDL_EVENT_QUIT;
+                SDL_PushEvent(&quit_event);
+            },
+            focusedColor, idleColor);
         quitButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -118,6 +129,9 @@ Scene *dae::MainSceneLoader::LoadScene()
             std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::DPAD_UP,
             InputState::JustPressed);
 
+        controllerInput0->AddBinding(
+            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed);
+
         controllerInput1->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Down), InputKeybinds::DPAD_DOWN,
             InputState::JustPressed);
@@ -126,11 +140,17 @@ Scene *dae::MainSceneLoader::LoadScene()
             std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::DPAD_UP,
             InputState::JustPressed);
 
+        controllerInput1->AddBinding(
+            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed);
+
         keyboardInput->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::W, InputState::JustPressed);
 
         keyboardInput->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Down), InputKeybinds::S, InputState::JustPressed);
+
+        keyboardInput->AddBinding(
+            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::Z, InputState::JustPressed);
     }
     return scene;
 }

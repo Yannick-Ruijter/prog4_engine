@@ -71,15 +71,28 @@ namespace dae
     };
 
     class ButtonComponent;
-    class NavigateButtonCommand : public Command
+
+    class ButtonCommand : public Command
+    {
+      public:
+        static void SetInitialButton(ButtonComponent *button);
+
+      protected:
+        static ButtonComponent *CurrentButton;
+    };
+    class NavigateButtonCommand : public ButtonCommand
     {
       public:
         NavigateButtonCommand(Direction dir);
-        static void SetInitialButton(ButtonComponent *button);
         virtual void Execute() override;
 
       private:
-        static ButtonComponent *CurrentButton;
         Direction m_NavigateDir;
+    };
+
+    class PressButtonCommand : public ButtonCommand
+    {
+      public:
+        virtual void Execute() override;
     };
 } // namespace dae

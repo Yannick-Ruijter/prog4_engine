@@ -4,8 +4,10 @@
 #include "TextComponent.hpp"
 using namespace dae;
 
-ButtonComponent::ButtonComponent(GameObject &owner, SDL_Color focusColor, SDL_Color idleColor)
+ButtonComponent::ButtonComponent(
+    GameObject &owner, std::function<void()> OnExecute, SDL_Color focusColor, SDL_Color idleColor)
     : Component(owner),
+      m_OnExecute{OnExecute},
       m_TextComponent{owner.GetComponent<TextComponent>()},
       m_FocusColor{focusColor},
       m_IdleColor{idleColor}
@@ -31,6 +33,7 @@ void dae::ButtonComponent::AddNeighbor(Direction dir, ButtonComponent *button)
 
 void dae::ButtonComponent::Execute()
 {
+    m_OnExecute();
 }
 
 ButtonComponent *dae::ButtonComponent::GetNeighbor(Direction dir)

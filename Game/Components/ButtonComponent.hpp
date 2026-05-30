@@ -2,6 +2,7 @@
 
 #include "Component.hpp"
 #include <SDL3/SDL_pixels.h>
+#include <functional>
 #include <string>
 #include <unordered_map>
 namespace dae
@@ -11,7 +12,7 @@ namespace dae
     class ButtonComponent : public Component
     {
       public:
-        ButtonComponent(GameObject &owner, SDL_Color focusColor, SDL_Color idleColor);
+        ButtonComponent(GameObject &owner, std::function<void()> OnExecute, SDL_Color focusColor, SDL_Color idleColor);
         void GainFocus();
         void LoseFocus();
         void AddNeighbor(Direction dir, ButtonComponent *button);
@@ -19,6 +20,7 @@ namespace dae
         ButtonComponent *GetNeighbor(Direction dir);
 
       private:
+        std::function<void()> m_OnExecute;
         std::unordered_map<Direction, ButtonComponent *> m_Neighbors{};
         TextComponent *m_TextComponent;
         SDL_Color m_FocusColor;

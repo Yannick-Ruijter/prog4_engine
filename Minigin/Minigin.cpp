@@ -122,6 +122,7 @@ void dae::Minigin::RunOneFrame()
 #if USE_STEAMWORKS
     SteamAPI_RunCallbacks();
 #endif
+
     TimeManager::GetInstance().Update();
     auto startTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     m_quit = !InputManager::GetInstance().ProcessInput();

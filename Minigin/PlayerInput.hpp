@@ -23,6 +23,6 @@ namespace dae
 
         virtual Binding *
         AddBinding(std::unique_ptr<Command> command, InputKeybinds keybind, InputState triggerState) = 0;
-        virtual std::unique_ptr<Binding> UnBind(Binding *binding) = 0;
+        virtual void UnBind(Binding *binding) = 0;
     };
 } // namespace dae
