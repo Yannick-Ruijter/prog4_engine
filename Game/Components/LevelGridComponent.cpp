@@ -84,12 +84,31 @@ bool dae::LevelGridComponent::IsOnLadder(glm::vec2 const &topleft, glm::vec2 siz
     return true;
 }
 
+bool dae::LevelGridComponent::IsOnBurgerBowl(glm::vec2 const &topleft, glm::vec2 size) {
+    char bottomRightTile{GetTile(topleft + size)};
+    if (!(bottomRightTile >= '9' && bottomRightTile <= 'c'))
+        return false;
+    char bottomLeftTile{GetTile(glm::vec2(topleft.x, topleft.y + size.y))};
+    if (!(bottomLeftTile >= '9' && bottomLeftTile <= 'c'))
+        return false;
+
+    return true;
+}
+
 float dae::LevelGridComponent::RoundToPlatformHeight(float yPos) {
     float vertTile = std::floor(yPos / m_GridSize.y);
     float platformOffset = 55.f;
     return vertTile * m_GridSize.y + platformOffset;
 }
 
+int dae::LevelGridComponent::GetGridSize() const {
+    return m_GridSize.x;
+}
+
 char dae::LevelGridComponent::GetTile(glm::vec2 const &pos) {
-    return m_Grid[static_cast<int>(pos.y / m_GridSize.y)][static_cast<int>(pos.x / m_GridSize.x)];
+    uint32_t row = static_cast<uint32_t>(pos.y / m_GridSize.y);
+    uint32_t column = static_cast<uint32_t>(pos.x / m_GridSize.x);
+    if (row <= m_Grid.size() && column <= m_Grid.front().size())
+        return m_Grid[row][column];
+    return ' ';
 }

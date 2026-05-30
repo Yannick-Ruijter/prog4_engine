@@ -4,11 +4,9 @@
 #include <SDL3/SDL.h>
 #include <map>
 #include <string>
-namespace dae
-{
+namespace dae {
     class GameObject;
-    class LevelGridComponent : public Component
-    {
+    class LevelGridComponent : public Component {
       public:
         LevelGridComponent(
             GameObject &owner, glm::ivec2 const &gridSize, std::string const &levelFile,
@@ -17,7 +15,9 @@ namespace dae
         virtual void Render() const override;
         bool IsOnPlatform(glm::vec2 const &topleft, glm::vec2 size);
         bool IsOnLadder(glm::vec2 const &topleft, glm::vec2 size);
+        bool IsOnBurgerBowl(glm::vec2 const &topleft, glm::vec2 size);
         float RoundToPlatformHeight(float yPos);
+        int GetGridSize() const;
 
       private:
         glm::ivec2 m_GridSize{};

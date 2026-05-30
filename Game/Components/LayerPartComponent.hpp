@@ -6,17 +6,20 @@
 namespace dae {
     class GameObject;
     class TransformComponent;
+    class BurgerLayerComponent;
     class LayerPartComponent : public Component {
       public:
         static void SetCollisionDistance(int dist);
+        static float SteppedOnOffset;
         LayerPartComponent(GameObject &owner, std::vector<GameObject *> const &players);
         virtual void Update() override;
         bool IsSteppedOn() const;
-        void Startfalling() const;
+        void SetFallingState(bool state);
 
       private:
         static int CollisionDistanceSquared;
         bool m_IsSteppedOn{false};
+        bool m_IsFalling{false};
         std::vector<TransformComponent *> m_PlayerTransforms{};
         TransformComponent *m_Transform{};
     };

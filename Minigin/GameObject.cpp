@@ -85,4 +85,5 @@ void dae::GameObject::SetPositionDirty() {
         child->SetPositionDirty();
     }
     m_UpdatePosition = true;
+    m_Transform->SetWorldPositionDirty();
 }

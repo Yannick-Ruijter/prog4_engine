@@ -34,6 +34,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 
     dae::GameObject *level{};
     glm::ivec2 const tileSize{64, 64};
+    LevelGridComponent *levelGrid{nullptr};
     // background stuff
     {
         std::unordered_map<char, std::string> charToTexture{};
@@ -53,6 +54,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 
         go->AddComponent<dae::RenderComponent>();
         go->AddComponent<dae::LevelGridComponent>(tileSize, "Data/Levels/Level0.csv", charToTexture);
+        levelGrid = go->GetComponent<LevelGridComponent>();
         level = go.get();
         scene->Add(std::move(go));
 
@@ -202,7 +204,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         scene->Add(std::move(go));
     }
 
-    LoadSpriteMap(scene, tileSize, std::vector<GameObject *>{player1.get(), player2.get()});
+    LoadSpriteMap(scene, tileSize, std::vector<GameObject *>{player1.get(), player2.get()}, levelGrid);
 
     scene->Add(std::move(player1));
     scene->Add(std::move(player2));
@@ -210,7 +212,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 }
 
 void dae::GameSceneLoader::LoadSpriteMap(
-    Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players) {
+    Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players, LevelGridComponent *levelGrid) {
     std::string const &filePath{"Data/Levels/Level0_Burgers.csv"};
     std::ifstream stream{filePath};
     std::string line;
@@ -226,7 +228,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
     for (uint32_t i = 0; i < players.size(); i++) {
         charToPlayers[char('a' + i)] = players[i];
     }
-
+    BurgerLayerComponent::AllBurgerLayers.clear();
     while (std::getline(stream, line)) {
         std::stringstream ss{line};
         std::string cell;
@@ -248,7 +250,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
                 auto go = std::make_unique<GameObject>();
                 go->AddComponent<dae::RenderComponent>();
                 go->GetComponent<dae::TransformComponent>()->SetLocalPosition(pos);
-                go->AddComponent<dae::BurgerLayerComponent>(layers.at(currentChar), players);
+                go->AddComponent<dae::BurgerLayerComponent>(layers.at(currentChar), players, levelGrid);
                 scene->Add(std::move(go));
             }
             gridCoord.x++;

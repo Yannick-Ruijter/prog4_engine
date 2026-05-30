@@ -5,7 +5,7 @@
 using namespace dae;
 
 int LayerPartComponent::CollisionDistanceSquared = 500;
-
+float LayerPartComponent::SteppedOnOffset = 5.f;
 void LayerPartComponent::SetCollisionDistance(int dist) {
     CollisionDistanceSquared = dist * dist;
 }
@@ -18,7 +18,7 @@ LayerPartComponent::LayerPartComponent(GameObject &owner, std::vector<GameObject
 }
 
 void LayerPartComponent::Update() {
-    if (m_IsSteppedOn)
+    if (m_IsSteppedOn || m_IsFalling)
         return;
 
     for (auto const &transform : m_PlayerTransforms) {
@@ -26,12 +26,11 @@ void LayerPartComponent::Update() {
         auto pos = m_Transform->GetWorldPosition();
         float distSqr = glm::dot(pos - playerWorldPos, pos - playerWorldPos);
         if (distSqr <= CollisionDistanceSquared) {
-            GetOwner()->GetParent()->GetComponent<BurgerLayerComponent>();
             m_IsSteppedOn = true;
             auto localPos = m_Transform->GetLocalPosition();
-            float steppedOnOffset{5.f};
-            localPos.y += steppedOnOffset;
+            localPos.y += SteppedOnOffset;
             m_Transform->SetLocalPosition(localPos);
+            GetOwner()->GetParent()->GetComponent<BurgerLayerComponent>()->OnLayerPartCollided();
         }
     }
 }
@@ -40,5 +39,8 @@ bool LayerPartComponent::IsSteppedOn() const {
     return m_IsSteppedOn;
 }
 
-void dae::LayerPartComponent::Startfalling() const {
+void dae::LayerPartComponent::SetFallingState(bool state) {
+    m_IsFalling = state;
+    if (!state)
+        m_IsSteppedOn = false;
 }

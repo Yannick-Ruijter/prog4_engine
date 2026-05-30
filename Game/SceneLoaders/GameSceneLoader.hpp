@@ -5,6 +5,7 @@
 namespace dae {
     class Scene;
     class GameObject;
+    class LevelGridComponent;
     enum class GameMode {
         SinglePlayer,
         Coop,
@@ -24,6 +25,8 @@ namespace dae {
         static Scene *LoadScene(LevelInfo levelInfo = {});
 
       private:
-        static void LoadSpriteMap(Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players);
+        static void LoadSpriteMap(
+            Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players,
+            LevelGridComponent *levelGrid);
     };
 } // namespace dae
