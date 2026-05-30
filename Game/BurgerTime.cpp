@@ -32,28 +32,6 @@
 #include <map>
 #include <tuple>
 
-// TODO: Add function for setting up all the scenes
-// create a resetScene function that has to be called whenever they restart from the main scene
-// make the gamescene take the gamemode as param (singleplayer, coop or vs)
-//  create a gamesceneloader class
-//  I can then make the LoadScene function take a sceneloader as argument
-//  and take from that sceneloader the actual scene
-//  the gamesceneloader has static members such as player lives, currentscore and currentlevel so that they don't reset
-//  upon reloading scene Create a class for each scene
-//
-//
-// Create a mainsceneLoader class which also create the main scene
-// find a font for it
-// create a MenuScreenState class
-// create a command for moving to the next button
-// it has the currently selected button
-// a button has a OnCurrentButton function which changes the visuals
-// a button has a visual for onNotCurrentButton function (choose other names)
-// which assigns a different visual for the button
-// each button has for each direction a next button
-// once the quit button was pressed quit
-// once a mode has been chosen, load the gamescene
-//
 // Create a gameOverScene
 // display score and gamemode
 // upon completely dying, ask if they want to save their score

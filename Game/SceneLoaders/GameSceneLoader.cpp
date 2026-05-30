@@ -16,11 +16,11 @@
 #include "ScoreDisplayComponent.hpp"
 #include "Subject.hpp"
 #include "TextComponent.hpp"
+#include "burgerLayerComponent.hpp"
 
 using namespace dae;
 
-Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo)
-{
+Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     auto scene = dae::SceneManager::GetInstance().CreateScene();
     // dae::SceneManager::GetInstance().SetActiveScene(scene);
     auto &inputManager = dae::InputManager::GetInstance();
@@ -201,6 +201,15 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo)
         go->AddComponent<dae::ScoreDisplayComponent>(*player2->GetComponent<dae::ScoreComponent>());
         player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(
             go->GetComponent<dae::ScoreDisplayComponent>());
+        scene->Add(std::move(go));
+    }
+
+    // manually add paddy
+    {
+        go = std::make_unique<dae::GameObject>();
+        go->AddComponent<dae::RenderComponent>();
+        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(300, 110);
+        go->AddComponent<dae::BurgerLayerComponent>(BurgerLayer::Cheese, std::vector<GameObject *>{player1, player2});
         scene->Add(std::move(go));
     }
     return scene;
