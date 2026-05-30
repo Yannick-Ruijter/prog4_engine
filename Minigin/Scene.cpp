@@ -1,3 +1,5 @@
+#include "Binding.hpp"
+#include "PlayerInput.hpp"
 #include "Scene.hpp"
 #include "assert.h"
 #include <algorithm>
@@ -19,6 +21,11 @@ void Scene::RemoveAll()
     m_objects.clear();
 }
 
+void dae::Scene::AddBinding(Binding *binding, PlayerInput *input)
+{
+    m_Bindings.emplace_back(binding, input);
+}
+
 void Scene::Update()
 {
     for (auto &object : m_objects)
@@ -31,9 +38,11 @@ void Scene::LateUpdate()
 {
     for (auto const objectPointer : m_ToBeDeletedObjects)
     {
-        m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
-                                       [objectPointer](const auto &ptr) { return ptr.get() == objectPointer; }),
-                        m_objects.end());
+        m_objects.erase(
+            std::remove_if(
+                m_objects.begin(), m_objects.end(),
+                [objectPointer](const auto &ptr) { return ptr.get() == objectPointer; }),
+            m_objects.end());
     }
     m_ToBeDeletedObjects.clear();
 
@@ -48,5 +57,13 @@ void Scene::Render() const
     for (const auto &object : m_objects)
     {
         object->Render();
+    }
+}
+
+dae::Scene::~Scene()
+{
+    for (auto const &[binding, input] : m_Bindings)
+    {
+        input->UnBind(binding);
     }
 }

@@ -101,21 +101,31 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo)
     dae::Subject *player2PickUpSubject1{nullptr};
     dae::Subject *player2PickUpSubject2{nullptr};
     {
+        auto player1Input{inputManager.GetControllerInput(0)};
+        auto player2Input{inputManager.GetKeyboardInput()};
 
-        inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::DamagePlayer>(*player2, *player1), InputKeybinds::C, InputState::JustPressed);
-        dae::Binding *player2PickUpBinding1 = inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::PickUpItemCommand>(*player2), InputKeybinds::Z, InputState::JustPressed);
-        dae::Binding *player2PickUpBinding2 = inputManager.GetKeyboardInput()->AddBinding(
-            std::make_unique<dae::PickUpItemCommand>(*player2), InputKeybinds::X, InputState::JustPressed);
-
-        inputManager.GetControllerInput(0)->AddBinding(
+        auto player1DamageBinding = player1Input->AddBinding(
             std::make_unique<dae::DamagePlayer>(*player1, *player2), InputKeybinds::BUTTON_WEST,
             InputState::JustPressed);
-        dae::Binding *player1PickUpBinding1 = inputManager.GetControllerInput(0)->AddBinding(
+        auto player1PickUpBinding1 = player1Input->AddBinding(
             std::make_unique<dae::PickUpItemCommand>(*player1), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed);
-        dae::Binding *player1PickUpBinding2 = inputManager.GetControllerInput(0)->AddBinding(
+        auto player1PickUpBinding2 = player1Input->AddBinding(
             std::make_unique<dae::PickUpItemCommand>(*player1), InputKeybinds::BUTTON_EAST, InputState::JustPressed);
+
+        scene->AddBinding(player1DamageBinding, player1Input);
+        scene->AddBinding(player1PickUpBinding1, player1Input);
+        scene->AddBinding(player1PickUpBinding2, player1Input);
+
+        auto player2DamageBinding = player2Input->AddBinding(
+            std::make_unique<dae::DamagePlayer>(*player2, *player1), InputKeybinds::C, InputState::JustPressed);
+        auto player2PickUpBinding1 = player2Input->AddBinding(
+            std::make_unique<dae::PickUpItemCommand>(*player2), InputKeybinds::Z, InputState::JustPressed);
+        auto player2PickUpBinding2 = player2Input->AddBinding(
+            std::make_unique<dae::PickUpItemCommand>(*player2), InputKeybinds::X, InputState::JustPressed);
+
+        scene->AddBinding(player2DamageBinding, player2Input);
+        scene->AddBinding(player2PickUpBinding1, player2Input);
+        scene->AddBinding(player2PickUpBinding2, player2Input);
 
         player1PickUpSubject1 =
             static_cast<dae::PickUpItemCommand *>(player1PickUpBinding1->m_Command.get())->GetSubject();
