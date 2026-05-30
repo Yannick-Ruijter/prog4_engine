@@ -4,7 +4,7 @@
 #include "burgerLayerComponent.hpp"
 using namespace dae;
 
-int LayerPartComponent::CollisionDistanceSquared = 1000;
+int LayerPartComponent::CollisionDistanceSquared = 500;
 
 void LayerPartComponent::SetCollisionDistance(int dist) {
     CollisionDistanceSquared = dist * dist;

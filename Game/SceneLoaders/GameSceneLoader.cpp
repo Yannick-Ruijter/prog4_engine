@@ -213,7 +213,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
     glm::ivec2 gridCoord{};
     std::unordered_map<char, BurgerLayer> layers{
         {'0', BurgerLayer::TopPaddy},
-        {'1', BurgerLayer::Cheese},
+        {'1', BurgerLayer::Tomato},
         {'2', BurgerLayer::Salad},
         {'3', BurgerLayer::BottomPaddy},
     };
@@ -232,13 +232,15 @@ void dae::GameSceneLoader::LoadSpriteMap(
             char currentChar{cell[0]};
             if (charToPlayers.contains(currentChar)) {
                 glm::vec2 pos{gridCoord * tileSize + tileSize / 4};
+                pos.y += tileSize.y / 8;
                 auto playerTransform = charToPlayers.at(currentChar)->GetComponent<TransformComponent>();
                 playerTransform->SetLocalPosition(pos);
             }
             if (layers.contains(currentChar)) {
                 glm::vec2 pos{gridCoord * tileSize};
-                pos.x += tileSize.x / 3;
-                pos.y += tileSize.y / 1.75f;
+                // to place them at exactly the right spot since they don't have the same size as the tiles
+                pos.x += tileSize.x / 3.5f;
+                pos.y += tileSize.y / 1.9f;
                 auto go = std::make_unique<GameObject>();
                 go->AddComponent<dae::RenderComponent>();
                 go->GetComponent<dae::TransformComponent>()->SetLocalPosition(pos);

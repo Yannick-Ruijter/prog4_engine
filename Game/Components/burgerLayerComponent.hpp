@@ -2,7 +2,7 @@
 #include "Component.hpp"
 namespace dae {
     class LayerPartComponent;
-    enum class BurgerLayer { TopPaddy, Cheese, Meat, Salad, Tomato, BottomPaddy };
+    enum class BurgerLayer { TopPaddy, Salad, Tomato, BottomPaddy };
     class BurgerLayerComponent : public Component {
       public:
         BurgerLayerComponent(GameObject &owner, BurgerLayer layer, std::vector<GameObject *> const &players);

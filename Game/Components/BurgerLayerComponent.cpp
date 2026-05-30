@@ -21,27 +21,25 @@ void BurgerLayerComponent::OnLayerPartCollided() {
 
 void BurgerLayerComponent::CreateChildrenParts(std::vector<GameObject *> const &players, BurgerLayer layer) {
 
+    // TODO fix tiles first with photoshop and hten the names here
     std::string filePath{"Data/Tiles/"};
     switch (layer) {
     case BurgerLayer::TopPaddy:
-        filePath += "burgercheese";
-        break;
-    case BurgerLayer::Cheese:
-        filePath += "burgercheese";
+        filePath += "burgerpaddy_top";
         break;
     case BurgerLayer::Salad:
-        filePath += "burgercheese";
+        filePath += "burgersalad";
         break;
     case BurgerLayer::Tomato:
-        filePath += "burgercheese";
+        filePath += "burgertomato";
         break;
     case BurgerLayer::BottomPaddy:
-        filePath += "burgercheese";
+        filePath += "burgerpaddy_bottom";
         break;
     }
     // create 4 parts of the current layer each one 35 pixels more the right of the previous one
-    int originalWidth = 7;
-    int originalHeight = 6;
+    int originalWidth = 8;
+    int originalHeight = 7;
     int scale = 3;
     auto go = std::make_unique<GameObject>();
     go->AddComponent<RenderComponent>();
