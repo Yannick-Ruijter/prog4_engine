@@ -7,15 +7,15 @@
 #include "InputManager.hpp"
 #include "InputProvider.hpp"
 #include "LevelGrid.hpp"
-#include "PlayerAnimation.hpp"
 #include "PlayerStateIdle.hpp"
+#include "SpriteAnimation.hpp"
 #include "Texture2DDisplay.hpp"
 #include "TimeManager.hpp"
 #include "Transform.hpp"
 #include "sdbm_hash.hpp"
 using namespace dae;
 
-PlayerStateClimbing::PlayerStateClimbing(PlayerController &player, Direction dir)
+PlayerStateClimbing::PlayerStateClimbing(Entity &player, Direction dir)
     : PlayerState(player),
       m_CurrentMoveDir{dir},
       m_PlayerTransform{player.GetPlayer()->GetComponent<dae::Transform>()} {

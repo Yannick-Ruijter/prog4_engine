@@ -8,7 +8,7 @@ namespace dae
     class PlayerStateClimbing : public PlayerState
     {
       public:
-        PlayerStateClimbing(PlayerController &player, Direction dir);
+        PlayerStateClimbing(Entity &player, Direction dir);
         ~PlayerStateClimbing();
         std::unique_ptr<PlayerState> HandleInput();
         void Update();

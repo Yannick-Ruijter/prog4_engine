@@ -2,16 +2,16 @@
 #include "GameObject.hpp"
 #include "InputProvider.hpp"
 #include "LevelGrid.hpp"
-#include "PlayerAnimation.hpp"
 #include "PlayerStateIdle.hpp"
 #include "PlayerStateWalking.hpp"
+#include "SpriteAnimation.hpp"
 #include "TimeManager.hpp"
 #include "Transform.hpp"
 #include "sdbm_hash.hpp"
 
 using namespace dae;
 
-dae::PlayerStateWalking::PlayerStateWalking(PlayerController &player, Direction moveDir)
+dae::PlayerStateWalking::PlayerStateWalking(Entity &player, Direction moveDir)
     : PlayerState(player), m_PlayerTransform{player.GetPlayer()->GetComponent<Transform>()}, m_CurrentMoveDir{moveDir} {
     OnEnter();
 }

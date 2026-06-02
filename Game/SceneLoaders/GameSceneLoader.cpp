@@ -9,13 +9,13 @@
 #include "LevelGrid.hpp"
 #include "LivesDisplay.hpp"
 #include "ObjectRenderer.hpp"
-#include "PlayerAnimation.hpp"
-#include "PlayerController.hpp"
+#include "Entity.hpp"
 #include "PlayerInputProvider.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
 #include "Score.hpp"
 #include "ScoreDisplay.hpp"
+#include "SpriteAnimation.hpp"
 #include "Subject.hpp"
 #include "TextDisplay.hpp"
 #include "burgerLayer.hpp"
@@ -80,9 +80,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         player2->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
         player2->GetComponent<dae::Transform>()->SetLocalPosition(glm::vec3{200, 214, 0});
         player2->AddComponent<dae::Score>(std::make_unique<dae::Subject>());
-        player2->AddComponent<dae::PlayerAnimation>(
+        player2->AddComponent<dae::SpriteAnimation>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        player2->AddComponent<dae::PlayerController>(
+        player2->AddComponent<dae::Entity>(
             std::make_unique<dae::PlayerInputProvider>(inputManager.GetKeyboardInput()),
             level->GetComponent<dae::LevelGrid>());
 
@@ -91,9 +91,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         player1->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
         player1->GetComponent<dae::Transform>()->SetLocalPosition(glm::vec3{150, 214, 0});
         player1->AddComponent<dae::Score>(std::make_unique<dae::Subject>());
-        player1->AddComponent<dae::PlayerAnimation>(
+        player1->AddComponent<dae::SpriteAnimation>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        player1->AddComponent<dae::PlayerController>(
+        player1->AddComponent<dae::Entity>(
             std::make_unique<dae::PlayerInputProvider>(inputManager.GetControllerInput(0)),
             level->GetComponent<dae::LevelGrid>());
     }

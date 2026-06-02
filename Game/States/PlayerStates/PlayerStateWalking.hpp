@@ -8,7 +8,7 @@ namespace dae
     class PlayerStateWalking : public PlayerState
     {
       public:
-        PlayerStateWalking(PlayerController &player, Direction dir);
+        PlayerStateWalking(Entity &player, Direction dir);
         ~PlayerStateWalking();
         std::unique_ptr<PlayerState> HandleInput();
         void Update();

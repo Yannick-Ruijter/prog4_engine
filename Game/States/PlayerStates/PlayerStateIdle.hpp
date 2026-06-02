@@ -6,7 +6,7 @@ namespace dae
     class PlayerStateIdle : public PlayerState
     {
       public:
-        PlayerStateIdle(PlayerController &player, Direction direction = Direction::Down);
+        PlayerStateIdle(Entity &player, Direction direction = Direction::Down);
         ~PlayerStateIdle();
         std::unique_ptr<PlayerState> HandleInput();
         void Update();

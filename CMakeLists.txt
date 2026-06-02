@@ -222,19 +222,20 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   
   "Game/Extras/CustomCommands.cpp"
   "Game/Extras/Subject.cpp"
-  "Game/Components/PlayerController.cpp" 
-  "Game/PlayerStates/PlayerState.cpp" 
-  "Game/PlayerStates/PlayerStateIdle.cpp" 
-  "Game/PlayerStates/PlayerStateWalking.cpp"
+  "Game/Components/Entity.cpp" 
+  "Game/States/PlayerStates/PlayerState.cpp" 
+  "Game/States/PlayerStates/PlayerStateIdle.cpp" 
+  "Game/States/PlayerStates/PlayerStateWalking.cpp"
+  "Game/States/PlayerStates/PlayerStateClimbing.cpp" 
   "Game/Components/RectCollider.cpp"
-  "Game/Components/PlayerAnimation.cpp"
-  "Game/PlayerStates/PlayerStateClimbing.cpp" 
+  "Game/Components/SpriteAnimation.cpp"
   "Game/Components/LevelGrid.cpp" 
   "Game/SceneLoaders/GameSceneLoader.cpp"
   "Game/SceneLoaders/MainSceneLoader.cpp" 
   "Game/Components/Button.cpp"
   "Game/Components/BurgerLayer.cpp" 
-  "Game/Components/BurgerLayerPart.cpp"  "Game/Components/AIController.cpp" "Game/Extras/PlayerInputProvider.cpp")
+  "Game/Components/BurgerLayerPart.cpp"   
+  "Game/Extras/PlayerInputProvider.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
@@ -244,7 +245,9 @@ target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/"
   "${CMAKE_SOURCE_DIR}/Game/Components/"
   "${CMAKE_SOURCE_DIR}/Game/Extras/"
-  "${CMAKE_SOURCE_DIR}/Game/PlayerStates/"
+  "${CMAKE_SOURCE_DIR}/Game/States/"
+  "${CMAKE_SOURCE_DIR}/Game/States/PlayerStates/"
+  "${CMAKE_SOURCE_DIR}/Game/States/EnemyStates/"
   "${CMAKE_SOURCE_DIR}/Game/SceneLoaders/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )

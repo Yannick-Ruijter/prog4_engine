@@ -1,9 +1,9 @@
 #pragma once
+#include "Entity.hpp"
 #include "Observer.hpp"
-#include "PlayerController.hpp"
 #include <memory>
 namespace dae {
-    class PlayerController;
+    class Entity;
     class PlayerState {
       public:
         PlayerState(PlayerState const &other) = default;
@@ -18,7 +18,7 @@ namespace dae {
         virtual void OnExit();
 
       protected:
-        PlayerState(PlayerController &player);
-        PlayerController *m_Player;
+        PlayerState(Entity &player);
+        Entity *m_Player;
     };
 } // namespace dae

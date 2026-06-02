@@ -4,17 +4,17 @@
 #include "InputProvider.hpp"
 #include "KeyboardInput.hpp"
 #include "LevelGrid.hpp"
-#include "PlayerAnimation.hpp"
 #include "PlayerStateClimbing.hpp"
 #include "PlayerStateIdle.hpp"
 #include "PlayerStateWalking.hpp"
+#include "SpriteAnimation.hpp"
 #include "Texture2DDisplay.hpp"
 #include "TimeManager.hpp"
 #include "sdbm_hash.hpp"
 
 using namespace dae;
 
-PlayerStateIdle::PlayerStateIdle(PlayerController &player, Direction direction)
+PlayerStateIdle::PlayerStateIdle(Entity &player, Direction direction)
     : PlayerState(player), m_CurrentFacingDir{direction} {
     OnEnter();
 }

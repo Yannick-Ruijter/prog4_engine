@@ -1,7 +1,7 @@
 
 #include "GameObject.hpp"
-#include "PlayerAnimation.hpp"
 #include "Renderer.hpp"
+#include "SpriteAnimation.hpp"
 #include "Texture2DDisplay.hpp"
 #include <SDL3/SDL.h>
 #include <fstream>
@@ -19,7 +19,7 @@ struct AnimationStateInfo {
     int FrameDuration;
 };
 
-class dae::PlayerAnimation::Impl {
+class dae::SpriteAnimation::Impl {
   public:
     Impl(GameObject &owner, std::string const &animationDataPath, std::string const &spriteSheetPath);
     ~Impl();
@@ -42,22 +42,22 @@ class dae::PlayerAnimation::Impl {
     void InitStateInfo();
 };
 
-PlayerAnimation::PlayerAnimation(
+SpriteAnimation::SpriteAnimation(
     GameObject &owner, std::string const &animationDataPath, std::string const &spriteSheetPath)
     : Component(owner), m_pImpl{std::make_unique<Impl>(owner, animationDataPath, spriteSheetPath)} {
 }
 
-dae::PlayerAnimation::~PlayerAnimation() = default;
+dae::SpriteAnimation::~SpriteAnimation() = default;
 
-void dae::PlayerAnimation::Update() {
+void dae::SpriteAnimation::Update() {
     m_pImpl->Update();
 }
 
-void dae::PlayerAnimation::SetAnimationState(std::string const &animState) {
+void dae::SpriteAnimation::SetAnimationState(std::string const &animState) {
     m_pImpl->SetAnimationState(animState);
 }
 
-dae::PlayerAnimation::Impl::Impl(
+dae::SpriteAnimation::Impl::Impl(
     GameObject &owner, std::string const &animationDataPath, std::string const &spriteSheetPath)
     : m_Owner{&owner} {
     m_CurrentPlayerTexture = m_Owner->GetComponent<Texture2DDisplay>();
@@ -66,7 +66,7 @@ dae::PlayerAnimation::Impl::Impl(
     InitStateInfo();
 }
 
-void dae::PlayerAnimation::Impl::SetAnimationState(std::string const &state) {
+void dae::SpriteAnimation::Impl::SetAnimationState(std::string const &state) {
     m_HasState = true;
     m_CurrentStateKey = state;
     m_CurrentState = &m_States[m_CurrentStateKey];
@@ -75,7 +75,7 @@ void dae::PlayerAnimation::Impl::SetAnimationState(std::string const &state) {
     InitAnimationFrame();
 }
 
-void dae::PlayerAnimation::Impl::Update() {
+void dae::SpriteAnimation::Impl::Update() {
     if (!m_HasState || m_CurrentState->FrameDuration == -1)
         return;
 
@@ -89,7 +89,7 @@ void dae::PlayerAnimation::Impl::Update() {
     }
 }
 
-void dae::PlayerAnimation::Impl::InitAnimationFrame() {
+void dae::SpriteAnimation::Impl::InitAnimationFrame() {
     SDL_Surface *animationFrame = SDL_CreateSurface(
         m_CurrentState->dimensions.x * 2, m_CurrentState->dimensions.y * 2, m_SpriteSheetSurface->format);
 
@@ -106,7 +106,7 @@ void dae::PlayerAnimation::Impl::InitAnimationFrame() {
     SDL_DestroySurface(animationFrame);
 }
 
-void dae::PlayerAnimation::Impl::InitStateInfo() {
+void dae::SpriteAnimation::Impl::InitStateInfo() {
     for (auto const &[key, val] : m_SpriteSheetJson.items()) {
         m_States[key] = AnimationStateInfo{
             glm::vec2{val["startPosX"].get<float>(), val["startPosY"].get<float>()},
@@ -115,6 +115,6 @@ void dae::PlayerAnimation::Impl::InitStateInfo() {
     }
 }
 
-dae::PlayerAnimation::Impl::~Impl() {
+dae::SpriteAnimation::Impl::~Impl() {
     SDL_DestroySurface(m_SpriteSheetSurface);
 }
