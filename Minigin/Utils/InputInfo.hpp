@@ -81,6 +81,20 @@ enum class InputKeybinds {
     F10,
     F11,
     F12,
+
+    PRINTSCREEN,
+    SCROLLLOCK,
+    PAUSE,
+    INSERT,
+    HOME,
+    PAGEUP,
+    DEL,
+    END,
+    PAGEDOWN,
+    RIGHT,
+    LEFT,
+    DOWN,
+    UP,
     KEYBOARD_END,
 
     // controller inputs

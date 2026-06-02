@@ -1,8 +1,8 @@
 #include "CustomCommands.hpp"
 #include "GameObject.hpp"
+#include "InputProvider.hpp"
 #include "LevelGrid.hpp"
 #include "PlayerAnimation.hpp"
-#include "PlayerInput.hpp"
 #include "PlayerStateIdle.hpp"
 #include "PlayerStateWalking.hpp"
 #include "TimeManager.hpp"
@@ -12,9 +12,7 @@
 using namespace dae;
 
 dae::PlayerStateWalking::PlayerStateWalking(PlayerController &player, Direction moveDir)
-    : PlayerState(player),
-      m_PlayerTransform{player.GetPlayer()->GetComponent<Transform>()},
-      m_CurrentMoveDir{moveDir} {
+    : PlayerState(player), m_PlayerTransform{player.GetPlayer()->GetComponent<Transform>()}, m_CurrentMoveDir{moveDir} {
     OnEnter();
 }
 
@@ -24,19 +22,29 @@ dae::PlayerStateWalking::~PlayerStateWalking() {
 
 std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput() {
     auto input{m_Player->GetInput()};
+    auto moveDir{input->GetMovementDirection()};
     auto level{m_Player->GetLevel()};
     glm::vec2 charSize{32.f, 32.f};
     float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
 
+    // if we (in one frame) manage to switch direction
+    // meaning in the same frame we release the old and press the new dir
+    if (std::signbit(moveDir.x) != std::signbit(m_MovementVector.x)) {
+        m_CurrentMoveDir = std::signbit(moveDir.x) ? Direction::Left : Direction::Right;
+        if (m_CurrentMoveDir == Direction::Left) {
+            m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
+            m_MovementVector = glm::vec2{-m_Player->GetMoveSpeed(), 0.f};
+        } else if (m_CurrentMoveDir == Direction::Right) {
+            m_Player->GetPlayerAnimation()->SetAnimationState("RunningRight");
+            m_MovementVector = glm::vec2{m_Player->GetMoveSpeed(), 0.f};
+        }
+    }
+
     if (!level->IsOnPlatform(m_PlayerTransform->GetWorldPosition() + m_MovementVector * deltaTime, charSize))
         return std::make_unique<PlayerStateIdle>(*m_Player);
 
-    if (m_CurrentMoveDir == Direction::Left) {
-        if (input->WasReleasedThisFrame(InputAction::MoveLeft))
-            return std::make_unique<PlayerStateIdle>(*m_Player);
-    } else {
-        if (input->WasReleasedThisFrame(InputAction::MoveRight))
-            return std::make_unique<PlayerStateIdle>(*m_Player);
+    if (moveDir.x == 0.f) {
+        return std::make_unique<PlayerStateIdle>(*m_Player);
     }
     return nullptr;
 }

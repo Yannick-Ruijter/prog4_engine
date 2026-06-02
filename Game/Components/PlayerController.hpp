@@ -6,23 +6,23 @@
 namespace dae {
     class PlayerAnimation;
     class PlayerState;
-    class PlayerInput;
+    class InputProvider;
     class LevelGrid;
     class PlayerController final : public Component {
       public:
-        PlayerController(GameObject &owner, PlayerInput *input, LevelGrid *level);
+        PlayerController(GameObject &owner, std::unique_ptr<InputProvider> input, LevelGrid *level);
         ~PlayerController();
         void Update();
         GameObject *GetPlayer();
         PlayerAnimation *GetPlayerAnimation() const;
-        PlayerInput *GetInput() const;
+        InputProvider *GetInput() const;
         LevelGrid *GetLevel() const;
         float GetMoveSpeed() const;
 
       private:
         PlayerAnimation *m_PlayerAnimation;
         std::unique_ptr<PlayerState> m_CurrentState;
-        PlayerInput *m_PlayerInput;
+        std::unique_ptr<InputProvider> m_Input;
         LevelGrid *m_Level;
         float m_MoveSpeed{100.f};
     };

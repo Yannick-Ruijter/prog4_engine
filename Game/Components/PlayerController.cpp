@@ -1,22 +1,20 @@
 #include "GameObject.hpp"
+#include "InputProvider.hpp"
 #include "LevelGrid.hpp"
 #include "PlayerAnimation.hpp"
 #include "PlayerController.hpp"
-#include "PlayerInput.hpp"
 #include "PlayerState.hpp"
 #include "PlayerStateIdle.hpp"
 #include "sdbm_hash.hpp"
 using namespace dae;
 
-PlayerController::PlayerController(GameObject &owner, PlayerInput *input, LevelGrid *level)
+PlayerController::PlayerController(GameObject &owner, std::unique_ptr<InputProvider> input, LevelGrid *level)
     : Component(owner),
       m_PlayerAnimation{owner.GetComponent<PlayerAnimation>()},
       m_CurrentState{std::make_unique<PlayerStateIdle>(*this)},
-      m_PlayerInput{input},
+      m_Input{std::move(input)},
       m_Level{level} {
-    assert(
-        m_PlayerAnimation != nullptr &&
-        "PlayerController needs a PlayerAnimation (added before this component)");
+    assert(m_PlayerAnimation != nullptr && "PlayerController needs a PlayerAnimation (added before this component)");
 }
 
 dae::PlayerController::~PlayerController() {
@@ -37,8 +35,8 @@ PlayerAnimation *dae::PlayerController::GetPlayerAnimation() const {
     return m_PlayerAnimation;
 }
 
-PlayerInput *dae::PlayerController::GetInput() const {
-    return m_PlayerInput;
+InputProvider *dae::PlayerController::GetInput() const {
+    return m_Input.get();
 }
 
 LevelGrid *dae::PlayerController::GetLevel() const {

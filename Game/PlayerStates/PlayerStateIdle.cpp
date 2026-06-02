@@ -1,6 +1,7 @@
 #include "GameObject.hpp"
 #include "InputInfo.hpp"
 #include "InputManager.hpp"
+#include "InputProvider.hpp"
 #include "KeyboardInput.hpp"
 #include "LevelGrid.hpp"
 #include "PlayerAnimation.hpp"
@@ -24,20 +25,21 @@ dae::PlayerStateIdle::~PlayerStateIdle() {
 
 std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput() {
     auto input{m_Player->GetInput()};
+    auto movementDir{input->GetMovementDirection()};
     auto level{m_Player->GetLevel()};
     auto worldPos{m_Player->GetPlayer()->GetWorldPosition()};
     glm::vec2 charSize{32.f, 32.f};
     auto deltaTime{TimeManager::GetInstance().GetDeltaTime()};
     auto moveSpeed{m_Player->GetMoveSpeed()};
 
-    if (input->WasPressedThisFrame(InputAction::MoveUp)) {
+    if (movementDir.y < 0) {
         if (level->IsOnLadder(worldPos + glm::vec2{0.f, -moveSpeed * deltaTime}, charSize)) {
             return std::make_unique<PlayerStateClimbing>(*m_Player, Direction::Up);
         } else if (m_CurrentFacingDir != Direction::Up) {
             m_CurrentFacingDir = Direction::Up;
             m_Player->GetPlayerAnimation()->SetAnimationState("IdleBack");
         }
-    } else if (input->WasPressedThisFrame(InputAction::MoveDown)) {
+    } else if (movementDir.y > 0) {
         // check both current and grid below the player
         if (level->IsOnLadder(worldPos + glm::vec2{0.f, moveSpeed * deltaTime}, charSize) ||
             level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize)) {
@@ -46,11 +48,11 @@ std::unique_ptr<PlayerState> dae::PlayerStateIdle::HandleInput() {
             m_CurrentFacingDir = Direction::Down;
             m_Player->GetPlayerAnimation()->SetAnimationState("IdleFront");
         }
-    } else if (input->WasPressedThisFrame(InputAction::MoveLeft)) {
+    } else if (movementDir.x < 0) {
         if (level->IsOnPlatform(worldPos + glm::vec2{-moveSpeed * deltaTime, 0.f}, charSize)) {
             return std::make_unique<PlayerStateWalking>(*m_Player, Direction::Left);
         }
-    } else if (input->WasPressedThisFrame(InputAction::MoveRight)) {
+    } else if (movementDir.x > 0) {
         if (level->IsOnPlatform(worldPos + glm::vec2{moveSpeed * deltaTime, 0.f}, charSize)) {
             return std::make_unique<PlayerStateWalking>(*m_Player, Direction::Right);
         }

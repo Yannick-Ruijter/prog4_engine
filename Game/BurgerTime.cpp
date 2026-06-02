@@ -40,17 +40,19 @@ void BurgerTime::Destroy() {
 void BurgerTime::SetupKeybinds() {
     auto &inputManager = dae::InputManager::GetInstance();
     inputManager.GetKeyboardInput()
-        ->BindInputAction(InputAction::MoveUp, InputKeybinds::W)
-        .BindInputAction(InputAction::MoveDown, InputKeybinds::S)
-        .BindInputAction(InputAction::MoveRight, InputKeybinds::D)
-        .BindInputAction(InputAction::MoveLeft, InputKeybinds::A);
+        ->BindInputAction(InputAction::MoveUp, InputKeybinds::UP)
+        .BindInputAction(InputAction::MoveDown, InputKeybinds::DOWN)
+        .BindInputAction(InputAction::MoveRight, InputKeybinds::RIGHT)
+        .BindInputAction(InputAction::MoveLeft, InputKeybinds::LEFT)
+        .BindInputAction(InputAction::Attack, InputKeybinds::W);
 
     for (int i = 0; i < 4; ++i) {
         inputManager.GetControllerInput(i)
             ->BindInputAction(InputAction::MoveUp, InputKeybinds::DPAD_UP)
             .BindInputAction(InputAction::MoveDown, InputKeybinds::DPAD_DOWN)
             .BindInputAction(InputAction::MoveRight, InputKeybinds::DPAD_RIGHT)
-            .BindInputAction(InputAction::MoveLeft, InputKeybinds::DPAD_LEFT);
+            .BindInputAction(InputAction::MoveLeft, InputKeybinds::DPAD_LEFT)
+            .BindInputAction(InputAction::Attack, InputKeybinds::BUTTON_SOUTH);
     }
 
     auto keyboardInput{inputManager.GetKeyboardInput()};

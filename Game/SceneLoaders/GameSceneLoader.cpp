@@ -8,9 +8,10 @@
 #include "InputManager.hpp"
 #include "LevelGrid.hpp"
 #include "LivesDisplay.hpp"
+#include "ObjectRenderer.hpp"
 #include "PlayerAnimation.hpp"
 #include "PlayerController.hpp"
-#include "ObjectRenderer.hpp"
+#include "PlayerInputProvider.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
 #include "Score.hpp"
@@ -82,7 +83,8 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         player2->AddComponent<dae::PlayerAnimation>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         player2->AddComponent<dae::PlayerController>(
-            inputManager.GetKeyboardInput(), level->GetComponent<dae::LevelGrid>());
+            std::make_unique<dae::PlayerInputProvider>(inputManager.GetKeyboardInput()),
+            level->GetComponent<dae::LevelGrid>());
 
         player1->AddComponent<dae::ObjectRenderer>();
         player1->AddComponent<dae::Health>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
@@ -92,7 +94,8 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         player1->AddComponent<dae::PlayerAnimation>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
         player1->AddComponent<dae::PlayerController>(
-            inputManager.GetControllerInput(0), level->GetComponent<dae::LevelGrid>());
+            std::make_unique<dae::PlayerInputProvider>(inputManager.GetControllerInput(0)),
+            level->GetComponent<dae::LevelGrid>());
     }
 
     // add player bindings
