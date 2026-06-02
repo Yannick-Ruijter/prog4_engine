@@ -11,7 +11,7 @@
 #include "TextComponent.hpp"
 
 using namespace dae;
-
+// add a component that unloads all the bindings when scene destroyed
 Scene *dae::MainSceneLoader::LoadScene() {
     auto scene = dae::SceneManager::GetInstance().CreateScene();
     auto &inputManager = dae::InputManager::GetInstance();
@@ -51,7 +51,7 @@ Scene *dae::MainSceneLoader::LoadScene() {
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 150);
         go->AddComponent<dae::TextComponent>("Single Player", fontMain, SDL_Color{255, 0, 0, 255});
         go->AddComponent<dae::ButtonComponent>(
-            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true); }, focusedColor, idleColor);
+            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(); }, focusedColor, idleColor);
         singlePlayerButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -60,7 +60,7 @@ Scene *dae::MainSceneLoader::LoadScene() {
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 200);
         go->AddComponent<dae::TextComponent>("Coop", fontMain, SDL_Color{255, 0, 0, 255});
         go->AddComponent<dae::ButtonComponent>(
-            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true); }, focusedColor, idleColor);
+            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(); }, focusedColor, idleColor);
         coopButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -69,7 +69,7 @@ Scene *dae::MainSceneLoader::LoadScene() {
         go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 250);
         go->AddComponent<dae::TextComponent>("Pvp", fontMain, SDL_Color{255, 0, 0, 255});
         go->AddComponent<dae::ButtonComponent>(
-            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(true); }, focusedColor, idleColor);
+            [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(); }, focusedColor, idleColor);
         pvpButton = go->GetComponent<dae::ButtonComponent>();
         scene->Add(std::move(go));
 
@@ -110,36 +110,51 @@ Scene *dae::MainSceneLoader::LoadScene() {
 
         dae::NavigateButtonCommand::SetInitialButton(initialButton);
 
-        controllerInput0->AddBinding(
+        std::vector<Binding *> bindings{};
+        bindings.emplace_back(controllerInput0->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Down), InputKeybinds::DPAD_DOWN,
-            InputState::JustPressed);
+            InputState::JustPressed));
 
-        controllerInput0->AddBinding(
+        bindings.emplace_back(controllerInput0->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::DPAD_UP,
-            InputState::JustPressed);
+            InputState::JustPressed));
 
-        controllerInput0->AddBinding(
-            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed);
+        bindings.emplace_back(controllerInput0->AddBinding(
+            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed));
 
-        controllerInput1->AddBinding(
+        bindings.emplace_back(controllerInput1->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Down), InputKeybinds::DPAD_DOWN,
-            InputState::JustPressed);
+            InputState::JustPressed));
 
-        controllerInput1->AddBinding(
+        bindings.emplace_back(controllerInput1->AddBinding(
             std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::DPAD_UP,
-            InputState::JustPressed);
+            InputState::JustPressed));
 
-        controllerInput1->AddBinding(
-            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed);
+        bindings.emplace_back(controllerInput1->AddBinding(
+            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::BUTTON_SOUTH, InputState::JustPressed));
 
-        keyboardInput->AddBinding(
-            std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::W, InputState::JustPressed);
+        bindings.emplace_back(keyboardInput->AddBinding(
+            std::make_unique<dae::NavigateButtonCommand>(Direction::Up), InputKeybinds::W, InputState::JustPressed));
 
-        keyboardInput->AddBinding(
-            std::make_unique<dae::NavigateButtonCommand>(Direction::Down), InputKeybinds::S, InputState::JustPressed);
+        bindings.emplace_back(keyboardInput->AddBinding(
+            std::make_unique<dae::NavigateButtonCommand>(Direction::Down), InputKeybinds::S, InputState::JustPressed));
 
-        keyboardInput->AddBinding(
-            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::Z, InputState::JustPressed);
+        bindings.emplace_back(keyboardInput->AddBinding(
+            std::make_unique<dae::PressButtonCommand>(), InputKeybinds::Z, InputState::JustPressed));
+
+        scene->AddExitFunction([bindings]() {
+            auto &inputManager{InputManager::GetInstance()};
+            auto keyBoardInput{inputManager.GetKeyboardInput()};
+            std::vector<PlayerInput *> controllerInputs{
+                inputManager.GetControllerInput(0), inputManager.GetControllerInput(1),
+                inputManager.GetControllerInput(2), inputManager.GetControllerInput(3)};
+
+            for (auto const &binding : bindings) {
+                keyBoardInput->UnBind(binding);
+                for (auto const &controllerInput : controllerInputs)
+                    controllerInput->UnBind(binding);
+            }
+        });
     }
     return scene;
 }

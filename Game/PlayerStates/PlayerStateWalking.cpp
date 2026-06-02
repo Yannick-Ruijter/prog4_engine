@@ -14,18 +14,15 @@ using namespace dae;
 dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player, Direction moveDir)
     : PlayerState(player),
       m_PlayerTransform{player.GetPlayer()->GetComponent<TransformComponent>()},
-      m_CurrentMoveDir{moveDir}
-{
+      m_CurrentMoveDir{moveDir} {
     OnEnter();
 }
 
-dae::PlayerStateWalking::~PlayerStateWalking()
-{
+dae::PlayerStateWalking::~PlayerStateWalking() {
     OnExit();
 }
 
-std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput()
-{
+std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput() {
     auto input{m_Player->GetInput()};
     auto level{m_Player->GetLevel()};
     glm::vec2 charSize{32.f, 32.f};
@@ -34,34 +31,26 @@ std::unique_ptr<PlayerState> dae::PlayerStateWalking::HandleInput()
     if (!level->IsOnPlatform(m_PlayerTransform->GetWorldPosition() + m_MovementVector * deltaTime, charSize))
         return std::make_unique<PlayerStateIdle>(*m_Player);
 
-    if (m_CurrentMoveDir == Direction::Left)
-    {
+    if (m_CurrentMoveDir == Direction::Left) {
         if (input->WasReleasedThisFrame(InputAction::MoveLeft))
             return std::make_unique<PlayerStateIdle>(*m_Player);
-    }
-    else
-    {
+    } else {
         if (input->WasReleasedThisFrame(InputAction::MoveRight))
             return std::make_unique<PlayerStateIdle>(*m_Player);
     }
     return nullptr;
 }
 
-void dae::PlayerStateWalking::Update()
-{
+void dae::PlayerStateWalking::Update() {
     m_PlayerTransform->SetLocalPosition(
         m_PlayerTransform->GetLocalPosition() + (m_MovementVector * TimeManager::GetInstance().GetDeltaTime()));
 }
 
-void dae::PlayerStateWalking::OnEnter()
-{
-    if (m_CurrentMoveDir == Direction::Left)
-    {
+void dae::PlayerStateWalking::OnEnter() {
+    if (m_CurrentMoveDir == Direction::Left) {
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningLeft");
         m_MovementVector = glm::vec2{-m_Player->GetMoveSpeed(), 0.f};
-    }
-    else if (m_CurrentMoveDir == Direction::Right)
-    {
+    } else if (m_CurrentMoveDir == Direction::Right) {
         m_Player->GetPlayerAnimation()->SetAnimationState("RunningRight");
         m_MovementVector = glm::vec2{m_Player->GetMoveSpeed(), 0.f};
     }
@@ -79,6 +68,5 @@ void dae::PlayerStateWalking::OnEnter()
     m_PlayerTransform->SetLocalPosition(pos);
 }
 
-void dae::PlayerStateWalking::OnExit()
-{
+void dae::PlayerStateWalking::OnExit() {
 }

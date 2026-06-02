@@ -1,15 +1,13 @@
 #pragma once
 
-enum class InputState
-{
+enum class InputState {
     JustPressed,
     JustReleased,
     Pressed,
     None,
 };
 
-enum class InputKeybinds
-{
+enum class InputKeybinds {
     // keyboard inputs
     KEYBOARD_BEGIN,
     A,
@@ -38,6 +36,51 @@ enum class InputKeybinds
     X,
     Y,
     Z,
+
+    NUM_1,
+    NUM_2,
+    NUM_3,
+    NUM_4,
+    NUM_5,
+    NUM_6,
+    NUM_7,
+    NUM_8,
+    NUM_9,
+    NUM_0,
+
+    RETURN,
+    ESCAPE,
+    BACKSPACE,
+    TAB,
+    SPACE,
+
+    MINUS,
+    EQUALS,
+    LEFTBRACKET,
+    RIGHTBRACKET,
+    BACKSLASH,
+    NONUSHASH,
+    SEMICOLON,
+    APOSTROPHE,
+    GRAVE,
+    COMMA,
+    PERIOD,
+    SLASH,
+
+    CAPSLOCK,
+
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    F10,
+    F11,
+    F12,
     KEYBOARD_END,
 
     // controller inputs
@@ -53,8 +96,8 @@ enum class InputKeybinds
     RIGHT_THUMB,
     LEFT_SHOULDER,
     RIGHT_SHOULDER,
-    EMPTY1, // unknown keybindsc
-    EMPTY2, // unknown keybindsc
+    EMPTY1, // unknown keybinds
+    EMPTY2, // unknown keybinds
 
     BUTTON_SOUTH,
     BUTTON_EAST,
@@ -63,8 +106,7 @@ enum class InputKeybinds
     CONTROLLER_END,
 };
 
-enum class InputAction
-{
+enum class InputAction {
     MoveDown,
     MoveUp,
     MoveLeft,

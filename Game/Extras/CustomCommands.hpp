@@ -3,23 +3,20 @@
 #include "Command.hpp"
 #include "ServiceProvider.hpp"
 #include <glm/glm.hpp>
-namespace dae
-{
+namespace dae {
     class GameObject;
     class PlayerInput;
     class TransformComponent;
     class SoundSystem;
     class Subject;
-    enum class Direction
-    {
+    enum class Direction {
         Up,
         Down,
         Left,
         Right,
     };
 
-    class GameObjectCommand : public Command
-    {
+    class GameObjectCommand : public Command {
       public:
         GameObjectCommand(GameObject &object);
         virtual ~GameObjectCommand() = default;
@@ -32,8 +29,7 @@ namespace dae
     };
 
     class TimeManager;
-    class MoveObjectCommand : public GameObjectCommand
-    {
+    class MoveObjectCommand : public GameObjectCommand {
       public:
         MoveObjectCommand(GameObject &object, Direction direction, float speed = 100.f);
         virtual void Execute() override;
@@ -47,8 +43,7 @@ namespace dae
     };
 
     class HealthComponent;
-    class DamagePlayer : public GameObjectCommand
-    {
+    class DamagePlayer : public GameObjectCommand {
       public:
         DamagePlayer(GameObject &object, GameObject &target);
         void Execute() override;
@@ -58,8 +53,7 @@ namespace dae
         HealthComponent *m_TargetHealthComponent{nullptr};
     };
 
-    class PickUpItemCommand : public GameObjectCommand
-    {
+    class PickUpItemCommand : public GameObjectCommand {
       public:
         PickUpItemCommand(GameObject &object);
         virtual void Execute() override;
@@ -72,16 +66,14 @@ namespace dae
 
     class ButtonComponent;
 
-    class ButtonCommand : public Command
-    {
+    class ButtonCommand : public Command {
       public:
         static void SetInitialButton(ButtonComponent *button);
 
       protected:
         static ButtonComponent *CurrentButton;
     };
-    class NavigateButtonCommand : public ButtonCommand
-    {
+    class NavigateButtonCommand : public ButtonCommand {
       public:
         NavigateButtonCommand(Direction dir);
         virtual void Execute() override;
@@ -90,8 +82,12 @@ namespace dae
         Direction m_NavigateDir;
     };
 
-    class PressButtonCommand : public ButtonCommand
-    {
+    class PressButtonCommand : public ButtonCommand {
+      public:
+        virtual void Execute() override;
+    };
+
+    class ToggleSoundCommand : public Command {
       public:
         virtual void Execute() override;
     };

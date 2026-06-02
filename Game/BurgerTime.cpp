@@ -1,5 +1,6 @@
 #include "BurgerTime.hpp"
 
+#include "CustomCommands.hpp"
 #include "GameSceneLoader.hpp"
 #include "InputManager.hpp"
 #include "MainSceneLoader.hpp"
@@ -18,12 +19,18 @@ BurgerTime::~BurgerTime() = default;
 void BurgerTime::Initialize() {
     dae::ServiceProvider::RegisterSoundSystem(
         std::make_unique<dae::SDL_SoundSystem>(std::vector<std::pair<sound_id, std::string>>{
-            {0, "Data/Sounds/Coin.wav"}, {1, "Data/Sounds/Pepper Shake.wav"}}));
+            {0, "Data/Sounds/Coin.wav"},
+            {1, "Data/Sounds/Pepper Shake.wav"},
+            {2, "Data/Sounds/BGM.wav"},
+            {3, "Data/Sounds/Burger Step.wav"},
+            {4, "Data/Sounds/Burger Fall.wav"},
+            {5, "Data/Sounds/Burger Land.wav"},
+            {6, "Data/Sounds/Death.wav"},
+        }));
     SetupKeybinds();
 
     // first argument: set scene as active scene
-    dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(false);
-    dae::SceneManager::GetInstance().LoadScene<dae::MainSceneLoader>(true);
+    dae::SceneManager::GetInstance().LoadScene<dae::MainSceneLoader>();
 }
 
 void BurgerTime::Destroy() {
@@ -45,4 +52,7 @@ void BurgerTime::SetupKeybinds() {
             .BindInputAction(InputAction::MoveRight, InputKeybinds::DPAD_RIGHT)
             .BindInputAction(InputAction::MoveLeft, InputKeybinds::DPAD_LEFT);
     }
+
+    auto keyboardInput{inputManager.GetKeyboardInput()};
+    keyboardInput->AddBinding(std::make_unique<dae::ToggleSoundCommand>(), InputKeybinds::F2, InputState::JustPressed);
 }

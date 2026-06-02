@@ -11,12 +11,10 @@ concept IsSceneLoader = requires(Args &&...args) {
     { T::LoadScene(std::forward<Args>(args)...) } -> std::same_as<dae::Scene *>;
 };
 
-namespace dae
-{
+namespace dae {
     class Scene;
     class SceneLoader;
-    class SceneManager final : public Singleton<SceneManager>
-    {
+    class SceneManager final : public Singleton<SceneManager> {
       public:
         Scene *CreateScene();
 
@@ -28,11 +26,9 @@ namespace dae
 
         template <typename Loader, typename... Args>
             requires IsSceneLoader<Loader, Args...>
-        Scene *LoadScene(bool setAsActive, Args &&...args)
-        {
+        Scene *LoadScene(Args &&...args) {
             auto scene = Loader::LoadScene(std::forward<Args>(args)...);
-            if (setAsActive)
-                SetActiveScene(scene);
+            SetActiveScene(scene);
             return scene;
         }
 

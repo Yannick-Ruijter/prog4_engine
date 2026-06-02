@@ -228,7 +228,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/SceneLoaders/GameSceneLoader.cpp"
   "Game/SceneLoaders/MainSceneLoader.cpp" 
   "Game/Components/ButtonComponent.cpp"
-  "Game/Components/BurgerLayerComponent.cpp" "Game/Components/LayerPartComponent.cpp")
+  "Game/Components/BurgerLayerComponent.cpp" "Game/Components/LayerPartComponent.cpp" )
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

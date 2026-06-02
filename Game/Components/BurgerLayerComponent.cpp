@@ -29,7 +29,7 @@ void BurgerLayerComponent::OnLayerPartCollided() {
 void dae::BurgerLayerComponent::Update() {
     if (m_IsFalling) {
         auto localPos = m_Transform->GetLocalPosition();
-        localPos.y += 15.f * TimeManager::GetInstance().GetDeltaTime();
+        localPos.y += m_FallingSpeed * TimeManager::GetInstance().GetDeltaTime();
         m_Transform->SetLocalPosition(localPos);
         for (auto const &layerPart : m_LayerParts)
             layerPart->SetPositionDirty();
@@ -38,23 +38,30 @@ void dae::BurgerLayerComponent::Update() {
         if (m_NeighborBellowTransform) {
             auto otherPos = m_NeighborBellowTransform->GetWorldPosition();
             float smallMargin{2.f};
-            if (otherPos.y - pos.y <= m_LayerDimensions.y + smallMargin) {
+            if (!m_NeighborBellowComponent->IsFalling() && otherPos.y - pos.y <= m_LayerDimensions.y + smallMargin) {
 
                 // if the layer bellow can not fall further, neither can we
-                if (!m_NeighborBellowComponent->CanFall())
+                if (!m_NeighborBellowComponent->CanFall()) {
                     StopFalling();
-                else
+                    return;
+                } else
                     m_NeighborBellowComponent->StartFalling();
             }
         }
 
+        float bowlOffset{55.f};
         if (m_LevelGrid->IsOnPlatform(pos, m_LayerDimensions) &&
             static_cast<int>(pos.y) % m_LevelGrid->GetGridSize() == static_cast<int>(m_LevelGrid->GetGridSize() / 1.9f))
+            StopFalling();
+
+        else if (m_LevelGrid->IsOnBurgerBowl({pos.x, pos.y - bowlOffset}, m_LayerDimensions))
             StopFalling();
     }
 }
 
 void dae::BurgerLayerComponent::StartFalling() {
+    if (!m_NeighborBellowTransform)
+        CalculateLayerBellow();
     m_IsFalling = true;
     m_NumberOfPartsSteppedOn = 0;
 

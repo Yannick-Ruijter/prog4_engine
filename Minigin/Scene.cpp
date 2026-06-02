@@ -8,16 +8,14 @@ using namespace dae;
 
 bool Scene::DebugOutputEnabled = false;
 
-void Scene::Add(std::unique_ptr<GameObject> object)
-{
+void Scene::Add(std::unique_ptr<GameObject> object) {
     assert(object != nullptr && "Cannot add a null GameObject to the scene.");
     m_objects.emplace_back(std::move(object));
     if (DebugOutputEnabled)
         std::cout << "Added object number " << m_objects.size() << " to the scene\n";
 }
 
-void Scene::Remove(const GameObject &object)
-{
+void Scene::Remove(const GameObject &object) {
     m_ToBeDeletedObjects.push_back(&object);
     // clang-format off
     if (DebugOutputEnabled)
@@ -25,30 +23,18 @@ void Scene::Remove(const GameObject &object)
     // clang-format on
 }
 
-void Scene::RemoveAll()
-{
+void Scene::RemoveAll() {
     m_objects.clear();
 }
 
-void dae::Scene::AddBinding(Binding *binding, PlayerInput *input)
-{
-    m_Bindings.emplace_back(binding, input);
-    if (DebugOutputEnabled)
-        std::cout << "Added binding: " << m_Bindings.size() << " in scene\n";
-}
-
-void Scene::Update()
-{
-    for (auto &object : m_objects)
-    {
+void Scene::Update() {
+    for (auto &object : m_objects) {
         object->Update();
     }
 }
 
-void Scene::LateUpdate()
-{
-    for (auto const objectPointer : m_ToBeDeletedObjects)
-    {
+void Scene::LateUpdate() {
+    for (auto const objectPointer : m_ToBeDeletedObjects) {
         m_objects.erase(
             std::remove_if(
                 m_objects.begin(), m_objects.end(),
@@ -57,28 +43,33 @@ void Scene::LateUpdate()
     }
     m_ToBeDeletedObjects.clear();
 
-    for (auto &object : m_objects)
-    {
+    for (auto &object : m_objects) {
         object->LateUpdate();
     }
 }
 
-void Scene::Render() const
-{
-    for (const auto &object : m_objects)
-    {
+void Scene::Render() const {
+    for (const auto &object : m_objects) {
         object->Render();
     }
 }
 
-dae::Scene::~Scene()
-{
-    if (DebugOutputEnabled)
-        std::cout << "Unbinding all " << m_Bindings.size() << " bindings added to the scene...\n";
-    for (auto const &[binding, input] : m_Bindings)
-    {
-        input->UnBind(binding);
-    }
-    if (DebugOutputEnabled)
-        std::cout << "Unbinding done!\n";
+void dae::Scene::OnExit() {
+    for (auto const &exitFunction : m_ExitFunctions)
+        exitFunction();
 }
+
+void dae::Scene::OnEnter() {
+    for (auto const &enterFunction : m_EnterFunctions)
+        enterFunction();
+}
+
+void dae::Scene::AddEnterFunction(std::function<void()> const &onEnter) {
+    m_EnterFunctions.push_back(onEnter);
+}
+
+void dae::Scene::AddExitFunction(std::function<void()> const &onExit) {
+    m_ExitFunctions.push_back(onExit);
+}
+
+dae::Scene::~Scene() = default;

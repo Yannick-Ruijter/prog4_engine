@@ -17,12 +17,12 @@
 #include "Scene.hpp"
 #include "SceneManager.hpp"
 #include "TextComponent.hpp"
+#include <iostream>
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
-int main(int, char *[])
-{
+int main(int, char *[]) {
 #if __EMSCRIPTEN__
     fs::path data_location = "";
 #else

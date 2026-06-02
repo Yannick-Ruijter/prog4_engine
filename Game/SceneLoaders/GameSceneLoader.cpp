@@ -101,6 +101,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     dae::Subject *player2PickUpSubject1{nullptr};
     dae::Subject *player2PickUpSubject2{nullptr};
     {
+        std::vector<Binding *> bindings{};
         auto player1Input{inputManager.GetControllerInput(0)};
         auto player2Input{inputManager.GetKeyboardInput()};
 
@@ -112,9 +113,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         auto player1PickUpBinding2 = player1Input->AddBinding(
             std::make_unique<dae::PickUpItemCommand>(*player1), InputKeybinds::BUTTON_EAST, InputState::JustPressed);
 
-        scene->AddBinding(player1DamageBinding, player1Input);
-        scene->AddBinding(player1PickUpBinding1, player1Input);
-        scene->AddBinding(player1PickUpBinding2, player1Input);
+        bindings.push_back(player1DamageBinding);
+        bindings.push_back(player1PickUpBinding1);
+        bindings.push_back(player1PickUpBinding2);
 
         auto player2DamageBinding = player2Input->AddBinding(
             std::make_unique<dae::DamagePlayer>(*player2, *player1), InputKeybinds::C, InputState::JustPressed);
@@ -123,9 +124,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         auto player2PickUpBinding2 = player2Input->AddBinding(
             std::make_unique<dae::PickUpItemCommand>(*player2), InputKeybinds::X, InputState::JustPressed);
 
-        scene->AddBinding(player2DamageBinding, player2Input);
-        scene->AddBinding(player2PickUpBinding1, player2Input);
-        scene->AddBinding(player2PickUpBinding2, player2Input);
+        bindings.push_back(player2DamageBinding);
+        bindings.push_back(player2PickUpBinding1);
+        bindings.push_back(player2PickUpBinding2);
 
         player1PickUpSubject1 =
             static_cast<dae::PickUpItemCommand *>(player1PickUpBinding1->m_Command.get())->GetSubject();
@@ -140,6 +141,20 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         player1PickUpSubject2->AddObserver(player1->GetComponent<dae::ScoreComponent>());
         player2PickUpSubject1->AddObserver(player2->GetComponent<dae::ScoreComponent>());
         player2PickUpSubject2->AddObserver(player2->GetComponent<dae::ScoreComponent>());
+
+        scene->AddExitFunction([bindings]() {
+            auto &inputManager{InputManager::GetInstance()};
+            auto keyBoardInput{inputManager.GetKeyboardInput()};
+            std::vector<PlayerInput *> controllerInputs{
+                inputManager.GetControllerInput(0), inputManager.GetControllerInput(1),
+                inputManager.GetControllerInput(2), inputManager.GetControllerInput(3)};
+
+            for (auto const &binding : bindings) {
+                keyBoardInput->UnBind(binding);
+                for (auto const &controllerInput : controllerInputs)
+                    controllerInput->UnBind(binding);
+            }
+        });
     }
     // instructions
     {

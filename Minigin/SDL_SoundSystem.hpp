@@ -7,18 +7,18 @@
 #include <thread>
 #include <tuple>
 #include <vector>
-namespace dae
-{
-    class SDL_SoundSystem : public SoundSystem
-    {
+namespace dae {
+    class SDL_SoundSystem : public SoundSystem {
       public:
         SDL_SoundSystem(std::vector<std::pair<sound_id, std::string>> soundsToPreload);
         virtual ~SDL_SoundSystem() override;
         void Play(sound_id const id, float const volume) override;
         void Destroy() override;
+        void ToggleVolume() override;
 
       private:
         bool m_HasBeenDestroyed{false};
+        bool m_IsMuted{false};
         class Impl;
         std::unique_ptr<Impl> m_pImpl;
     };
