@@ -145,25 +145,25 @@ endif()
 
 # Engine
 add_library(Minigin STATIC
-  "Minigin/Font.cpp"
-  "Minigin/GameObject.cpp"
-  "Minigin/InputManager.cpp"
+  "Minigin/Utils/Font.cpp"
+  "Minigin/EngineClasses/GameObject.cpp"
+  "Minigin/Singletons/InputManager.cpp"
   "Minigin/Minigin.cpp"
-  "Minigin/Renderer.cpp"
-  "Minigin/ResourceManager.cpp"
-  "Minigin/Scene.cpp"
-  "Minigin/SceneManager.cpp"
-  "Minigin/Component.cpp"
-  "Minigin/Game.cpp"
-  "Minigin/Transform.cpp"
-  "Minigin/ControllerInput.cpp"
-  "Minigin/KeyboardInput.cpp"
-  "Minigin/Binding.cpp"
-  "Minigin/TimeManager.cpp"
-  "Minigin/Texture2DDisplay.cpp"
-  "Minigin/SDL_SoundSystem.cpp" 
-  "Minigin/SoundEventQueue.cpp" 
-  "Minigin/ObjectRenderer.cpp"
+  "Minigin/Singletons/Renderer.cpp"
+  "Minigin/Singletons/ResourceManager.cpp"
+  "Minigin/EngineClasses/Scene.cpp"
+  "Minigin/Singletons/SceneManager.cpp"
+  "Minigin/Components/Component.cpp"
+  "Minigin/EngineClasses/Game.cpp"
+  "Minigin/Components/Transform.cpp"
+  "Minigin/Inputs/ControllerInput.cpp"
+  "Minigin/Inputs/KeyboardInput.cpp"
+  "Minigin/EngineClasses/Binding.cpp"
+  "Minigin/Singletons/TimeManager.cpp"
+  "Minigin/Components/Texture2DDisplay.cpp"
+  "Minigin/Sound/SDL_SoundSystem.cpp" 
+  "Minigin/Sound/SoundEventQueue.cpp" 
+  "Minigin/Components/ObjectRenderer.cpp"
   
 )
 
@@ -171,6 +171,12 @@ target_compile_features(Minigin PUBLIC cxx_std_20)
 
 target_include_directories(Minigin PUBLIC
   "${CMAKE_SOURCE_DIR}/Minigin/"
+  "${CMAKE_SOURCE_DIR}/Minigin/Components/"
+  "${CMAKE_SOURCE_DIR}/Minigin/Inputs/"
+  "${CMAKE_SOURCE_DIR}/Minigin/Singletons/"
+  "${CMAKE_SOURCE_DIR}/Minigin/Sound/"
+  "${CMAKE_SOURCE_DIR}/Minigin/Utils/"
+  "${CMAKE_SOURCE_DIR}/Minigin/EngineClasses/"
   "${imgui_SOURCE_DIR}"
   "${VLD_INCLUDE_DIR}"
 )
