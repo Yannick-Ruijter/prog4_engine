@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.hpp"
-#include "TransformComponent.hpp"
+#include "Transform.hpp"
 #include <SDL3/SDL.h>
 #include <memory>
 #include <string>
@@ -60,7 +60,7 @@ namespace dae
 
       private:
         std::vector<std::unique_ptr<Component>> m_MyComponents;
-        std::unique_ptr<TransformComponent> m_Transform{std::make_unique<TransformComponent>(*this)};
+        std::unique_ptr<Transform> m_Transform{std::make_unique<Transform>(*this)};
         std::vector<std::unique_ptr<GameObject>> m_Children{};
         GameObject *m_Parent{nullptr};
         bool m_UpdatePosition{true};

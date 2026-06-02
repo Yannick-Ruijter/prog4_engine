@@ -22,7 +22,7 @@ void dae::PlayerState::OnExit()
 {
 }
 
-dae::PlayerState::PlayerState(PlayerComponent &player) : m_Player{&player}
+dae::PlayerState::PlayerState(PlayerController &player) : m_Player{&player}
 {
     OnEnter();
 }

@@ -4,11 +4,11 @@
 #include <glm/glm.hpp>
 namespace dae
 {
-    class TransformComponent;
+    class Transform;
     class PlayerStateWalking : public PlayerState
     {
       public:
-        PlayerStateWalking(PlayerComponent &player, Direction dir);
+        PlayerStateWalking(PlayerController &player, Direction dir);
         ~PlayerStateWalking();
         std::unique_ptr<PlayerState> HandleInput();
         void Update();
@@ -16,7 +16,7 @@ namespace dae
         void OnExit();
 
       private:
-        TransformComponent *m_PlayerTransform{nullptr};
+        Transform *m_PlayerTransform{nullptr};
         Direction m_CurrentMoveDir;
         glm::vec2 m_MovementVector{};
     };

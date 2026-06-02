@@ -1,14 +1,14 @@
 #include "MainSceneLoader.hpp"
 
-#include "ButtonComponent.hpp"
+#include "Button.hpp"
 #include "CustomCommands.hpp"
-#include "FPSComponent.hpp"
+#include "FPSDisplay.hpp"
 #include "GameSceneLoader.hpp"
 #include "InputManager.hpp"
-#include "RenderComponent.hpp"
+#include "ObjectRenderer.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
-#include "TextComponent.hpp"
+#include "TextDisplay.hpp"
 
 using namespace dae;
 // add a component that unloads all the bindings when scene destroyed
@@ -23,68 +23,68 @@ Scene *dae::MainSceneLoader::LoadScene() {
     {
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 0);
-        go->AddComponent<dae::TextComponent>("Burger Time", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(292, 0);
+        go->AddComponent<dae::TextDisplay>("Burger Time", fontMain, SDL_Color{255, 0, 0, 255});
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->AddComponent<dae::TextComponent>("60.0", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::FpsComponent>();
+        go->AddComponent<dae::ObjectRenderer>();
+        go->AddComponent<dae::TextDisplay>("60.0", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::FpsDisplay>();
         scene->Add(std::move(go));
     }
 
-    dae::ButtonComponent *initialButton;
+    dae::Button *initialButton;
     // create/link buttons
     {
-        dae::ButtonComponent *singlePlayerButton;
-        dae::ButtonComponent *coopButton;
-        dae::ButtonComponent *pvpButton;
-        dae::ButtonComponent *quitButton;
+        dae::Button *singlePlayerButton;
+        dae::Button *coopButton;
+        dae::Button *pvpButton;
+        dae::Button *quitButton;
 
         SDL_Color idleColor{255, 255, 255, 255};
         SDL_Color focusedColor{255, 255, 0, 255};
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 150);
-        go->AddComponent<dae::TextComponent>("Single Player", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(50, 150);
+        go->AddComponent<dae::TextDisplay>("Single Player", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::Button>(
             [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(); }, focusedColor, idleColor);
-        singlePlayerButton = go->GetComponent<dae::ButtonComponent>();
+        singlePlayerButton = go->GetComponent<dae::Button>();
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 200);
-        go->AddComponent<dae::TextComponent>("Coop", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(50, 200);
+        go->AddComponent<dae::TextDisplay>("Coop", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::Button>(
             [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(); }, focusedColor, idleColor);
-        coopButton = go->GetComponent<dae::ButtonComponent>();
+        coopButton = go->GetComponent<dae::Button>();
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 250);
-        go->AddComponent<dae::TextComponent>("Pvp", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(50, 250);
+        go->AddComponent<dae::TextDisplay>("Pvp", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::Button>(
             [&]() { dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(); }, focusedColor, idleColor);
-        pvpButton = go->GetComponent<dae::ButtonComponent>();
+        pvpButton = go->GetComponent<dae::Button>();
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(50, 300);
-        go->AddComponent<dae::TextComponent>("Quit", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::ButtonComponent>(
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(50, 300);
+        go->AddComponent<dae::TextDisplay>("Quit", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::Button>(
             [&]() {
                 SDL_Event quit_event;
                 quit_event.type = SDL_EVENT_QUIT;
                 SDL_PushEvent(&quit_event);
             },
             focusedColor, idleColor);
-        quitButton = go->GetComponent<dae::ButtonComponent>();
+        quitButton = go->GetComponent<dae::Button>();
         scene->Add(std::move(go));
 
         initialButton = singlePlayerButton;

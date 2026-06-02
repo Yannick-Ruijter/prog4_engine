@@ -1,15 +1,15 @@
-#include "ButtonComponent.hpp"
+#include "Button.hpp"
 #include "ControllerInput.hpp"
 #include "CustomCommands.hpp"
 #include "GameObject.hpp"
-#include "HealthComponent.hpp"
+#include "Health.hpp"
 #include "InputManager.hpp"
 #include "PlayerInput.hpp"
 #include "ServiceProvider.hpp"
 #include "SoundSystem.hpp"
 #include "Subject.hpp"
 #include "TimeManager.hpp"
-#include "TransformComponent.hpp"
+#include "Transform.hpp"
 #include "sdbm_hash.hpp"
 using namespace dae;
 
@@ -22,7 +22,7 @@ GameObject *GameObjectCommand::GetGameObject() const {
 
 MoveObjectCommand::MoveObjectCommand(GameObject &object, Direction direction, float speed)
     : GameObjectCommand(object),
-      m_TransformComponent{object.GetComponent<TransformComponent>()},
+      m_Transform{object.GetComponent<Transform>()},
       m_TimeManager{&TimeManager::GetInstance()},
       m_Speed{speed} {
     if (direction == Direction::Up)
@@ -36,11 +36,11 @@ MoveObjectCommand::MoveObjectCommand(GameObject &object, Direction direction, fl
 }
 void MoveObjectCommand::Execute() {
     glm::vec2 displacement{m_MoveDir * m_TimeManager->GetDeltaTime() * m_Speed};
-    m_TransformComponent->SetLocalPosition(m_TransformComponent->GetLocalPosition() + displacement);
+    m_Transform->SetLocalPosition(m_Transform->GetLocalPosition() + displacement);
 }
 
 dae::DamagePlayer::DamagePlayer(GameObject &object, GameObject &target)
-    : GameObjectCommand(object), m_TargetHealthComponent(target.GetComponent<HealthComponent>()) {
+    : GameObjectCommand(object), m_TargetHealthComponent(target.GetComponent<Health>()) {
     assert(m_TargetHealthComponent != nullptr && "target player for damage command needs a health component");
 }
 
@@ -64,11 +64,11 @@ Subject *dae::PickUpItemCommand::GetSubject() const {
     return m_PlayerPickedUpItemEvent.get();
 }
 
-ButtonComponent *ButtonCommand::CurrentButton = nullptr;
+Button *ButtonCommand::CurrentButton = nullptr;
 dae::NavigateButtonCommand::NavigateButtonCommand(Direction dir) : m_NavigateDir{dir} {
 }
 
-void dae::ButtonCommand::SetInitialButton(ButtonComponent *button) {
+void dae::ButtonCommand::SetInitialButton(Button *button) {
     CurrentButton = button;
 }
 

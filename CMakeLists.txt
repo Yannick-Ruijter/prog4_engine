@@ -155,15 +155,15 @@ add_library(Minigin STATIC
   "Minigin/SceneManager.cpp"
   "Minigin/Component.cpp"
   "Minigin/Game.cpp"
-  "Minigin/TransformComponent.cpp"
+  "Minigin/Transform.cpp"
   "Minigin/ControllerInput.cpp"
   "Minigin/KeyboardInput.cpp"
   "Minigin/Binding.cpp"
   "Minigin/TimeManager.cpp"
-  "Minigin/Texture2DComponent.cpp"
+  "Minigin/Texture2DDisplay.cpp"
   "Minigin/SDL_SoundSystem.cpp" 
   "Minigin/SoundEventQueue.cpp" 
-  "Minigin/RenderComponent.cpp"
+  "Minigin/ObjectRenderer.cpp"
   
 )
 
@@ -204,31 +204,32 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Main.cpp"
   "Game/BurgerTime.cpp"
-  "Game/Components/TextComponent.cpp"
-  "Game/Components/FPSComponent.cpp"
-  "Game/Components/OrbitComponent.cpp"
-  "Game/Components/TrashTheCacheComponent.cpp"
-  "Game/Components/HealthComponent.cpp"
-  "Game/Components/LivesDisplayComponent.cpp"
-  "Game/Components/ScoreComponent.cpp"
-  "Game/Components/ScoreDisplayComponent.cpp"
+  "Game/Components/TextDisplay.cpp"
+  "Game/Components/FPSDisplay.cpp"
+  "Game/Components/ObjectOrbitter.cpp"
+  
+  "Game/Components/Health.cpp"
+  "Game/Components/LivesDisplay.cpp"
+  "Game/Components/Score.cpp"
+  "Game/Components/ScoreDisplay.cpp"
   
   "Game/Extras/PlayerLivesObserver.cpp"
-  "Game/Extras/Achievements.cpp"
+  
   "Game/Extras/CustomCommands.cpp"
   "Game/Extras/Subject.cpp"
-  "Game/Components/PlayerComponent.cpp" 
+  "Game/Components/PlayerController.cpp" 
   "Game/PlayerStates/PlayerState.cpp" 
   "Game/PlayerStates/PlayerStateIdle.cpp" 
   "Game/PlayerStates/PlayerStateWalking.cpp"
-  "Game/Components/RectColliderComponent.cpp"
-  "Game/Components/PlayerAnimationComponent.cpp"
+  "Game/Components/RectCollider.cpp"
+  "Game/Components/PlayerAnimation.cpp"
   "Game/PlayerStates/PlayerStateClimbing.cpp" 
-  "Game/Components/LevelGridComponent.cpp" 
+  "Game/Components/LevelGrid.cpp" 
   "Game/SceneLoaders/GameSceneLoader.cpp"
   "Game/SceneLoaders/MainSceneLoader.cpp" 
-  "Game/Components/ButtonComponent.cpp"
-  "Game/Components/BurgerLayerComponent.cpp" "Game/Components/LayerPartComponent.cpp" )
+  "Game/Components/Button.cpp"
+  "Game/Components/BurgerLayer.cpp" 
+  "Game/Components/BurgerLayerPart.cpp" )
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

@@ -12,11 +12,11 @@
 
 #include "BurgerTime.hpp"
 #include "Minigin.hpp"
-#include "RenderComponent.hpp"
+#include "ObjectRenderer.hpp"
 #include "ResourceManager.hpp"
 #include "Scene.hpp"
 #include "SceneManager.hpp"
-#include "TextComponent.hpp"
+#include "TextDisplay.hpp"
 #include <iostream>
 
 #include <filesystem>

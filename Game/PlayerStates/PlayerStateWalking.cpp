@@ -1,19 +1,19 @@
 #include "CustomCommands.hpp"
 #include "GameObject.hpp"
-#include "LevelGridComponent.hpp"
-#include "PlayerAnimationComponent.hpp"
+#include "LevelGrid.hpp"
+#include "PlayerAnimation.hpp"
 #include "PlayerInput.hpp"
 #include "PlayerStateIdle.hpp"
 #include "PlayerStateWalking.hpp"
 #include "TimeManager.hpp"
-#include "TransformComponent.hpp"
+#include "Transform.hpp"
 #include "sdbm_hash.hpp"
 
 using namespace dae;
 
-dae::PlayerStateWalking::PlayerStateWalking(PlayerComponent &player, Direction moveDir)
+dae::PlayerStateWalking::PlayerStateWalking(PlayerController &player, Direction moveDir)
     : PlayerState(player),
-      m_PlayerTransform{player.GetPlayer()->GetComponent<TransformComponent>()},
+      m_PlayerTransform{player.GetPlayer()->GetComponent<Transform>()},
       m_CurrentMoveDir{moveDir} {
     OnEnter();
 }

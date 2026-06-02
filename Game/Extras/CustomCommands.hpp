@@ -6,7 +6,7 @@
 namespace dae {
     class GameObject;
     class PlayerInput;
-    class TransformComponent;
+    class Transform;
     class SoundSystem;
     class Subject;
     enum class Direction {
@@ -37,12 +37,12 @@ namespace dae {
 
       private:
         glm::vec2 m_MoveDir{};
-        TransformComponent *m_TransformComponent{nullptr};
+        Transform *m_Transform{nullptr};
         TimeManager *m_TimeManager{nullptr};
         float m_Speed{};
     };
 
-    class HealthComponent;
+    class Health;
     class DamagePlayer : public GameObjectCommand {
       public:
         DamagePlayer(GameObject &object, GameObject &target);
@@ -50,7 +50,7 @@ namespace dae {
         ~DamagePlayer() override = default;
 
       private:
-        HealthComponent *m_TargetHealthComponent{nullptr};
+        Health *m_TargetHealthComponent{nullptr};
     };
 
     class PickUpItemCommand : public GameObjectCommand {
@@ -64,14 +64,14 @@ namespace dae {
         std::unique_ptr<Subject> m_PlayerPickedUpItemEvent{nullptr};
     };
 
-    class ButtonComponent;
+    class Button;
 
     class ButtonCommand : public Command {
       public:
-        static void SetInitialButton(ButtonComponent *button);
+        static void SetInitialButton(Button *button);
 
       protected:
-        static ButtonComponent *CurrentButton;
+        static Button *CurrentButton;
     };
     class NavigateButtonCommand : public ButtonCommand {
       public:

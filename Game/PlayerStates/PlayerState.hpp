@@ -1,12 +1,10 @@
 #pragma once
 #include "Observer.hpp"
-#include "PlayerComponent.hpp"
+#include "PlayerController.hpp"
 #include <memory>
-namespace dae
-{
-    class PlayerComponent;
-    class PlayerState
-    {
+namespace dae {
+    class PlayerController;
+    class PlayerState {
       public:
         PlayerState(PlayerState const &other) = default;
         PlayerState(PlayerState &&other) = default;
@@ -20,7 +18,7 @@ namespace dae
         virtual void OnExit();
 
       protected:
-        PlayerState(PlayerComponent &player);
-        PlayerComponent *m_Player;
+        PlayerState(PlayerController &player);
+        PlayerController *m_Player;
     };
 } // namespace dae

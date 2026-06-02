@@ -6,15 +6,15 @@ enum class Event;
 namespace dae
 {
     class GameObject;
-    class TextComponent;
+    class TextDisplay;
     class PlayerLivesObserver : public Observer
     {
       public:
-        PlayerLivesObserver(TextComponent *textComponent);
+        PlayerLivesObserver(TextDisplay *textComponent);
         ~PlayerLivesObserver() override = default;
         void Notify(EventId eventId, GameObject *source) override;
 
       private:
-        TextComponent *m_TargetTextComponent{nullptr};
+        TextDisplay *m_TargetTextComponent{nullptr};
     };
 } // namespace dae

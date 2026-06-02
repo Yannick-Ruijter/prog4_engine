@@ -2,22 +2,22 @@
 
 #include "Binding.hpp"
 #include "CustomCommands.hpp"
-#include "FPSComponent.hpp"
+#include "FPSDisplay.hpp"
 #include "GameObject.hpp"
-#include "HealthComponent.hpp"
+#include "Health.hpp"
 #include "InputManager.hpp"
-#include "LevelGridComponent.hpp"
-#include "LivesDisplayComponent.hpp"
-#include "PlayerAnimationComponent.hpp"
-#include "PlayerComponent.hpp"
-#include "RenderComponent.hpp"
+#include "LevelGrid.hpp"
+#include "LivesDisplay.hpp"
+#include "PlayerAnimation.hpp"
+#include "PlayerController.hpp"
+#include "ObjectRenderer.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
-#include "ScoreComponent.hpp"
-#include "ScoreDisplayComponent.hpp"
+#include "Score.hpp"
+#include "ScoreDisplay.hpp"
 #include "Subject.hpp"
-#include "TextComponent.hpp"
-#include "burgerLayerComponent.hpp"
+#include "TextDisplay.hpp"
+#include "burgerLayer.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -34,7 +34,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 
     dae::GameObject *level{};
     glm::ivec2 const tileSize{64, 64};
-    LevelGridComponent *levelGrid{nullptr};
+    LevelGrid *levelGrid{nullptr};
     // background stuff
     {
         std::unordered_map<char, std::string> charToTexture{};
@@ -52,47 +52,47 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         charToTexture['b'] = "Data/Tiles/Burger_Bowl_Double.png";
         charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
 
-        go->AddComponent<dae::RenderComponent>();
-        go->AddComponent<dae::LevelGridComponent>(tileSize, "Data/Levels/Level0.csv", charToTexture);
-        levelGrid = go->GetComponent<LevelGridComponent>();
+        go->AddComponent<dae::ObjectRenderer>();
+        go->AddComponent<dae::LevelGrid>(tileSize, "Data/Levels/Level0.csv", charToTexture);
+        levelGrid = go->GetComponent<LevelGrid>();
         level = go.get();
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 0);
-        go->AddComponent<dae::TextComponent>("Programming 4 Assignment", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(292, 0);
+        go->AddComponent<dae::TextDisplay>("Programming 4 Assignment", fontMain, SDL_Color{255, 0, 0, 255});
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->AddComponent<dae::TextComponent>("60.0", fontMain, SDL_Color{255, 0, 0, 255});
-        go->AddComponent<dae::FpsComponent>();
+        go->AddComponent<dae::ObjectRenderer>();
+        go->AddComponent<dae::TextDisplay>("60.0", fontMain, SDL_Color{255, 0, 0, 255});
+        go->AddComponent<dae::FpsDisplay>();
         scene->Add(std::move(go));
     }
     auto player1 = std::make_unique<GameObject>();
     auto player2 = std::make_unique<GameObject>();
     // create 2 players
     {
-        player2->AddComponent<dae::RenderComponent>();
-        player2->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
-        player2->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
-        player2->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{200, 214, 0});
-        player2->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
-        player2->AddComponent<dae::PlayerAnimationComponent>(
+        player2->AddComponent<dae::ObjectRenderer>();
+        player2->AddComponent<dae::Health>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
+        player2->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
+        player2->GetComponent<dae::Transform>()->SetLocalPosition(glm::vec3{200, 214, 0});
+        player2->AddComponent<dae::Score>(std::make_unique<dae::Subject>());
+        player2->AddComponent<dae::PlayerAnimation>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        player2->AddComponent<dae::PlayerComponent>(
-            inputManager.GetKeyboardInput(), level->GetComponent<dae::LevelGridComponent>());
+        player2->AddComponent<dae::PlayerController>(
+            inputManager.GetKeyboardInput(), level->GetComponent<dae::LevelGrid>());
 
-        player1->AddComponent<dae::RenderComponent>();
-        player1->AddComponent<dae::HealthComponent>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
-        player1->AddComponent<dae::Texture2DComponent>("Data/pepperguy.png", 32, 32);
-        player1->GetComponent<dae::TransformComponent>()->SetLocalPosition(glm::vec3{150, 214, 0});
-        player1->AddComponent<dae::ScoreComponent>(std::make_unique<dae::Subject>());
-        player1->AddComponent<dae::PlayerAnimationComponent>(
+        player1->AddComponent<dae::ObjectRenderer>();
+        player1->AddComponent<dae::Health>(std::make_unique<dae::Subject>(), levelInfo.lifeCount);
+        player1->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
+        player1->GetComponent<dae::Transform>()->SetLocalPosition(glm::vec3{150, 214, 0});
+        player1->AddComponent<dae::Score>(std::make_unique<dae::Subject>());
+        player1->AddComponent<dae::PlayerAnimation>(
             "Data/Characters/PepperGuy_AnimationData.json", "Data/Characters/PepperGuy_SpriteSheet.png");
-        player1->AddComponent<dae::PlayerComponent>(
-            inputManager.GetControllerInput(0), level->GetComponent<dae::LevelGridComponent>());
+        player1->AddComponent<dae::PlayerController>(
+            inputManager.GetControllerInput(0), level->GetComponent<dae::LevelGrid>());
     }
 
     // add player bindings
@@ -137,10 +137,10 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         player2PickUpSubject2 =
             static_cast<dae::PickUpItemCommand *>(player2PickUpBinding2->m_Command.get())->GetSubject();
 
-        player1PickUpSubject1->AddObserver(player1->GetComponent<dae::ScoreComponent>());
-        player1PickUpSubject2->AddObserver(player1->GetComponent<dae::ScoreComponent>());
-        player2PickUpSubject1->AddObserver(player2->GetComponent<dae::ScoreComponent>());
-        player2PickUpSubject2->AddObserver(player2->GetComponent<dae::ScoreComponent>());
+        player1PickUpSubject1->AddObserver(player1->GetComponent<dae::Score>());
+        player1PickUpSubject2->AddObserver(player1->GetComponent<dae::Score>());
+        player2PickUpSubject1->AddObserver(player2->GetComponent<dae::Score>());
+        player2PickUpSubject2->AddObserver(player2->GetComponent<dae::Score>());
 
         scene->AddExitFunction([bindings]() {
             auto &inputManager{InputManager::GetInstance()};
@@ -159,9 +159,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     // instructions
     {
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 650);
-        go->AddComponent<dae::TextComponent>(
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(0, 650);
+        go->AddComponent<dae::TextDisplay>(
             "Use the D-Pad to move Peter Pepper 1, X to inflict damage, A and "
             "B to "
             "collect points",
@@ -169,9 +169,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(0, 710);
-        go->AddComponent<dae::TextComponent>(
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(0, 710);
+        go->AddComponent<dae::TextDisplay>(
             "Use the WASD to move Peter Pepper 2, C to inflict damage, Z and X "
             "to "
             "collect points",
@@ -182,40 +182,38 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     {
         // player 1
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 650);
-        go->AddComponent<dae::TextComponent>("temp", fontSmall);
-        go->AddComponent<dae::LivesDisplayComponent>(*player1->GetComponent<dae::HealthComponent>());
-        auto livesLostEvent = player1->GetComponent<dae::HealthComponent>()->GetSubject();
-        livesLostEvent->AddObserver(go->GetComponent<dae::LivesDisplayComponent>());
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(920, 650);
+        go->AddComponent<dae::TextDisplay>("temp", fontSmall);
+        go->AddComponent<dae::LivesDisplay>(*player1->GetComponent<dae::Health>());
+        auto livesLostEvent = player1->GetComponent<dae::Health>()->GetSubject();
+        livesLostEvent->AddObserver(go->GetComponent<dae::LivesDisplay>());
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 675);
-        go->AddComponent<dae::TextComponent>("Score: 0", fontSmall);
-        go->AddComponent<dae::ScoreDisplayComponent>(*player1->GetComponent<dae::ScoreComponent>());
-        player1->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(
-            go->GetComponent<dae::ScoreDisplayComponent>());
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(920, 675);
+        go->AddComponent<dae::TextDisplay>("Score: 0", fontSmall);
+        go->AddComponent<dae::ScoreDisplay>(*player1->GetComponent<dae::Score>());
+        player1->GetComponent<dae::Score>()->GetSubject()->AddObserver(go->GetComponent<dae::ScoreDisplay>());
         scene->Add(std::move(go));
 
         // player 2
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 710);
-        go->AddComponent<dae::TextComponent>("temp", fontSmall);
-        go->AddComponent<dae::LivesDisplayComponent>(*player2->GetComponent<dae::HealthComponent>());
-        livesLostEvent = player2->GetComponent<dae::HealthComponent>()->GetSubject();
-        livesLostEvent->AddObserver(go->GetComponent<dae::LivesDisplayComponent>());
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(920, 710);
+        go->AddComponent<dae::TextDisplay>("temp", fontSmall);
+        go->AddComponent<dae::LivesDisplay>(*player2->GetComponent<dae::Health>());
+        livesLostEvent = player2->GetComponent<dae::Health>()->GetSubject();
+        livesLostEvent->AddObserver(go->GetComponent<dae::LivesDisplay>());
         scene->Add(std::move(go));
 
         go = std::make_unique<dae::GameObject>();
-        go->AddComponent<dae::RenderComponent>();
-        go->GetComponent<dae::TransformComponent>()->SetLocalPosition(920, 735);
-        go->AddComponent<dae::TextComponent>("Score: 0", fontSmall);
-        go->AddComponent<dae::ScoreDisplayComponent>(*player2->GetComponent<dae::ScoreComponent>());
-        player2->GetComponent<dae::ScoreComponent>()->GetSubject()->AddObserver(
-            go->GetComponent<dae::ScoreDisplayComponent>());
+        go->AddComponent<dae::ObjectRenderer>();
+        go->GetComponent<dae::Transform>()->SetLocalPosition(920, 735);
+        go->AddComponent<dae::TextDisplay>("Score: 0", fontSmall);
+        go->AddComponent<dae::ScoreDisplay>(*player2->GetComponent<dae::Score>());
+        player2->GetComponent<dae::Score>()->GetSubject()->AddObserver(go->GetComponent<dae::ScoreDisplay>());
         scene->Add(std::move(go));
     }
 
@@ -227,23 +225,23 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 }
 
 void dae::GameSceneLoader::LoadSpriteMap(
-    Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players, LevelGridComponent *levelGrid) {
+    Scene *scene, glm::ivec2 const &tileSize, std::vector<GameObject *> const &players, LevelGrid *levelGrid) {
     std::string const &filePath{"Data/Levels/Level0_Burgers.csv"};
     std::ifstream stream{filePath};
     std::string line;
     glm::ivec2 gridCoord{};
-    std::unordered_map<char, BurgerLayer> layers{
-        {'0', BurgerLayer::TopPaddy},
-        {'1', BurgerLayer::Tomato},
-        {'2', BurgerLayer::Salad},
-        {'3', BurgerLayer::BottomPaddy},
+    std::unordered_map<char, BurgerLayerType> layers{
+        {'0', BurgerLayerType::TopPaddy},
+        {'1', BurgerLayerType::Tomato},
+        {'2', BurgerLayerType::Salad},
+        {'3', BurgerLayerType::BottomPaddy},
     };
 
     std::unordered_map<char, GameObject *> charToPlayers;
     for (uint32_t i = 0; i < players.size(); i++) {
         charToPlayers[char('a' + i)] = players[i];
     }
-    BurgerLayerComponent::AllBurgerLayers.clear();
+    BurgerLayer::AllBurgerLayers.clear();
     while (std::getline(stream, line)) {
         std::stringstream ss{line};
         std::string cell;
@@ -254,7 +252,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
             if (charToPlayers.contains(currentChar)) {
                 glm::vec2 pos{gridCoord * tileSize + tileSize / 4};
                 pos.y += tileSize.y / 8;
-                auto playerTransform = charToPlayers.at(currentChar)->GetComponent<TransformComponent>();
+                auto playerTransform = charToPlayers.at(currentChar)->GetComponent<Transform>();
                 playerTransform->SetLocalPosition(pos);
             }
             if (layers.contains(currentChar)) {
@@ -263,9 +261,9 @@ void dae::GameSceneLoader::LoadSpriteMap(
                 pos.x += tileSize.x / 3.5f;
                 pos.y += tileSize.y / 1.9f;
                 auto go = std::make_unique<GameObject>();
-                go->AddComponent<dae::RenderComponent>();
-                go->GetComponent<dae::TransformComponent>()->SetLocalPosition(pos);
-                go->AddComponent<dae::BurgerLayerComponent>(layers.at(currentChar), players, levelGrid);
+                go->AddComponent<dae::ObjectRenderer>();
+                go->GetComponent<dae::Transform>()->SetLocalPosition(pos);
+                go->AddComponent<dae::BurgerLayer>(layers.at(currentChar), players, levelGrid);
                 scene->Add(std::move(go));
             }
             gridCoord.x++;
