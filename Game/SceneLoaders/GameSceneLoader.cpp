@@ -11,6 +11,7 @@
 #include "LivesDisplay.hpp"
 #include "ObjectRenderer.hpp"
 #include "PlayerInputProvider.hpp"
+#include "RectCollider.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
 #include "Score.hpp"
@@ -299,6 +300,9 @@ void dae::GameSceneLoader::LoadSpriteMap(
         go->GetComponent<dae::Transform>()->SetLocalPosition(pos);
         go->AddComponent<dae::BurgerLayer>(layers.at(currentChar), players,
                                            levelGrid);
+        auto dimensions = go->GetComponent<dae::BurgerLayer>()->GetDimensions();
+        go->AddComponent<dae::RectCollider>(Rect{pos, dimensions}, LAYER_BURGER,
+                                            LAYER_ENEMY);
         scene->Add(std::move(go));
       }
       gridCoord.x++;
