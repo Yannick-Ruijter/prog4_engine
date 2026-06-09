@@ -10,7 +10,7 @@
 #include "LevelGrid.hpp"
 #include "LivesDisplay.hpp"
 #include "ObjectRenderer.hpp"
-#include "PlayerInputProvider.hpp"
+#include "PlayerPepperController.hpp"
 #include "RectCollider.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
@@ -92,7 +92,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         "Data/Characters/PepperGuy_AnimationData.json",
         "Data/Characters/PepperGuy_SpriteSheet.png");
     player2->AddComponent<dae::Entity>(
-        std::make_unique<dae::PlayerInputProvider>(
+        std::make_unique<dae::PlayerPepperController>(
             inputManager.GetKeyboardInput()),
         level->GetComponent<dae::LevelGrid>());
 
@@ -107,7 +107,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         "Data/Characters/PepperGuy_AnimationData.json",
         "Data/Characters/PepperGuy_SpriteSheet.png");
     player1->AddComponent<dae::Entity>(
-        std::make_unique<dae::PlayerInputProvider>(
+        std::make_unique<dae::PlayerPepperController>(
             inputManager.GetControllerInput(0)),
         level->GetComponent<dae::LevelGrid>());
   }

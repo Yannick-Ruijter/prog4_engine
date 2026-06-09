@@ -4,7 +4,7 @@
 namespace dae {
 class EntityStateIdle : public EntityState {
 public:
-  EntityStateIdle(Entity &player, Direction direction = Direction::Down);
+  EntityStateIdle(Entity &entity, Direction direction = Direction::Down);
   ~EntityStateIdle();
   std::unique_ptr<EntityState> HandleInput();
   void Update();

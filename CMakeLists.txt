@@ -237,7 +237,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Game/Components/Button.cpp"
     "Game/Components/BurgerLayer.cpp" 
     "Game/Components/BurgerLayerPart.cpp"   
-    "Game/Extras/PlayerInputProvider.cpp" )
+    "Game/EntityControllers/PlayerPepperController.cpp" )
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
@@ -249,6 +249,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/Extras/"
   "${CMAKE_SOURCE_DIR}/Game/States/"
   "${CMAKE_SOURCE_DIR}/Game/SceneLoaders/"
+  "${CMAKE_SOURCE_DIR}/Game/EntityControllers/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )
 
