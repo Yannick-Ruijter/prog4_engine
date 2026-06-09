@@ -4,18 +4,18 @@
 #include <glm/glm.hpp>
 namespace dae {
 class Transform;
-class PlayerStateClimbing : public EntityState {
+class EntityStateWalking : public EntityState {
 public:
-  PlayerStateClimbing(Entity &player, Direction dir);
-  ~PlayerStateClimbing();
+  EntityStateWalking(Entity &entity, Direction dir);
+  ~EntityStateWalking();
   std::unique_ptr<EntityState> HandleInput();
   void Update();
   void OnEnter();
   void OnExit();
 
 private:
-  glm::vec2 m_MovementVector{};
+  Transform *m_EntityTransform{nullptr};
   Direction m_CurrentMoveDir;
-  Transform *m_PlayerTransform;
+  glm::vec2 m_MovementVector{};
 };
 } // namespace dae

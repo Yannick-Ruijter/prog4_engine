@@ -1,9 +1,9 @@
 #include "CustomCommands.hpp"
+#include "EntityStateIdle.hpp"
+#include "EntityStateWalking.hpp"
 #include "GameObject.hpp"
 #include "InputProvider.hpp"
 #include "LevelGrid.hpp"
-#include "PlayerStateIdle.hpp"
-#include "PlayerStateWalking.hpp"
 #include "SpriteAnimation.hpp"
 #include "TimeManager.hpp"
 #include "Transform.hpp"
@@ -11,16 +11,16 @@
 
 using namespace dae;
 
-dae::PlayerStateWalking::PlayerStateWalking(Entity &player, Direction moveDir)
-    : EntityState(player),
-      m_PlayerTransform{player.GetPlayer()->GetComponent<Transform>()},
+dae::EntityStateWalking::EntityStateWalking(Entity &entity, Direction moveDir)
+    : EntityState(entity),
+      m_EntityTransform{entity.GetEntity()->GetComponent<Transform>()},
       m_CurrentMoveDir{moveDir} {
   OnEnter();
 }
 
-dae::PlayerStateWalking::~PlayerStateWalking() { OnExit(); }
+dae::EntityStateWalking::~EntityStateWalking() { OnExit(); }
 
-std::unique_ptr<EntityState> dae::PlayerStateWalking::HandleInput() {
+std::unique_ptr<EntityState> dae::EntityStateWalking::HandleInput() {
   auto input{m_Entity->GetInput()};
   auto moveDir{input->GetMovementDirection()};
   auto level{m_Entity->GetLevel()};
@@ -41,24 +41,24 @@ std::unique_ptr<EntityState> dae::PlayerStateWalking::HandleInput() {
     }
   }
 
-  if (!level->IsOnPlatform(m_PlayerTransform->GetWorldPosition() +
+  if (!level->IsOnPlatform(m_EntityTransform->GetWorldPosition() +
                                m_MovementVector * deltaTime,
                            charSize))
-    return std::make_unique<PlayerStateIdle>(*m_Entity);
+    return std::make_unique<EntityStateIdle>(*m_Entity);
 
   if (moveDir.x == 0.f) {
-    return std::make_unique<PlayerStateIdle>(*m_Entity);
+    return std::make_unique<EntityStateIdle>(*m_Entity);
   }
   return nullptr;
 }
 
-void dae::PlayerStateWalking::Update() {
-  m_PlayerTransform->SetLocalPosition(
-      m_PlayerTransform->GetLocalPosition() +
+void dae::EntityStateWalking::Update() {
+  m_EntityTransform->SetLocalPosition(
+      m_EntityTransform->GetLocalPosition() +
       (m_MovementVector * TimeManager::GetInstance().GetDeltaTime()));
 }
 
-void dae::PlayerStateWalking::OnEnter() {
+void dae::EntityStateWalking::OnEnter() {
   if (m_CurrentMoveDir == Direction::Left) {
     m_Entity->GetPlayerAnimation()->SetAnimationState("RunningLeft");
     m_MovementVector = glm::vec2{-m_Entity->GetMoveSpeed(), 0.f};
@@ -72,13 +72,13 @@ void dae::PlayerStateWalking::OnEnter() {
 
   // i know that in my game the players will never be attached to something so i
   // can take the local position
-  auto pos = m_PlayerTransform->GetLocalPosition();
+  auto pos = m_EntityTransform->GetLocalPosition();
 
   // this function take the bottom y coord and rounds to the height of the
   // closest platform that's why I first add and then subtract the char size
   pos.y = level->RoundToPlatformHeight(pos.y + charSize.y) - charSize.y;
   // set the new position
-  m_PlayerTransform->SetLocalPosition(pos);
+  m_EntityTransform->SetLocalPosition(pos);
 }
 
-void dae::PlayerStateWalking::OnExit() {}
+void dae::EntityStateWalking::OnExit() {}

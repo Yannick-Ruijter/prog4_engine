@@ -3,7 +3,7 @@
 #include "GameObject.hpp"
 #include "InputProvider.hpp"
 #include "LevelGrid.hpp"
-#include "PlayerStateIdle.hpp"
+#include "EntityStateIdle.hpp"
 #include "SpriteAnimation.hpp"
 #include "sdbm_hash.hpp"
 using namespace dae;
@@ -12,7 +12,7 @@ Entity::Entity(GameObject &owner, std::unique_ptr<InputProvider> input,
                LevelGrid *level)
     : Component(owner),
       m_SpriteAnimation{owner.GetComponent<SpriteAnimation>()},
-      m_CurrentState{std::make_unique<PlayerStateIdle>(*this)},
+      m_CurrentState{std::make_unique<EntityStateIdle>(*this)},
       m_Input{std::move(input)}, m_Level{level} {
   assert(m_SpriteAnimation != nullptr &&
          "Entity needs a SpriteAnimation (added before this component)");
@@ -27,7 +27,7 @@ void dae::Entity::Update() {
   m_CurrentState->Update();
 }
 
-GameObject *dae::Entity::GetPlayer() { return GetOwner(); }
+GameObject *dae::Entity::GetEntity() { return GetOwner(); }
 
 SpriteAnimation *dae::Entity::GetPlayerAnimation() const {
   return m_SpriteAnimation;

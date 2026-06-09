@@ -207,36 +207,37 @@ else()
 endif()
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  "Game/Main.cpp"
-  "Game/BurgerTime.cpp"
-  "Game/Components/TextDisplay.cpp"
-  "Game/Components/FPSDisplay.cpp"
-  "Game/Components/ObjectOrbitter.cpp"
+    "Game/Main.cpp"
+    "Game/BurgerTime.cpp"
+    "Game/Components/TextDisplay.cpp"
+    "Game/Components/FPSDisplay.cpp"
+    "Game/Components/ObjectOrbitter.cpp"
   
-  "Game/Components/Health.cpp"
-  "Game/Components/LivesDisplay.cpp"
-  "Game/Components/Score.cpp"
-  "Game/Components/ScoreDisplay.cpp"
+    "Game/Components/Health.cpp"
+    "Game/Components/LivesDisplay.cpp"
+    "Game/Components/Score.cpp"
+    "Game/Components/ScoreDisplay.cpp"
   
-  "Game/Extras/PlayerLivesObserver.cpp"
+    "Game/Extras/PlayerLivesObserver.cpp"
   
-  "Game/Extras/CustomCommands.cpp"
-  "Game/Extras/Subject.cpp"
-  "Game/Components/Entity.cpp" 
+    "Game/Extras/CustomCommands.cpp"
+    "Game/Extras/Subject.cpp"
+    "Game/Components/Entity.cpp" 
+
+    "Game/States/EntityState.cpp"
+    "Game/States/EntityStateIdle.cpp" 
+    "Game/States/EntityStateWalking.cpp"
+    "Game/States/EntityStateClimbing.cpp" 
    
-  "Game/States/PlayerStates/PlayerStateIdle.cpp" 
-  "Game/States/PlayerStates/PlayerStateWalking.cpp"
-  "Game/States/PlayerStates/PlayerStateClimbing.cpp" 
-   
-  "Game/Components/RectCollider.cpp"
-  "Game/Components/SpriteAnimation.cpp"
-  "Game/Components/LevelGrid.cpp" 
-  "Game/SceneLoaders/GameSceneLoader.cpp"
-  "Game/SceneLoaders/MainSceneLoader.cpp" 
-  "Game/Components/Button.cpp"
-  "Game/Components/BurgerLayer.cpp" 
-  "Game/Components/BurgerLayerPart.cpp"   
-  "Game/Extras/PlayerInputProvider.cpp" "Game/States/EntityState.cpp")
+    "Game/Components/RectCollider.cpp"
+    "Game/Components/SpriteAnimation.cpp"
+    "Game/Components/LevelGrid.cpp" 
+    "Game/SceneLoaders/GameSceneLoader.cpp"
+    "Game/SceneLoaders/MainSceneLoader.cpp" 
+    "Game/Components/Button.cpp"
+    "Game/Components/BurgerLayer.cpp" 
+    "Game/Components/BurgerLayerPart.cpp"   
+    "Game/Extras/PlayerInputProvider.cpp" )
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
@@ -247,8 +248,6 @@ target_include_directories(${TARGET_NAME} PRIVATE
   "${CMAKE_SOURCE_DIR}/Game/Components/"
   "${CMAKE_SOURCE_DIR}/Game/Extras/"
   "${CMAKE_SOURCE_DIR}/Game/States/"
-  "${CMAKE_SOURCE_DIR}/Game/States/PlayerStates/"
-  "${CMAKE_SOURCE_DIR}/Game/States/EnemyStates/"
   "${CMAKE_SOURCE_DIR}/Game/SceneLoaders/"
   "${CMAKE_SOURCE_DIR}/Data/"
 )

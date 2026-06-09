@@ -2,10 +2,10 @@
 #include "CustomCommands.hpp"
 #include "EntityState.hpp"
 namespace dae {
-class PlayerStateIdle : public EntityState {
+class EntityStateIdle : public EntityState {
 public:
-  PlayerStateIdle(Entity &player, Direction direction = Direction::Down);
-  ~PlayerStateIdle();
+  EntityStateIdle(Entity &player, Direction direction = Direction::Down);
+  ~EntityStateIdle();
   std::unique_ptr<EntityState> HandleInput();
   void Update();
   void OnEnter();

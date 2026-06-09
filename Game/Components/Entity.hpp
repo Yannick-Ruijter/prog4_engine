@@ -14,7 +14,7 @@ public:
          LevelGrid *level);
   ~Entity();
   void Update();
-  GameObject *GetPlayer();
+  GameObject *GetEntity();
   SpriteAnimation *GetPlayerAnimation() const;
   InputProvider *GetInput() const;
   LevelGrid *GetLevel() const;

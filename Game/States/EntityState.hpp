@@ -18,7 +18,7 @@ public:
   virtual void OnExit();
 
 protected:
-  EntityState(Entity &player);
+  EntityState(Entity &entity);
   Entity *m_Entity;
 };
 } // namespace dae
