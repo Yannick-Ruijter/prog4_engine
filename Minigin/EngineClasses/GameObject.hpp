@@ -7,68 +7,64 @@
 #include <utility>
 #include <vector>
 
-namespace dae
-{
-    class Font;
-    class GameObject final
-    {
-      public:
-        void Update();
-        void LateUpdate();
-        void Render() const;
+namespace dae {
+class Font;
+class GameObject final {
+public:
+  void Update();
+  void LateUpdate();
+  void Render() const;
 
-        void SetParent(GameObject *parent, bool keepCoordinates);
-        GameObject *GetParent() const;
+  void SetParent(GameObject *parent, bool keepCoordinates);
+  GameObject *GetParent() const;
 
-        glm::vec2 GetWorldPosition() const;
-        void SetPositionDirty();
+  glm::vec2 GetWorldPosition() const;
+  void SetPositionDirty();
 
-        template <typename T, typename... Args> void AddComponent(Args &&...args)
-        {
-            m_MyComponents.emplace_back(std::make_unique<T>(*this, std::forward<Args>(args)...));
-        };
+  template <typename T, typename... Args> void AddComponent(Args &&...args) {
+    m_MyComponents.emplace_back(
+        std::make_unique<T>(*this, std::forward<Args>(args)...));
+  };
 
-        template <typename T> void RemoveComponent()
-        {
-            T *toBeRemoved = GetComponent<T>();
-            m_MyComponents.erase(
-                std::remove_if(
-                    m_MyComponents.begin(), m_MyComponents.end(),
-                    [toBeRemoved](const auto &ptr) { return ptr.get() == toBeRemoved; }),
-                m_MyComponents.end());
-        };
+  template <typename T> void RemoveComponent() {
+    T *toBeRemoved = GetComponent<T>();
+    m_MyComponents.erase(std::remove_if(m_MyComponents.begin(),
+                                        m_MyComponents.end(),
+                                        [toBeRemoved](const auto &ptr) {
+                                          return ptr.get() == toBeRemoved;
+                                        }),
+                         m_MyComponents.end());
+  };
 
-        template <typename T> T *GetComponent() const
-        {
-            if (auto *t = dynamic_cast<T *>(m_Transform.get()))
-                return t;
-            for (auto const &component : m_MyComponents)
-            {
-                T *castedComponent = dynamic_cast<T *>(component.get());
-                if (castedComponent != nullptr)
-                    return castedComponent;
-            }
-            return nullptr;
-        };
+  template <typename T> T *GetComponent() const {
+    if (auto *t = dynamic_cast<T *>(m_Transform.get()))
+      return t;
+    for (auto const &component : m_MyComponents) {
+      T *castedComponent = dynamic_cast<T *>(component.get());
+      if (castedComponent != nullptr)
+        return castedComponent;
+    }
+    return nullptr;
+  };
 
-        GameObject(GameObject *parent = nullptr, bool keepCoordinates = true);
-        ~GameObject() = default;
-        GameObject(const GameObject &other) = delete;
-        GameObject(GameObject &&other) = default;
-        GameObject &operator=(const GameObject &other) = delete;
-        GameObject &operator=(GameObject &&other) = default;
+  GameObject(GameObject *parent = nullptr, bool keepCoordinates = true);
+  ~GameObject() = default;
+  GameObject(const GameObject &other) = delete;
+  GameObject(GameObject &&other) = default;
+  GameObject &operator=(const GameObject &other) = delete;
+  GameObject &operator=(GameObject &&other) = default;
 
-      private:
-        std::vector<std::unique_ptr<Component>> m_MyComponents;
-        std::unique_ptr<Transform> m_Transform{std::make_unique<Transform>(*this)};
-        std::vector<std::unique_ptr<GameObject>> m_Children{};
-        GameObject *m_Parent{nullptr};
-        bool m_UpdatePosition{true};
+private:
+  std::vector<std::unique_ptr<Component>> m_MyComponents;
+  std::unique_ptr<Transform> m_Transform{std::make_unique<Transform>(*this)};
+  std::vector<std::unique_ptr<GameObject>> m_Children{};
+  GameObject *m_Parent{nullptr};
+  bool m_UpdatePosition{true};
 
-        bool IsChild(GameObject *object) const;
-        void RemoveChild(GameObject *object);
-        void AddChild(GameObject *object);
+  bool IsChild(GameObject *object) const;
+  void RemoveChild(GameObject *object);
+  void AddChild(GameObject *object);
 
-        void SetLocalPosition(glm::vec2 const &pos);
-    };
+  void SetLocalPosition(glm::vec2 const &pos);
+};
 } // namespace dae
