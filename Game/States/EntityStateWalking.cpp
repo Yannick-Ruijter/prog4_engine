@@ -1,4 +1,5 @@
 #include "CustomCommands.hpp"
+#include "EntityStateAttacking.hpp"
 #include "EntityStateIdle.hpp"
 #include "EntityStateWalking.hpp"
 #include "GameObject.hpp"
@@ -27,16 +28,22 @@ std::unique_ptr<EntityState> dae::EntityStateWalking::HandleInput() {
   glm::vec2 charSize{32.f, 32.f};
   float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
 
+  if (input->AttackButtonPressed())
+    return std::make_unique<EntityStateAttacking>(*m_Entity, m_CurrentMoveDir);
+
+  if (moveDir.x == 0.f) {
+    return std::make_unique<EntityStateIdle>(*m_Entity, m_CurrentMoveDir);
+  }
   // if we (in one frame) manage to switch direction
   // meaning in the same frame we release the old and press the new dir
   if (std::signbit(moveDir.x) != std::signbit(m_MovementVector.x)) {
     m_CurrentMoveDir =
         std::signbit(moveDir.x) ? Direction::Left : Direction::Right;
     if (m_CurrentMoveDir == Direction::Left) {
-      m_Entity->GetPlayerAnimation()->SetAnimationState("RunningLeft");
+      m_Entity->GetEntityAnimation()->SetAnimationState("RunningLeft");
       m_MovementVector = glm::vec2{-m_Entity->GetMoveSpeed(), 0.f};
     } else if (m_CurrentMoveDir == Direction::Right) {
-      m_Entity->GetPlayerAnimation()->SetAnimationState("RunningRight");
+      m_Entity->GetEntityAnimation()->SetAnimationState("RunningRight");
       m_MovementVector = glm::vec2{m_Entity->GetMoveSpeed(), 0.f};
     }
   }
@@ -44,11 +51,8 @@ std::unique_ptr<EntityState> dae::EntityStateWalking::HandleInput() {
   if (!level->IsOnPlatform(m_EntityTransform->GetWorldPosition() +
                                m_MovementVector * deltaTime,
                            charSize))
-    return std::make_unique<EntityStateIdle>(*m_Entity);
+    return std::make_unique<EntityStateIdle>(*m_Entity, m_CurrentMoveDir);
 
-  if (moveDir.x == 0.f) {
-    return std::make_unique<EntityStateIdle>(*m_Entity);
-  }
   return nullptr;
 }
 
@@ -60,10 +64,10 @@ void dae::EntityStateWalking::Update() {
 
 void dae::EntityStateWalking::OnEnter() {
   if (m_CurrentMoveDir == Direction::Left) {
-    m_Entity->GetPlayerAnimation()->SetAnimationState("RunningLeft");
+    m_Entity->GetEntityAnimation()->SetAnimationState("RunningLeft");
     m_MovementVector = glm::vec2{-m_Entity->GetMoveSpeed(), 0.f};
   } else if (m_CurrentMoveDir == Direction::Right) {
-    m_Entity->GetPlayerAnimation()->SetAnimationState("RunningRight");
+    m_Entity->GetEntityAnimation()->SetAnimationState("RunningRight");
     m_MovementVector = glm::vec2{m_Entity->GetMoveSpeed(), 0.f};
   }
 

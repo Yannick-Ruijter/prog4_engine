@@ -16,7 +16,7 @@ public:
   ~Entity();
   void Update();
   GameObject *GetEntity();
-  SpriteAnimation *GetPlayerAnimation() const;
+  SpriteAnimation *GetEntityAnimation() const;
   InputProvider *GetInput() const;
   LevelGrid *GetLevel() const;
   float GetMoveSpeed() const;

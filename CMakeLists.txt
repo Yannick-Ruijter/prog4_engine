@@ -239,7 +239,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Game/Components/BurgerLayerPart.cpp"   
     "Game/EntityControllers/PlayerPepperController.cpp"
     "Game/EntityControllers/PlayerEnemyController.cpp"
-)
+ "Game/States/EntityStateAttacking.cpp" "Game/States/EntityStateStunned.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

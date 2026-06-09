@@ -38,5 +38,8 @@ void dae::PlayerEnemyController::Notify(EventId eventId, GameObject *) {
         layer && layer->IsFalling()) {
       SceneManager::GetInstance().GetActiveScene()->Remove(*m_ControlledEnemy);
     }
+    if (other->GetLayer() == LAYER_PEPPER) {
+      SceneManager::GetInstance().GetActiveScene()->Remove(*m_ControlledEnemy);
+    }
   }
 }

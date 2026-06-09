@@ -7,11 +7,11 @@ class Transform;
 class EntityStateWalking : public EntityState {
 public:
   EntityStateWalking(Entity &entity, Direction dir);
-  ~EntityStateWalking();
-  std::unique_ptr<EntityState> HandleInput();
-  void Update();
-  void OnEnter();
-  void OnExit();
+  virtual ~EntityStateWalking();
+  virtual std::unique_ptr<EntityState> HandleInput() override;
+  virtual void Update() override;
+  virtual void OnEnter() override;
+  virtual void OnExit() override;
 
 private:
   Transform *m_EntityTransform{nullptr};

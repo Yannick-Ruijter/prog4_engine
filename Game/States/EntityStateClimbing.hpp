@@ -7,11 +7,11 @@ class Transform;
 class EntityStateClimbing : public EntityState {
 public:
   EntityStateClimbing(Entity &entity, Direction dir);
-  ~EntityStateClimbing();
-  std::unique_ptr<EntityState> HandleInput();
-  void Update();
-  void OnEnter();
-  void OnExit();
+  virtual ~EntityStateClimbing();
+  virtual std::unique_ptr<EntityState> HandleInput() override;
+  virtual void Update() override;
+  virtual void OnEnter() override;
+  virtual void OnExit() override;
 
 private:
   glm::vec2 m_MovementVector{};

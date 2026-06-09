@@ -2,6 +2,7 @@
 #include "EntityStateClimbing.hpp"
 
 #include "CustomCommands.hpp"
+#include "EntityStateAttacking.hpp"
 #include "EntityStateIdle.hpp"
 #include "GameObject.hpp"
 #include "InputInfo.hpp"
@@ -31,6 +32,9 @@ std::unique_ptr<EntityState> dae::EntityStateClimbing::HandleInput() {
   float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
   auto worldPos{m_EntityTransform->GetWorldPosition()};
 
+  if (input->AttackButtonPressed())
+    return std::make_unique<EntityStateAttacking>(*m_Entity, m_CurrentMoveDir);
+
   if (moveDir.y == 0.f) {
     return std::make_unique<EntityStateIdle>(*m_Entity, m_CurrentMoveDir);
   }
@@ -39,10 +43,10 @@ std::unique_ptr<EntityState> dae::EntityStateClimbing::HandleInput() {
     m_CurrentMoveDir =
         std::signbit(moveDir.x) ? Direction::Up : Direction::Down;
     if (m_CurrentMoveDir == Direction::Up) {
-      m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
+      m_Entity->GetEntityAnimation()->SetAnimationState("ClimbingUp");
       m_MovementVector = glm::vec2{0.f, -m_Entity->GetMoveSpeed()};
     } else {
-      m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingDown");
+      m_Entity->GetEntityAnimation()->SetAnimationState("ClimbingDown");
       m_MovementVector = glm::vec2{0.f, m_Entity->GetMoveSpeed()};
     }
   }
@@ -63,10 +67,10 @@ void dae::EntityStateClimbing::Update() {
 
 void dae::EntityStateClimbing::OnEnter() {
   if (m_CurrentMoveDir == Direction::Up) {
-    m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
+    m_Entity->GetEntityAnimation()->SetAnimationState("ClimbingUp");
     m_MovementVector = glm::vec2{0.f, -m_Entity->GetMoveSpeed()};
   } else {
-    m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingDown");
+    m_Entity->GetEntityAnimation()->SetAnimationState("ClimbingDown");
     m_MovementVector = glm::vec2{0.f, m_Entity->GetMoveSpeed()};
   }
 }

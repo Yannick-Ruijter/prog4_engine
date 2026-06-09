@@ -30,7 +30,7 @@ void dae::Entity::Update() {
 
 GameObject *dae::Entity::GetEntity() { return GetOwner(); }
 
-SpriteAnimation *dae::Entity::GetPlayerAnimation() const {
+SpriteAnimation *dae::Entity::GetEntityAnimation() const {
   return m_SpriteAnimation;
 }
 
