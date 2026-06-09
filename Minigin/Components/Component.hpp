@@ -1,25 +1,25 @@
 #pragma once
 
-namespace dae
-{
+namespace dae {
 class GameObject;
-class Component
-{
-  public:
-    virtual ~Component() = default;
-    Component(Component const &other) = delete;
-    Component(Component &&other) = delete;
-    Component &operator=(Component const &other) = delete;
-    Component &operator=(Component &&other) = delete;
-    virtual void Update();
-    virtual void LateUpdate();
-    virtual void Render() const;
+class Component {
+private:
+  GameObject *m_Owner;
 
-  protected:
-    Component(GameObject &owner);
-    GameObject *GetOwner() const;
+public:
+  virtual ~Component() = default;
+  Component(Component const &other) = delete;
+  Component(Component &&other) = delete;
+  Component &operator=(Component const &other) = delete;
+  Component &operator=(Component &&other) = delete;
+  virtual void Update();
+  virtual void LateUpdate();
+  virtual void Render() const;
+  template <typename T> T *GetComponent();
+  
 
-  private:
-    GameObject *m_Owner;
+protected:
+  Component(GameObject &owner);
+  GameObject *GetOwner() const;
 };
 } // namespace dae

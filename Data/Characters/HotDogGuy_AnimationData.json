@@ -1,0 +1,50 @@
+{
+  "ClimbingDown": {
+    "startPosX": 0,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 2,
+    "FrameDuration": 8
+  },
+  "ClimbingUp": {
+    "startPosX": 64,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 2,
+    "FrameDuration": 8
+  },
+  "RunningLeft": {
+    "startPosX": 32,
+    "startPosY": 0,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 2,
+    "FrameDuration": 8
+  },
+  "RunningRight": {
+    "startPosX": 0,
+    "startPosY": 32,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 2,
+    "FrameDuration": 8
+  },
+  "Dying": {
+    "startPosX": 0,
+    "startPosY": 16,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 4,
+    "FrameDuration": 8
+  },
+  "Stunned": {
+    "startPosX": 64,
+    "startPosY": 16,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 2,
+    "FrameDuration": 8
+  }
+}
