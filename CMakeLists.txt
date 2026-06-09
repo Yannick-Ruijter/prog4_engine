@@ -223,10 +223,11 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Extras/CustomCommands.cpp"
   "Game/Extras/Subject.cpp"
   "Game/Components/Entity.cpp" 
-  "Game/States/PlayerStates/PlayerState.cpp" 
+   
   "Game/States/PlayerStates/PlayerStateIdle.cpp" 
   "Game/States/PlayerStates/PlayerStateWalking.cpp"
   "Game/States/PlayerStates/PlayerStateClimbing.cpp" 
+   
   "Game/Components/RectCollider.cpp"
   "Game/Components/SpriteAnimation.cpp"
   "Game/Components/LevelGrid.cpp" 
@@ -235,7 +236,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Game/Components/Button.cpp"
   "Game/Components/BurgerLayer.cpp" 
   "Game/Components/BurgerLayerPart.cpp"   
-  "Game/Extras/PlayerInputProvider.cpp")
+  "Game/Extras/PlayerInputProvider.cpp" "Game/States/EntityState.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

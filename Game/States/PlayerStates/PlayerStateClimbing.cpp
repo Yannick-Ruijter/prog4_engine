@@ -16,62 +16,59 @@
 using namespace dae;
 
 PlayerStateClimbing::PlayerStateClimbing(Entity &player, Direction dir)
-    : PlayerState(player),
-      m_CurrentMoveDir{dir},
+    : EntityState(player), m_CurrentMoveDir{dir},
       m_PlayerTransform{player.GetPlayer()->GetComponent<dae::Transform>()} {
-    OnEnter();
+  OnEnter();
 }
 
-dae::PlayerStateClimbing::~PlayerStateClimbing() {
-    OnExit();
-}
+dae::PlayerStateClimbing::~PlayerStateClimbing() { OnExit(); }
 
-std::unique_ptr<PlayerState> dae::PlayerStateClimbing::HandleInput() {
-    auto input{m_Player->GetInput()};
-    auto moveDir{input->GetMovementDirection()};
-    auto level{m_Player->GetLevel()};
-    glm::vec2 charSize{32.f, 32.f};
-    float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
-    auto worldPos{m_PlayerTransform->GetWorldPosition()};
+std::unique_ptr<EntityState> dae::PlayerStateClimbing::HandleInput() {
+  auto input{m_Entity->GetInput()};
+  auto moveDir{input->GetMovementDirection()};
+  auto level{m_Entity->GetLevel()};
+  glm::vec2 charSize{32.f, 32.f};
+  float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
+  auto worldPos{m_PlayerTransform->GetWorldPosition()};
 
-    if (moveDir.y == 0.f) {
-        return std::make_unique<PlayerStateIdle>(*m_Player, m_CurrentMoveDir);
+  if (moveDir.y == 0.f) {
+    return std::make_unique<PlayerStateIdle>(*m_Entity, m_CurrentMoveDir);
+  }
+
+  if (std::signbit(moveDir.y) != std::signbit(m_MovementVector.y)) {
+    m_CurrentMoveDir =
+        std::signbit(moveDir.x) ? Direction::Up : Direction::Down;
+    if (m_CurrentMoveDir == Direction::Up) {
+      m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
+      m_MovementVector = glm::vec2{0.f, -m_Entity->GetMoveSpeed()};
+    } else {
+      m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingDown");
+      m_MovementVector = glm::vec2{0.f, m_Entity->GetMoveSpeed()};
     }
+  }
 
-    if (std::signbit(moveDir.y) != std::signbit(m_MovementVector.y)) {
-        m_CurrentMoveDir = std::signbit(moveDir.x) ? Direction::Up : Direction::Down;
-        if (m_CurrentMoveDir == Direction::Up) {
-            m_Player->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
-            m_MovementVector = glm::vec2{0.f, -m_Player->GetMoveSpeed()};
-        } else {
-            m_Player->GetPlayerAnimation()->SetAnimationState("ClimbingDown");
-            m_MovementVector = glm::vec2{0.f, m_Player->GetMoveSpeed()};
-        }
-    }
+  // check both current and grid below it
+  if (!level->IsOnLadder(worldPos + m_MovementVector * deltaTime, charSize) &&
+      !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
+    return std::make_unique<PlayerStateIdle>(*m_Entity, m_CurrentMoveDir);
 
-    // check both current and grid below it
-    if (!level->IsOnLadder(worldPos + m_MovementVector * deltaTime, charSize) &&
-        !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
-        return std::make_unique<PlayerStateIdle>(*m_Player, m_CurrentMoveDir);
-
-    return nullptr;
+  return nullptr;
 }
 
 void dae::PlayerStateClimbing::Update() {
-    m_PlayerTransform->SetLocalPosition(
-        m_PlayerTransform->GetLocalPosition() + (m_MovementVector * TimeManager::GetInstance().GetDeltaTime()));
+  m_PlayerTransform->SetLocalPosition(
+      m_PlayerTransform->GetLocalPosition() +
+      (m_MovementVector * TimeManager::GetInstance().GetDeltaTime()));
 }
 
 void dae::PlayerStateClimbing::OnEnter() {
-    if (m_CurrentMoveDir == Direction::Up) {
-        m_Player->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
-        m_MovementVector = glm::vec2{0.f, -m_Player->GetMoveSpeed()};
-    } else {
-        m_Player->GetPlayerAnimation()->SetAnimationState("ClimbingDown");
-        m_MovementVector = glm::vec2{0.f, m_Player->GetMoveSpeed()};
-    }
+  if (m_CurrentMoveDir == Direction::Up) {
+    m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingUp");
+    m_MovementVector = glm::vec2{0.f, -m_Entity->GetMoveSpeed()};
+  } else {
+    m_Entity->GetPlayerAnimation()->SetAnimationState("ClimbingDown");
+    m_MovementVector = glm::vec2{0.f, m_Entity->GetMoveSpeed()};
+  }
 }
 
-void dae::PlayerStateClimbing::OnExit() {
-    return;
-}
+void dae::PlayerStateClimbing::OnExit() { return; }

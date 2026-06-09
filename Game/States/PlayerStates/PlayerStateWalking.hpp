@@ -1,16 +1,16 @@
 #pragma once
 #include "CustomCommands.hpp"
-#include "PlayerState.hpp"
+#include "EntityState.hpp"
 #include <glm/glm.hpp>
 namespace dae
 {
     class Transform;
-    class PlayerStateWalking : public PlayerState
+    class PlayerStateWalking : public EntityState
     {
       public:
         PlayerStateWalking(Entity &player, Direction dir);
         ~PlayerStateWalking();
-        std::unique_ptr<PlayerState> HandleInput();
+        std::unique_ptr<EntityState> HandleInput();
         void Update();
         void OnEnter();
         void OnExit();
