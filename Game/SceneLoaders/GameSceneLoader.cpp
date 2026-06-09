@@ -82,25 +82,37 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   auto player2 = std::make_unique<GameObject>();
   // create 2 players
   {
+    glm::ivec2 playerDimensions{32, 32};
     player2->AddComponent<dae::ObjectRenderer>();
     player2->AddComponent<dae::Health>(std::make_unique<dae::Subject>(),
                                        levelInfo.lifeCount);
-    player2->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
+    player2->AddComponent<dae::Texture2DDisplay>(
+        "Data/pepperguy.png", playerDimensions.x, playerDimensions.y);
+    player2->AddComponent<dae::RectCollider>(
+        Rect{glm::vec2{}, playerDimensions}, LAYER_ENEMY,
+        LAYER_PEPPER | LAYER_BURGER);
     player2->GetComponent<dae::Transform>()->SetLocalPosition(
         glm::vec3{200, 214, 0});
     player2->AddComponent<dae::Score>(std::make_unique<dae::Subject>());
     player2->AddComponent<dae::SpriteAnimation>(
         "Data/Characters/HotDogGuy_AnimationData.json",
         "Data/Characters/HotDogGuy_SpriteSheet.png");
+
     player2->AddComponent<dae::Entity>(
         std::make_unique<dae::PlayerEnemyController>(
-            inputManager.GetKeyboardInput()),
+            inputManager.GetKeyboardInput(), player2.get()),
         level->GetComponent<dae::LevelGrid>());
+
+    auto enemyController = player2->GetComponent<dae::Entity>()->GetInput();
+    player2->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
+        enemyController);
 
     player1->AddComponent<dae::ObjectRenderer>();
     player1->AddComponent<dae::Health>(std::make_unique<dae::Subject>(),
                                        levelInfo.lifeCount);
     player1->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
+    player1->AddComponent<dae::RectCollider>(
+        Rect{glm::vec2{}, playerDimensions}, LAYER_PEPPERGUY, LAYER_ENEMY);
     player1->GetComponent<dae::Transform>()->SetLocalPosition(
         glm::vec3{150, 214, 0});
     player1->AddComponent<dae::Score>(std::make_unique<dae::Subject>());
@@ -207,6 +219,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         fontSmall);
     scene->Add(std::move(go));
   }
+
   // lives display
   {
     // player 1
@@ -290,6 +303,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
             charToPlayers.at(currentChar)->GetComponent<Transform>();
         playerTransform->SetLocalPosition(pos);
       }
+      std::vector player{players[0]};
       if (layers.contains(currentChar)) {
         glm::vec2 pos{gridCoord * tileSize};
         // to place them at exactly the right spot since they don't have the
@@ -299,11 +313,10 @@ void dae::GameSceneLoader::LoadSpriteMap(
         auto go = std::make_unique<GameObject>();
         go->AddComponent<dae::ObjectRenderer>();
         go->GetComponent<dae::Transform>()->SetLocalPosition(pos);
-        go->AddComponent<dae::BurgerLayer>(layers.at(currentChar), players,
-                                           levelGrid);
+        go->AddComponent<dae::BurgerLayer>(layers.at(currentChar), levelGrid);
         auto dimensions = go->GetComponent<dae::BurgerLayer>()->GetDimensions();
         go->AddComponent<dae::RectCollider>(Rect{pos, dimensions}, LAYER_BURGER,
-                                            LAYER_ENEMY);
+                                            LAYER_NONE);
         scene->Add(std::move(go));
       }
       gridCoord.x++;

@@ -8,6 +8,7 @@ class SpriteAnimation;
 class EntityState;
 class InputProvider;
 class LevelGrid;
+class RectCollider;
 class Entity final : public Component {
 public:
   Entity(GameObject &owner, std::unique_ptr<InputProvider> input,

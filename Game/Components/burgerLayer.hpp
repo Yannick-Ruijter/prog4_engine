@@ -6,8 +6,7 @@ class LevelGrid;
 enum class BurgerLayerType { TopPaddy, Salad, Tomato, BottomPaddy };
 class BurgerLayer : public Component {
 public:
-  BurgerLayer(GameObject &owner, BurgerLayerType layer,
-              std::vector<GameObject *> const &players, LevelGrid *levelGrid);
+  BurgerLayer(GameObject &owner, BurgerLayerType layer, LevelGrid *levelGrid);
   void OnLayerPartCollided();
   virtual void Update() override;
   void StartFalling();
@@ -20,8 +19,7 @@ private:
   void StopFalling();
   void CalculateLayerBellow();
   bool m_IsFalling{false};
-  void CreateChildrenParts(std::vector<GameObject *> const &players,
-                           BurgerLayerType layer);
+  void CreateChildrenParts(BurgerLayerType layer);
   std::vector<GameObject *> m_LayerParts;
   glm::vec2 m_LayerDimensions{};
   uint32_t m_NumberOfPartsSteppedOn{0};

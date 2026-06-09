@@ -2,8 +2,10 @@
 #include "GameObject.hpp"
 #include "LevelGrid.hpp"
 #include "ObjectRenderer.hpp"
+#include "RectCollider.hpp"
 #include "ServiceProvider.hpp"
 #include "SoundSystem.hpp"
+#include "Subject.hpp"
 #include "Texture2DDisplay.hpp"
 #include "TimeManager.hpp"
 #include "burgerLayer.hpp"
@@ -11,12 +13,11 @@ using namespace dae;
 
 std::vector<GameObject *> BurgerLayer::AllBurgerLayers = {};
 BurgerLayer::BurgerLayer(GameObject &owner, BurgerLayerType layer,
-                         std::vector<GameObject *> const &players,
                          LevelGrid *levelGrid)
     : Component(owner), m_LevelGrid{levelGrid},
       m_Transform{owner.GetComponent<Transform>()} {
   AllBurgerLayers.emplace_back(GetOwner());
-  CreateChildrenParts(players, layer);
+  CreateChildrenParts(layer);
 }
 
 void BurgerLayer::OnLayerPartCollided() {
@@ -158,8 +159,7 @@ void dae::BurgerLayer::CalculateLayerBellow() {
   }
 }
 
-void BurgerLayer::CreateChildrenParts(std::vector<GameObject *> const &players,
-                                      BurgerLayerType layer) {
+void BurgerLayer::CreateChildrenParts(BurgerLayerType layer) {
 
   // TODO fix tiles first with photoshop and hten the names here
   std::string filePath{"Data/Tiles/"};
@@ -188,49 +188,25 @@ void BurgerLayer::CreateChildrenParts(std::vector<GameObject *> const &players,
       static_cast<float>(originalWidth) * scale * nrOfChildren;
   m_LayerDimensions.y = static_cast<float>(originalHeight) * scale;
 
-  auto go = std::make_unique<GameObject>();
-  go->AddComponent<ObjectRenderer>();
-  go->AddComponent<Texture2DDisplay>(
-      filePath + "_left.png", originalWidth * scale, originalHeight * scale);
-  go->AddComponent<BurgerLayerPart>(players);
-  go->SetParent(GetOwner(), false);
-  go->GetComponent<Transform>()->SetLocalPosition(
-      static_cast<float>(originalWidth) * scale * 0, 0);
-  m_LayerParts.emplace_back(go.get());
-  go.release();
-
-  go = std::make_unique<GameObject>();
-  go->AddComponent<ObjectRenderer>();
-  go->AddComponent<Texture2DDisplay>(filePath + "_middle_left.png",
-                                     originalWidth * scale,
-                                     originalHeight * scale);
-  go->AddComponent<BurgerLayerPart>(players);
-  go->SetParent(GetOwner(), false);
-  go->GetComponent<Transform>()->SetLocalPosition(
-      static_cast<float>(originalWidth) * scale * 1, 0);
-  m_LayerParts.emplace_back(go.get());
-  go.release();
-
-  go = std::make_unique<GameObject>();
-  go->AddComponent<ObjectRenderer>();
-  go->AddComponent<Texture2DDisplay>(filePath + "_middle_right.png",
-                                     originalWidth * scale,
-                                     originalHeight * scale);
-  go->AddComponent<BurgerLayerPart>(players);
-  go->SetParent(GetOwner(), false);
-  go->GetComponent<Transform>()->SetLocalPosition(
-      static_cast<float>(originalWidth) * scale * 2, 0);
-  m_LayerParts.emplace_back(go.get());
-  go.release();
-
-  go = std::make_unique<GameObject>();
-  go->AddComponent<ObjectRenderer>();
-  go->AddComponent<Texture2DDisplay>(
-      filePath + "_right.png", originalWidth * scale, originalHeight * scale);
-  go->AddComponent<BurgerLayerPart>(players);
-  go->SetParent(GetOwner(), false);
-  go->GetComponent<Transform>()->SetLocalPosition(
-      static_cast<float>(originalWidth) * scale * 3, 0);
-  m_LayerParts.emplace_back(go.get());
-  go.release();
+  auto createLayerPart = [&](const char *texture, int partNr) {
+    auto go = std::make_unique<GameObject>();
+    go->AddComponent<ObjectRenderer>();
+    go->AddComponent<Texture2DDisplay>(
+        filePath + texture, originalWidth * scale, originalHeight * scale);
+    go->AddComponent<BurgerLayerPart>();
+    go->AddComponent<RectCollider>(
+        Rect{{}, {originalWidth * scale, originalHeight * scale}},
+        LAYER_BURGERPART, LAYER_PEPPERGUY);
+    go->SetParent(GetOwner(), false);
+    go->GetComponent<Transform>()->SetLocalPosition(
+        static_cast<float>(originalWidth) * scale * partNr, 0);
+    auto layerPart{go->GetComponent<BurgerLayerPart>()};
+    go->GetComponent<RectCollider>()->GetSubject()->AddObserver(layerPart);
+    m_LayerParts.emplace_back(go.get());
+    go.release();
+  };
+  createLayerPart("_left.png", 0);
+  createLayerPart("_middle_left.png", 1);
+  createLayerPart("_middle_right.png", 2);
+  createLayerPart("_right.png", 3);
 }

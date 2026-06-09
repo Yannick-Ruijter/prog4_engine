@@ -1,8 +1,15 @@
+#include "GameObject.hpp"
 #include "PlayerEnemyController.hpp"
 #include "PlayerInput.hpp"
+#include "RectCollider.hpp"
+#include "Scene.hpp"
+#include "SceneManager.hpp"
+#include "burgerLayer.hpp"
+#include "sdbm_hash.hpp"
 
-dae::PlayerEnemyController::PlayerEnemyController(PlayerInput *input)
-    : m_Input{input} {}
+dae::PlayerEnemyController::PlayerEnemyController(PlayerInput *input,
+                                                  GameObject *controlledEnemy)
+    : m_Input{input}, m_ControlledEnemy{controlledEnemy} {}
 
 dae::PlayerEnemyController::~PlayerEnemyController() {}
 glm::vec2 dae::PlayerEnemyController::GetMovementDirection() const {
@@ -19,3 +26,17 @@ glm::vec2 dae::PlayerEnemyController::GetMovementDirection() const {
 }
 
 bool dae::PlayerEnemyController::AttackButtonPressed() const { return false; }
+
+void dae::PlayerEnemyController::Notify(EventId eventId, GameObject *) {
+  if (!m_Collider)
+    m_Collider = m_ControlledEnemy->GetComponent<RectCollider>();
+  if (eventId == "OnCollision"_h) {
+    auto other = m_Collider->GetLastCollision();
+    if (!other)
+      return;
+    if (auto layer = other->GetOwner()->GetComponent<BurgerLayer>();
+        layer && layer->IsFalling()) {
+      SceneManager::GetInstance().GetActiveScene()->Remove(*m_ControlledEnemy);
+    }
+  }
+}

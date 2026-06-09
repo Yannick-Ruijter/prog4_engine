@@ -1,9 +1,10 @@
 #include "Entity.hpp"
 #include "EntityState.hpp"
+#include "EntityStateIdle.hpp"
 #include "GameObject.hpp"
 #include "InputProvider.hpp"
 #include "LevelGrid.hpp"
-#include "EntityStateIdle.hpp"
+#include "RectCollider.hpp"
 #include "SpriteAnimation.hpp"
 #include "sdbm_hash.hpp"
 using namespace dae;

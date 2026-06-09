@@ -1,5 +1,4 @@
 #pragma once
-
 namespace dae {
 class GameObject;
 class Component {
@@ -15,11 +14,9 @@ public:
   virtual void Update();
   virtual void LateUpdate();
   virtual void Render() const;
-  template <typename T> T *GetComponent();
-  
+  GameObject *GetOwner() const;
 
 protected:
   Component(GameObject &owner);
-  GameObject *GetOwner() const;
 };
 } // namespace dae

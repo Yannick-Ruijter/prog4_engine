@@ -1,15 +1,17 @@
 #include "GameObject.hpp"
 #include "RectCollider.hpp"
 #include "Renderer.hpp"
+#include "Subject.hpp"
 #include "sdbm_hash.hpp"
 #include <algorithm>
 #include <bit>
 
 using namespace dae;
 std::vector<RectCollider *> RectCollider::m_Colliders = {};
-RectCollider::RectCollider(GameObject &owner, Rect rect, uint32_t layer,
-                           uint32_t layerMask)
-    : Component(owner), m_Rect{rect}, m_Layer{layer}, m_LayerMask{layerMask} {
+RectCollider::RectCollider(GameObject &owner, Rect rect, int32_t layer,
+                           int32_t layerMask)
+    : Component(owner), m_Rect{rect}, m_Layer{layer}, m_LayerMask{layerMask},
+      m_Subject{std::make_unique<Subject>()} {
   m_Colliders.push_back(this);
 }
 
@@ -29,8 +31,11 @@ void dae::RectCollider::Render() const {
 }
 
 void dae::RectCollider::LateUpdate() {
-  for (auto const &collider : m_Colliders) {
+  if (m_LayerMask == LAYER_NONE)
+    return;
+  for (auto collider : m_Colliders) {
     // if it's either this collider or not part of our mask
+
     if (collider == this ||
         (collider->GetLayer() & m_LayerMask) != collider->GetLayer())
       continue;
@@ -53,6 +58,6 @@ RectCollider *dae::RectCollider::GetLastCollision() const {
   return m_LastCollision;
 }
 
-uint32_t dae::RectCollider::GetLayer() const { return m_Layer; }
+int32_t dae::RectCollider::GetLayer() const { return m_Layer; }
 
 Subject *dae::RectCollider::GetSubject() const { return m_Subject.get(); }

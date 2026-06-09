@@ -5,39 +5,41 @@
 #include <string>
 #include <vector>
 
-// restrain the type T to always have the function LoadScene that returns a scene*
+// restrain the type T to always have the function LoadScene that returns a
+// scene*
 template <typename T, typename... Args>
 concept IsSceneLoader = requires(Args &&...args) {
-    { T::LoadScene(std::forward<Args>(args)...) } -> std::same_as<dae::Scene *>;
+  { T::LoadScene(std::forward<Args>(args)...) } -> std::same_as<dae::Scene *>;
 };
 
 namespace dae {
-    class Scene;
-    class SceneLoader;
-    class SceneManager final : public Singleton<SceneManager> {
-      public:
-        Scene *CreateScene();
+class Scene;
+class SceneLoader;
+class SceneManager final : public Singleton<SceneManager> {
+public:
+  Scene *CreateScene();
 
-        void Update();
-        void LateUpdate();
-        void Render();
+  void Update();
+  void LateUpdate();
+  void Render();
 
-        void UnLoadScene(Scene *scene);
+  void UnLoadScene(Scene *scene);
 
-        template <typename Loader, typename... Args>
-            requires IsSceneLoader<Loader, Args...>
-        Scene *LoadScene(Args &&...args) {
-            auto scene = Loader::LoadScene(std::forward<Args>(args)...);
-            SetActiveScene(scene);
-            return scene;
-        }
+  template <typename Loader, typename... Args>
+    requires IsSceneLoader<Loader, Args...>
+  Scene *LoadScene(Args &&...args) {
+    auto scene = Loader::LoadScene(std::forward<Args>(args)...);
+    SetActiveScene(scene);
+    return scene;
+  }
 
-        void SetActiveScene(Scene *scene);
+  void SetActiveScene(Scene *scene);
+  Scene *GetActiveScene() const;
 
-      private:
-        friend class Singleton<SceneManager>;
-        SceneManager() = default;
-        std::vector<std::unique_ptr<Scene>> m_Scenes{};
-        Scene *m_CurrentScene{nullptr};
-    };
+private:
+  friend class Singleton<SceneManager>;
+  SceneManager() = default;
+  std::vector<std::unique_ptr<Scene>> m_Scenes{};
+  Scene *m_CurrentScene{nullptr};
+};
 } // namespace dae
