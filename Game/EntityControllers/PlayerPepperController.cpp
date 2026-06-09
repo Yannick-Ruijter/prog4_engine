@@ -21,3 +21,5 @@ glm::vec2 dae::PlayerPepperController::GetMovementDirection() const {
 bool dae::PlayerPepperController::AttackButtonPressed() const {
   return m_Input->WasPressedThisFrame(InputAction::Attack);
 }
+
+bool dae::PlayerPepperController::IsStunned() { return false; }

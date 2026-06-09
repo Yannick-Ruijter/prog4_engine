@@ -1,6 +1,7 @@
 #include "EntityStateAttacking.hpp"
 #include "EntityStateClimbing.hpp"
 #include "EntityStateIdle.hpp"
+#include "EntityStateStunned.hpp"
 #include "EntityStateWalking.hpp"
 #include "GameObject.hpp"
 #include "InputInfo.hpp"
@@ -33,6 +34,9 @@ std::unique_ptr<EntityState> dae::EntityStateIdle::HandleInput() {
   glm::vec2 charSize{32.f, 32.f};
   auto deltaTime{TimeManager::GetInstance().GetDeltaTime()};
   auto moveSpeed{m_Entity->GetMoveSpeed()};
+
+  if (input->IsStunned())
+    return std::make_unique<EntityStateStunned>(*m_Entity);
 
   if (input->AttackButtonPressed())
     return std::make_unique<EntityStateAttacking>(*m_Entity,

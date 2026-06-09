@@ -27,6 +27,12 @@ glm::vec2 dae::PlayerEnemyController::GetMovementDirection() const {
 
 bool dae::PlayerEnemyController::AttackButtonPressed() const { return false; }
 
+bool dae::PlayerEnemyController::IsStunned() {
+  bool stunned = m_HasBeenStunned;
+  m_HasBeenStunned = false; // reset after being polled
+  return stunned;
+}
+
 void dae::PlayerEnemyController::Notify(EventId eventId, GameObject *) {
   if (!m_Collider)
     m_Collider = m_ControlledEnemy->GetComponent<RectCollider>();
@@ -39,7 +45,7 @@ void dae::PlayerEnemyController::Notify(EventId eventId, GameObject *) {
       SceneManager::GetInstance().GetActiveScene()->Remove(*m_ControlledEnemy);
     }
     if (other->GetLayer() == LAYER_PEPPER) {
-      SceneManager::GetInstance().GetActiveScene()->Remove(*m_ControlledEnemy);
+      m_HasBeenStunned = true;
     }
   }
 }

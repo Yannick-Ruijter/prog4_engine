@@ -4,6 +4,7 @@
 #include "CustomCommands.hpp"
 #include "EntityStateAttacking.hpp"
 #include "EntityStateIdle.hpp"
+#include "EntityStateStunned.hpp"
 #include "GameObject.hpp"
 #include "InputInfo.hpp"
 #include "InputManager.hpp"
@@ -31,6 +32,9 @@ std::unique_ptr<EntityState> dae::EntityStateClimbing::HandleInput() {
   glm::vec2 charSize{32.f, 32.f};
   float deltaTime{TimeManager::GetInstance().GetDeltaTime()};
   auto worldPos{m_EntityTransform->GetWorldPosition()};
+
+  if (input->IsStunned())
+    return std::make_unique<EntityStateStunned>(*m_Entity);
 
   if (input->AttackButtonPressed())
     return std::make_unique<EntityStateAttacking>(*m_Entity, m_CurrentMoveDir);
