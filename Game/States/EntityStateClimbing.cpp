@@ -61,7 +61,9 @@ std::unique_ptr<EntityState> dae::EntityStateClimbing::HandleInput() {
 
   // check both current and grid below it
   if (!level->IsOnLadder(worldPos + m_MovementVector * deltaTime, charSize) &&
-      !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
+      !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f} +
+                             m_MovementVector * deltaTime,
+                         charSize))
     return std::make_unique<EntityStateIdle>(*m_Entity, m_CurrentMoveDir);
 
   return nullptr;

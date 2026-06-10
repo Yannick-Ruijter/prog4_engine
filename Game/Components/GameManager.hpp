@@ -10,7 +10,9 @@ namespace dae {
 class GameObject;
 class Scene;
 class LevelGrid;
+class Font;
 class LivesDisplay;
+class TextDisplay;
 enum class BurgerLayerType;
 class GameManager : public Component, public Observer {
 public:
@@ -33,9 +35,12 @@ private:
   std::vector<GameObject *> m_Burgers{};
   Scene *m_Scene{nullptr};
   uint32_t m_CharactersDead{};
+  std::shared_ptr<Font> m_TextFont;
   LevelInfo m_LevelInfo;
+  TextDisplay *m_ScoreText;
   int m_FinishedBurgerCount{};
   int m_TotalBurgers{};
+  int m_NrOfLevels{3};
   // Inherited via Observer
 };
 } // namespace dae

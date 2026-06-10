@@ -41,7 +41,8 @@ std::unique_ptr<EntityState> dae::EntityStateAttacking::HandleInput() {
   // if we're not going to be on a ladder after moving we shouldnt move
   // vertically at all
   if (!level->IsOnLadder(worldPos + m_MovementVector, charSize) &&
-      !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f}, charSize))
+      !level->IsOnLadder(worldPos + glm::vec2{0.f, 10.f} + m_MovementVector,
+                         charSize))
     m_MovementVector.y = 0.f;
 
   // if we're not going to be on a platform after moving we shouldnt move

@@ -13,7 +13,7 @@ enum class GameMode {
 enum class Character { MrPepper, MrsSalt, HotDogGuy };
 
 struct PlayerInfo {
-  int lives = 4;
+  int lives = 3;
   int nrPepper = 5;
 };
 

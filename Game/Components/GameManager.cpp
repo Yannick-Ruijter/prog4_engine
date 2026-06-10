@@ -16,15 +16,21 @@
 #include "SceneManager.hpp"
 #include "SpriteAnimation.hpp"
 #include "Subject.hpp"
+#include "TextDisplay.hpp"
 #include "Texture2DDisplay.hpp"
 #include "burgerLayer.hpp"
 #include "sdbm_hash.hpp"
+#include <Font.hpp>
+#include <ResourceManager.hpp>
 #include <algorithm>
 using namespace dae;
 
 dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo,
                               Scene *scene)
-    : Component(owner), m_Scene{scene}, m_LevelInfo{levelInfo} {}
+    : Component(owner), m_Scene{scene}, m_LevelInfo{levelInfo} {
+  m_TextFont =
+      dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 36);
+}
 
 void dae::GameManager::SetupPlayers(GameObject *level) {
 
@@ -64,9 +70,8 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
       m_LevelInfo.playerInfos[character] = {};
     // not spawning if it's dead
     // this can only trigger in multiplayer
-    if (m_LevelInfo.playerInfos.at(character).lives == 0)
+    if (m_LevelInfo.playerInfos.at(character).lives < 0)
       return;
-    m_LevelInfo.playerInfos.at(character).lives--;
     glm::ivec2 playerDimensions{32, 32};
     std::string spriteSheet{};
     if (character == Character::MrPepper)
@@ -104,24 +109,39 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
   case GameMode::Pvp: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{500.f, 5.f});
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{550.f, 5.f});
     break;
   }
   case GameMode::SinglePlayer: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(0),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{500.f, 5.f});
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{550.f, 5.f});
     break;
   }
   case GameMode::Coop: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
     std::vector<PlayerInput *> inputs1{inputManager.GetControllerInput(0)};
-    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{500.f, 5.f});
-    CreatePlayer(Character::MrsSalt, inputs1, glm::vec2{680.f, 5.f});
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{550.f, 5.f});
+    CreatePlayer(Character::MrsSalt, inputs1, glm::vec2{730.f, 5.f});
     break;
   }
   }
+
+  auto go = std::make_unique<GameObject>();
+  go->AddComponent<ObjectRenderer>();
+  size_t width = 8;
+  // clang-format off
+  auto text{
+      std::string(
+          width - std::min(width, std::to_string(m_LevelInfo.currentScore).length()), '0') +
+      std::to_string(m_LevelInfo.currentScore)};
+  // clang-format on
+  go->GetComponent<Transform>()->SetLocalPosition(200.f, 10.f);
+  go->AddComponent<TextDisplay>(text, m_TextFont);
+  m_ScoreText = go->GetComponent<TextDisplay>();
+
+  m_Scene->Add(std::move(go));
 }
 
 void dae::GameManager::RegisterPlayer(GameObject *player) {
@@ -184,7 +204,6 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
             dynamic_cast<PlayerPepperController *>(entity->GetInput())};
         // it can not be null
         assert(controller != nullptr);
-
         m_LevelInfo.playerInfos.at(entityType).nrPepper =
             controller->GetPepperCount();
         m_CharactersDead++;
@@ -195,6 +214,7 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
             if (characterInfo.second.lives > 0)
               noLivesLeft = false;
           }
+          m_LevelInfo.playerInfos.at(entityType).lives--;
 
           if (noLivesLeft) {
             // temporarily load main scene if they al have no lives left
@@ -212,11 +232,22 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
   if (eventId == "BurgerFinished"_h) {
     m_FinishedBurgerCount++;
     if (m_FinishedBurgerCount == m_TotalBurgers) {
-      // handle level completed
-      return;
+      m_LevelInfo.burgerInfos.clear();
+      m_LevelInfo.level++;
+      if (m_LevelInfo.level >= m_NrOfLevels)
+        m_LevelInfo.level = 0;
+
+      SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
     }
   }
   if (eventId == "BurgerFell"_h) {
     m_LevelInfo.currentScore += 50;
+    size_t width = 8;
+    // clang-format off
+    auto text{
+        std::string(
+            width - std::min(width, std::to_string(m_LevelInfo.currentScore).length()), '0') +
+        std::to_string(m_LevelInfo.currentScore) };
+    m_ScoreText->SetText(text);
   }
 }

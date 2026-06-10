@@ -58,8 +58,10 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
 
     go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::LevelGrid>(tileSize, "Data/Levels/Level0.csv",
-                                     charToTexture);
+    go->AddComponent<dae::LevelGrid>(
+        tileSize,
+        "Data/Levels/Level" + std::to_string(levelInfo.level) + ".csv",
+        charToTexture);
     levelGrid = go->GetComponent<LevelGrid>();
     level = go.get();
     scene->Add(std::move(go));
@@ -97,7 +99,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   auto manager = go->GetComponent<GameManager>();
   manager->SetupPlayers(level);
 
-  LoadSpriteMap(tileSize, manager->GetPlayers(), levelGrid, manager);
+  LoadSpriteMap(tileSize, levelGrid, manager, levelInfo);
   manager->AddPlayersToScene();
   scene->Add(std::move(go));
 
@@ -128,10 +130,15 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   return scene;
 }
 
-void dae::GameSceneLoader::LoadSpriteMap(
-    glm::ivec2 const &tileSize, std::vector<GameObject *> const &players,
-    LevelGrid *levelGrid, GameManager *manager) {
-  std::string const &filePath{"Data/Levels/Level0_Burgers.csv"};
+void dae::GameSceneLoader::LoadSpriteMap(glm::ivec2 const &tileSize,
+                                         LevelGrid *levelGrid,
+                                         GameManager *manager,
+                                         LevelInfo levelInfo) {
+  bool loadBurgers{levelInfo.burgerInfos.size() == 0};
+  if (!loadBurgers)
+    manager->LoadBurgers(levelGrid);
+  std::string const &filePath{"Data/Levels/Level" +
+                              std::to_string(levelInfo.level) + "_Burgers.csv"};
   std::ifstream stream{filePath};
   std::string line;
   glm::ivec2 gridCoord{};
@@ -142,6 +149,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
       {'3', BurgerLayerType::BottomPaddy},
   };
 
+  auto players = manager->GetPlayers();
   std::unordered_map<char, GameObject *> charToPlayers;
   for (uint32_t i = 0; i < players.size(); i++) {
     charToPlayers[char('a' + i)] = players[i];
@@ -161,7 +169,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
             charToPlayers.at(currentChar)->GetComponent<Transform>();
         playerTransform->SetLocalPosition(pos);
       }
-      if (layers.contains(currentChar)) {
+      if (loadBurgers && layers.contains(currentChar)) {
         glm::vec2 pos{gridCoord * tileSize};
         // to place them at exactly the right spot since they don't have the
         // same size as the tiles
