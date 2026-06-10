@@ -42,9 +42,13 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
                                         LAYER_PEPPERGUY, LAYER_ENEMY);
     go->GetComponent<dae::Transform>()->SetLocalPosition(
         glm::vec3{150, 214, 0});
+    std::string spriteSheet{};
+    if (character == Character::MrPepper)
+      spriteSheet = "Data/Characters/PepperGuy_SpriteSheet.png";
+    else
+      spriteSheet = "Data/Characters/SaltWoman_SpriteSheet.png";
     go->AddComponent<dae::SpriteAnimation>(
-        "Data/Characters/PepperGuy_AnimationData.json",
-        "Data/Characters/PepperGuy_SpriteSheet.png");
+        "Data/Characters/PepperGuy_AnimationData.json", spriteSheet);
     go->AddComponent<dae::Entity>(
         std::make_unique<dae::PlayerPepperController>(
             inputs, go.get(), m_LevelInfo.playerInfos.at(character).nrPepper),
