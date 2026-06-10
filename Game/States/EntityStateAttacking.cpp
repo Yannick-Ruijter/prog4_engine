@@ -2,6 +2,7 @@
 #include "Entity.hpp"
 #include "EntityStateAttacking.hpp"
 #include "EntityStateClimbing.hpp"
+#include "EntityStateDeath.hpp"
 #include "EntityStateIdle.hpp"
 #include "EntityStateWalking.hpp"
 #include "GameObject.hpp"
@@ -33,6 +34,10 @@ std::unique_ptr<EntityState> dae::EntityStateAttacking::HandleInput() {
   m_StopWatch += deltaTime;
   auto moveSpeed{m_Entity->GetMoveSpeed()};
   m_MovementVector = input->GetMovementDirection() * moveSpeed * deltaTime;
+
+  if (input->ShouldDie())
+    return std::make_unique<EntityStateDying>(*m_Entity);
+
   // if we're not going to be on a ladder after moving we shouldnt move
   // vertically at all
   if (!level->IsOnLadder(worldPos + m_MovementVector, charSize) &&
@@ -82,6 +87,8 @@ void dae::EntityStateAttacking::Update() {
 void dae::EntityStateAttacking::OnEnter() {
   SetAnimationState();
   CreatePepper();
+
+  m_Entity->NotifyFromState("Attacked"_h);
 }
 
 void dae::EntityStateAttacking::OnExit() {}

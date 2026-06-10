@@ -5,7 +5,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "IdleBack": {
     "startPosX": 80,
@@ -13,7 +14,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "ClimbingDown": {
     "startPosX": 0,
@@ -21,7 +23,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 2,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "ClimbingUp": {
     "startPosX": 64,
@@ -29,7 +32,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 2,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "RunningLeft": {
     "startPosX": 32,
@@ -37,7 +41,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 2,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "RunningRight": {
     "startPosX": 0,
@@ -45,7 +50,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 2,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "Dying": {
     "startPosX": 0,
@@ -53,7 +59,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 4,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "Stunned": {
     "startPosX": 64,
@@ -61,6 +68,7 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 2,
-    "FrameDuration": 16
+    "FrameDuration": 16,
+    "StartLoop": 0
   }
 }

@@ -6,9 +6,10 @@ class PlayerInput;
 class InputProvider : public Observer {
 public:
   virtual ~InputProvider() {};
-  virtual glm::vec2 GetMovementDirection() const = 0;
-  virtual bool AttackButtonPressed() const = 0;
-  virtual bool IsStunned() = 0;
+  virtual glm::vec2 GetMovementDirection() const { return glm::vec2{}; }
+  virtual bool AttackButtonPressed() const { return false; }
+  virtual bool IsStunned() { return false; }
   virtual void Notify(EventId, GameObject *) override {}
+  virtual bool ShouldDie() const { return false; }
 };
 } // namespace dae

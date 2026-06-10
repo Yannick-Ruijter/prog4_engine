@@ -17,6 +17,7 @@ struct AnimationStateInfo {
   glm::ivec2 dimensions;
   int FrameCount;
   int FrameDuration;
+  int loopStart;
 };
 
 class dae::SpriteAnimation::Impl {
@@ -84,8 +85,9 @@ void dae::SpriteAnimation::Impl::Update() {
   if (m_CurrentFrameCount >= m_CurrentState->FrameDuration) {
     m_CurrentFrameCount = 0;
     ++m_CurrentAnimationFrame;
-    if (m_CurrentAnimationFrame >= m_CurrentState->FrameCount)
-      m_CurrentAnimationFrame = 0;
+    if (m_CurrentAnimationFrame >= m_CurrentState->FrameCount) {
+      m_CurrentAnimationFrame = m_States.at(m_CurrentStateKey).loopStart;
+    }
     InitAnimationFrame();
   }
 }
@@ -118,7 +120,8 @@ void dae::SpriteAnimation::Impl::InitStateInfo() {
     m_States[key] = AnimationStateInfo{
         glm::vec2{val["startPosX"].get<float>(), val["startPosY"].get<float>()},
         glm::vec2{val["Width"].get<float>(), val["Height"].get<float>()},
-        val["FrameCount"].get<int>(), val["FrameDuration"].get<int>()};
+        val["FrameCount"].get<int>(), val["FrameDuration"].get<int>(),
+        val["StartLoop"].get<int>()};
   }
 }
 

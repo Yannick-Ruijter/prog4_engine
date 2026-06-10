@@ -1,8 +1,6 @@
 #include "CustomCommands.hpp"
 #include "Entity.hpp"
 #include "EntityStateDeath.hpp"
-#include "EntityStateIdle.hpp"
-#include "EntityStateStunned.hpp"
 #include "GameObject.hpp"
 #include "InputProvider.hpp"
 #include "LevelGrid.hpp"
@@ -15,23 +13,27 @@
 
 using namespace dae;
 
-dae::EntityStateStunned::EntityStateStunned(Entity &entity)
+dae::EntityStateDying::EntityStateDying(Entity &entity)
     : EntityState(entity),
       m_EntityTransform{entity.GetEntity()->GetComponent<dae::Transform>()} {
   OnEnter();
 }
 
-std::unique_ptr<EntityState> dae::EntityStateStunned::HandleInput() {
+std::unique_ptr<EntityState> dae::EntityStateDying::HandleInput() {
   m_StopWatch += TimeManager::GetInstance().GetDeltaTime();
-  if (m_Entity->GetInput()->ShouldDie())
-    return std::make_unique<EntityStateDying>(*m_Entity);
-  // if we've been stunned for long enough
+  // if we've been dying for long enough
   if (m_StopWatch > m_StunnedTime) {
-    return std::make_unique<EntityStateIdle>(*m_Entity, Direction::Down);
+    OnExit();
   }
   return nullptr;
 }
 
-void dae::EntityStateStunned::OnEnter() {
-  m_Entity->GetEntityAnimation()->SetAnimationState("Stunned");
+void dae::EntityStateDying::OnEnter() {
+  m_Entity->GetEntityAnimation()->SetAnimationState("Dying");
+}
+
+void dae::EntityStateDying::OnExit() {
+  auto scene = SceneManager::GetInstance().GetActiveScene();
+  m_Entity->NotifyFromState("OnEntityDeath"_h);
+  scene->Remove(*m_Entity->GetEntity());
 }

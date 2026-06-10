@@ -5,7 +5,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "IdleBack": {
     "startPosX": 112,
@@ -13,7 +14,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "ClimbingDown": {
     "startPosX": 0,
@@ -21,7 +23,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 3,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "ClimbingUp": {
     "startPosX": 96,
@@ -29,7 +32,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 3,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "RunningLeft": {
     "startPosX": 48,
@@ -37,7 +41,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 3,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "RunningRight": {
     "startPosX": 0,
@@ -45,7 +50,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 3,
-    "FrameDuration": 8
+    "FrameDuration": 8,
+    "StartLoop": 0
   },
   "AttackUp": {
     "startPosX": 32,
@@ -53,7 +59,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "AttackDown": {
     "startPosX": 0,
@@ -61,7 +68,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "AttackLeft": {
     "startPosX": 16,
@@ -69,7 +77,8 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
   },
   "AttackRight": {
     "startPosX": 48,
@@ -77,6 +86,16 @@
     "Width": 16,
     "Height": 16,
     "FrameCount": 1,
-    "FrameDuration": -1
+    "FrameDuration": -1,
+    "StartLoop": 0
+  },
+  "Dying": {
+    "startPosX": 48,
+    "startPosY": 16,
+    "Width": 16,
+    "Height": 16,
+    "FrameCount": 6,
+    "FrameDuration": 12,
+    "StartLoop": 4
   }
 }

@@ -7,21 +7,24 @@
 #include "burgerLayer.hpp"
 #include "sdbm_hash.hpp"
 
-dae::PlayerEnemyController::PlayerEnemyController(PlayerInput *input,
-                                                  GameObject *controlledEnemy)
-    : m_Input{input}, m_ControlledEnemy{controlledEnemy} {}
+dae::PlayerEnemyController::PlayerEnemyController(
+    std::vector<PlayerInput *> inputs, GameObject *controlledEnemy)
+    : m_Inputs{inputs}, m_ControlledEnemy{controlledEnemy} {}
 
 dae::PlayerEnemyController::~PlayerEnemyController() {}
+
 glm::vec2 dae::PlayerEnemyController::GetMovementDirection() const {
   glm::vec2 dir{};
-  if (m_Input->IsButtonPressed(InputAction::MoveUp))
-    dir.y -= 1.f;
-  if (m_Input->IsButtonPressed(InputAction::MoveDown))
-    dir.y += 1.f;
-  if (m_Input->IsButtonPressed(InputAction::MoveLeft))
-    dir.x -= 1.f;
-  if (m_Input->IsButtonPressed(InputAction::MoveRight))
-    dir.x += 1.f;
+  for (auto const &input : m_Inputs) {
+    if (input->IsButtonPressed(InputAction::MoveUp))
+      dir.y = 1.f;
+    if (input->IsButtonPressed(InputAction::MoveDown))
+      dir.y = 1.f;
+    if (input->IsButtonPressed(InputAction::MoveLeft))
+      dir.x = 1.f;
+    if (input->IsButtonPressed(InputAction::MoveRight))
+      dir.x = 1.f;
+  }
   return dir;
 }
 
@@ -33,6 +36,8 @@ bool dae::PlayerEnemyController::IsStunned() {
   return stunned;
 }
 
+bool dae::PlayerEnemyController::ShouldDie() const { return m_ShouldDie; }
+
 void dae::PlayerEnemyController::Notify(EventId eventId, GameObject *) {
   if (!m_Collider)
     m_Collider = m_ControlledEnemy->GetComponent<RectCollider>();
@@ -42,7 +47,7 @@ void dae::PlayerEnemyController::Notify(EventId eventId, GameObject *) {
       return;
     if (auto layer = other->GetOwner()->GetComponent<BurgerLayer>();
         layer && layer->IsFalling()) {
-      SceneManager::GetInstance().GetActiveScene()->Remove(*m_ControlledEnemy);
+      m_ShouldDie = true;
     }
     if (other->GetLayer() == LAYER_PEPPER) {
       m_HasBeenStunned = true;

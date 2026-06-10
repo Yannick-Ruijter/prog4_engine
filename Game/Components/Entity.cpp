@@ -10,13 +10,14 @@
 using namespace dae;
 
 Entity::Entity(GameObject &owner, std::unique_ptr<InputProvider> input,
-               LevelGrid *level)
-    : Component(owner),
+               LevelGrid *level, Character character)
+    : Component(owner), m_Character{character},
       m_SpriteAnimation{owner.GetComponent<SpriteAnimation>()},
       m_CurrentState{std::make_unique<EntityStateIdle>(*this)},
       m_Input{std::move(input)}, m_Level{level} {
   assert(m_SpriteAnimation != nullptr &&
          "Entity needs a SpriteAnimation (added before this component)");
+  m_AttackEvent->AddObserver(m_Input.get());
 }
 
 dae::Entity::~Entity() {}
@@ -38,4 +39,14 @@ InputProvider *dae::Entity::GetInput() const { return m_Input.get(); }
 
 LevelGrid *dae::Entity::GetLevel() const { return m_Level; }
 
+Character dae::Entity::GetCharacterType() const { return m_Character; }
 float dae::Entity::GetMoveSpeed() const { return m_MoveSpeed; }
+
+void dae::Entity::NotifyFromState(EventId event) {
+  if (event == "Attacked"_h)
+    m_AttackEvent->NotifyObservers(event, GetOwner());
+  if (event == "OnEntityDeath"_h)
+    m_DeathEvent->NotifyObservers(event, GetOwner());
+}
+
+Subject *dae::Entity::GetDeathEvent() const { return m_DeathEvent.get(); }
