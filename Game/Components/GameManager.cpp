@@ -17,6 +17,7 @@
 #include "SpriteAnimation.hpp"
 #include "Subject.hpp"
 #include "Texture2DDisplay.hpp"
+#include "burgerLayer.hpp"
 #include "sdbm_hash.hpp"
 #include <algorithm>
 using namespace dae;
@@ -127,6 +128,40 @@ void dae::GameManager::RegisterPlayer(GameObject *player) {
   m_Players.emplace_back(player);
 }
 
+void dae::GameManager::CreateBurger(glm::vec2 const &pos, BurgerLayerType type,
+                                    LevelGrid *levelGrid) {
+  auto go = std::make_unique<GameObject>();
+  go->AddComponent<dae::ObjectRenderer>();
+  go->GetComponent<dae::Transform>()->SetLocalPosition(pos);
+  go->AddComponent<dae::BurgerLayer>(type, levelGrid);
+  auto layer{go->GetComponent<BurgerLayer>()};
+  layer->BurgerFellEvent()->AddObserver(this);
+  if (layer->Type() == BurgerLayerType::TopPaddy) {
+    layer->BurgerFinishedEvent()->AddObserver(this);
+    m_TotalBurgers++;
+  }
+  auto dimensions = go->GetComponent<dae::BurgerLayer>()->GetDimensions();
+  go->AddComponent<dae::RectCollider>(Rect{pos, dimensions}, LAYER_BURGER,
+                                      LAYER_NONE);
+  m_Burgers.push_back(go.get());
+  m_Scene->Add(std::move(go));
+}
+
+void dae::GameManager::LoadBurgers(LevelGrid *levelGrid) {
+  for (auto const &burgerInfo : m_LevelInfo.burgerInfos) {
+    CreateBurger(burgerInfo.pos, burgerInfo.type, levelGrid);
+  }
+}
+
+void dae::GameManager::SaveBurgers() {
+  m_LevelInfo.burgerInfos.clear();
+  for (auto burger : m_Burgers) {
+    auto transform = burger->GetComponent<Transform>();
+    auto type = burger->GetComponent<BurgerLayer>()->Type();
+    m_LevelInfo.burgerInfos.emplace_back(transform->GetWorldPosition(), type);
+  }
+}
+
 void dae::GameManager::AddPlayersToScene() {
   for (auto &player : m_TempPlayers) {
     m_Scene->Add(std::move(player));
@@ -165,6 +200,7 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
             // temporarily load main scene if they al have no lives left
             SceneManager::GetInstance().LoadScene<MainSceneLoader>();
           } else {
+            SaveBurgers();
             SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
           }
         }
@@ -173,6 +209,14 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
     }
   }
 
-  if (eventId == "OnBurgerFinished"_h) {
+  if (eventId == "BurgerFinished"_h) {
+    m_FinishedBurgerCount++;
+    if (m_FinishedBurgerCount == m_TotalBurgers) {
+      // handle level completed
+      return;
+    }
+  }
+  if (eventId == "BurgerFell"_h) {
+    m_LevelInfo.currentScore += 50;
   }
 }

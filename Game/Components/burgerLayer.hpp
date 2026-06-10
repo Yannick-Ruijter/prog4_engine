@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.hpp"
+#include "Subject.hpp"
 namespace dae {
 class BurgerLayerPart;
 class LevelGrid;
@@ -13,6 +14,9 @@ public:
   bool CanFall();
   bool IsFalling() const;
   glm::vec2 GetDimensions() const;
+  Subject *BurgerFinishedEvent() const;
+  Subject *BurgerFellEvent() const;
+  BurgerLayerType Type() const;
   static std::vector<GameObject *> AllBurgerLayers;
 
 private:
@@ -28,5 +32,8 @@ private:
   Transform *m_NeighborBellowTransform{nullptr};
   BurgerLayer *m_NeighborBellowComponent{nullptr};
   float m_FallingSpeed{60.f};
+  std::unique_ptr<Subject> m_BurgerFellEvent{std::make_unique<Subject>()};
+  std::unique_ptr<Subject> m_BurgerFinished{std::make_unique<Subject>()};
+  BurgerLayerType m_Type{};
 };
 } // namespace dae

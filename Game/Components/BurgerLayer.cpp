@@ -9,13 +9,14 @@
 #include "Texture2DDisplay.hpp"
 #include "TimeManager.hpp"
 #include "burgerLayer.hpp"
+#include "sdbm_hash.hpp"
 using namespace dae;
 
 std::vector<GameObject *> BurgerLayer::AllBurgerLayers = {};
 BurgerLayer::BurgerLayer(GameObject &owner, BurgerLayerType layer,
                          LevelGrid *levelGrid)
     : Component(owner), m_LevelGrid{levelGrid},
-      m_Transform{owner.GetComponent<Transform>()} {
+      m_Transform{owner.GetComponent<Transform>()}, m_Type{layer} {
   AllBurgerLayers.emplace_back(GetOwner());
   CreateChildrenParts(layer);
 }
@@ -124,6 +125,16 @@ bool dae::BurgerLayer::IsFalling() const { return m_IsFalling; }
 
 glm::vec2 dae::BurgerLayer::GetDimensions() const { return m_LayerDimensions; }
 
+Subject *dae::BurgerLayer::BurgerFinishedEvent() const {
+  return m_BurgerFinished.get();
+}
+
+Subject *dae::BurgerLayer::BurgerFellEvent() const {
+  return m_BurgerFellEvent.get();
+}
+
+BurgerLayerType dae::BurgerLayer::Type() const { return m_Type; }
+
 void dae::BurgerLayer::StopFalling() {
   ServiceProvider::GetSoundSystem().Play(5, 0.5f);
   m_IsFalling = false;
@@ -131,6 +142,9 @@ void dae::BurgerLayer::StopFalling() {
     auto component = layerPart->GetComponent<BurgerLayerPart>();
     component->SetFallingState(false);
   }
+  m_BurgerFellEvent->NotifyObservers("BurgerFell"_h, GetOwner());
+  if (m_Type == BurgerLayerType::TopPaddy && !CanFall())
+    m_BurgerFinished->NotifyObservers("BurgerFinished"_h, GetOwner());
 }
 
 void dae::BurgerLayer::CalculateLayerBellow() {

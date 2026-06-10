@@ -58,7 +58,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
 
     go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::LevelGrid>(tileSize, "Data/Levels/Level2.csv",
+    go->AddComponent<dae::LevelGrid>(tileSize, "Data/Levels/Level0.csv",
                                      charToTexture);
     levelGrid = go->GetComponent<LevelGrid>();
     level = go.get();
@@ -97,7 +97,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   auto manager = go->GetComponent<GameManager>();
   manager->SetupPlayers(level);
 
-  LoadSpriteMap(scene, tileSize, manager->GetPlayers(), levelGrid);
+  LoadSpriteMap(tileSize, manager->GetPlayers(), levelGrid, manager);
   manager->AddPlayersToScene();
   scene->Add(std::move(go));
 
@@ -129,9 +129,9 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 }
 
 void dae::GameSceneLoader::LoadSpriteMap(
-    Scene *scene, glm::ivec2 const &tileSize,
-    std::vector<GameObject *> const &players, LevelGrid *levelGrid) {
-  std::string const &filePath{"Data/Levels/Level2_Burgers.csv"};
+    glm::ivec2 const &tileSize, std::vector<GameObject *> const &players,
+    LevelGrid *levelGrid, GameManager *manager) {
+  std::string const &filePath{"Data/Levels/Level0_Burgers.csv"};
   std::ifstream stream{filePath};
   std::string line;
   glm::ivec2 gridCoord{};
@@ -167,14 +167,7 @@ void dae::GameSceneLoader::LoadSpriteMap(
         // same size as the tiles
         pos.x += tileSize.x / 3.5f;
         pos.y += tileSize.y / 1.9f;
-        auto go = std::make_unique<GameObject>();
-        go->AddComponent<dae::ObjectRenderer>();
-        go->GetComponent<dae::Transform>()->SetLocalPosition(pos);
-        go->AddComponent<dae::BurgerLayer>(layers.at(currentChar), levelGrid);
-        auto dimensions = go->GetComponent<dae::BurgerLayer>()->GetDimensions();
-        go->AddComponent<dae::RectCollider>(Rect{pos, dimensions}, LAYER_BURGER,
-                                            LAYER_NONE);
-        scene->Add(std::move(go));
+        manager->CreateBurger(pos, layers.at(currentChar), levelGrid);
       }
       gridCoord.x++;
     }

@@ -7,13 +7,14 @@ namespace dae {
 class Scene;
 class GameObject;
 class LevelGrid;
+class GameManager;
 class GameSceneLoader {
 public:
   static Scene *LoadScene(LevelInfo levelInfo = {});
 
 private:
-  static void LoadSpriteMap(Scene *scene, glm::ivec2 const &tileSize,
+  static void LoadSpriteMap(glm::ivec2 const &tileSize,
                             std::vector<GameObject *> const &players,
-                            LevelGrid *levelGrid);
+                            LevelGrid *levelGrid, GameManager *manager);
 };
 } // namespace dae
