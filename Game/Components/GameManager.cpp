@@ -30,7 +30,7 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
       m_LevelInfo.playerInfos[character] = {};
     // not spawning if it's dead
     // this can only trigger in multiplayer
-    if (m_LevelInfo.playerInfos.at(character).lives == 0)
+    if (m_LevelInfo.playerInfos.at(character).lives < 0)
       return;
 
     glm::ivec2 playerDimensions{32, 32};
@@ -118,7 +118,7 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
         if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
           bool noLivesLeft{true};
           for (auto const &characterInfo : m_LevelInfo.playerInfos) {
-            if (characterInfo.second.lives > 0)
+            if (characterInfo.second.lives >= 0)
               noLivesLeft = false;
           }
 
