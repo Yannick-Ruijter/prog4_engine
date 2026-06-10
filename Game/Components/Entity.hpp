@@ -25,6 +25,7 @@ public:
   float GetMoveSpeed() const;
   void NotifyFromState(EventId event);
   Subject *GetDeathEvent() const;
+  Subject *GetAttackEvent() const;
 
 private:
   Character m_Character;

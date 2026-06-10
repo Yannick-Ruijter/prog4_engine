@@ -30,13 +30,12 @@ using namespace dae;
 
 Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   auto scene = dae::SceneManager::GetInstance().CreateScene();
-  // dae::SceneManager::GetInstance().SetActiveScene(scene);
-  // auto &inputManager = dae::InputManager::GetInstance();
   auto go = std::make_unique<dae::GameObject>();
-  auto fontMain =
-      dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-  /*auto fontSmall =
-      dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);*/
+  // auto fontMain =
+  //     dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 36);
+
+  auto fontSmall =
+      dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 24);
 
   dae::GameObject *level{};
   glm::ivec2 const tileSize{64, 64};
@@ -67,7 +66,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 
     go = std::make_unique<dae::GameObject>();
     go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::TextDisplay>("60.0", fontMain,
+    go->AddComponent<dae::TextDisplay>("60.0", fontSmall,
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::FpsDisplay>();
     scene->Add(std::move(go));
@@ -105,7 +104,8 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   {
     go = std::make_unique<GameObject>();
     go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
+    go->AddComponent<dae::Texture2DDisplay>(
+        "Data/Characters/HotDogGuy_SpriteSheet.png", 32, 32);
     go->AddComponent<dae::RectCollider>(
         Rect{glm::vec2{}, glm::vec2{32.f, 32.f}}, LAYER_ENEMY,
         LAYER_BURGER | LAYER_PEPPER);

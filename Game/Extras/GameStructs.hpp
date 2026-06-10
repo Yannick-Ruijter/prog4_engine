@@ -11,7 +11,7 @@ enum class GameMode {
 enum class Character { MrPepper, MrsSalt, HotDogGuy };
 
 struct PlayerInfo {
-  int lives = 3;
+  int lives = 4;
   int nrPepper = 5;
 };
 // by default has the values for loading the game for the first time

@@ -50,3 +50,4 @@ void dae::Entity::NotifyFromState(EventId event) {
 }
 
 Subject *dae::Entity::GetDeathEvent() const { return m_DeathEvent.get(); }
+Subject *dae::Entity::GetAttackEvent() const { return m_AttackEvent.get(); }

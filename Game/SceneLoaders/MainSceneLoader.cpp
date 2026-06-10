@@ -17,9 +17,9 @@ Scene *dae::MainSceneLoader::LoadScene() {
   auto &inputManager = dae::InputManager::GetInstance();
   auto go = std::make_unique<dae::GameObject>();
   auto fontMain =
-      dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-  // auto fontSmall = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf",
-  // 18);
+      dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 36);
+  auto fontSmall =
+      dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 24);
 
   // background stuff
   {
@@ -28,12 +28,12 @@ Scene *dae::MainSceneLoader::LoadScene() {
     go->AddComponent<dae::ObjectRenderer>();
     go->GetComponent<dae::Transform>()->SetLocalPosition(292, 0);
     go->AddComponent<dae::TextDisplay>("Burger Time", fontMain,
-                                       SDL_Color{255, 0, 0, 255});
+                                       SDL_Color{100, 130, 200, 255});
     scene->Add(std::move(go));
 
     go = std::make_unique<dae::GameObject>();
     go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::TextDisplay>("60.0", fontMain,
+    go->AddComponent<dae::TextDisplay>("60.0", fontSmall,
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::FpsDisplay>();
     scene->Add(std::move(go));

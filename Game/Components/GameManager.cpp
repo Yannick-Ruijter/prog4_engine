@@ -8,6 +8,7 @@
 #include "LivesDisplay.hpp"
 #include "MainSceneLoader.hpp"
 #include "ObjectRenderer.hpp"
+#include "PepperDisplay.hpp"
 #include "PlayerInput.hpp"
 #include "PlayerPepperController.hpp"
 #include "RectCollider.hpp"
@@ -27,20 +28,31 @@ dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo,
 void dae::GameManager::SetupPlayers(GameObject *level) {
 
   auto CreatePlayerInfoDisplays = [&](GameObject *character, glm::vec2 pos) {
-    std::string imagePath{};
+    std::string characterString{};
     auto entityComp{character->GetComponent<Entity>()};
     auto characterType{entityComp->GetCharacterType()};
-    if (characterType == Character::MrPepper)
-      imagePath = "Data/Characters/PepperGuy_Head.png";
-    else
-      imagePath = "Data/Characters/SaltWoman_Head.png";
+    if (characterType == Character::MrPepper) {
+      characterString = "PepperGuy";
+    } else {
+      characterString = "SaltWoman";
+    }
 
     auto go = std::make_unique<GameObject>();
     go->GetComponent<Transform>()->SetLocalPosition(pos);
     go->AddComponent<LivesDisplay>(
-        imagePath, m_LevelInfo.playerInfos.at(characterType).lives);
+        "Data/Characters/" + characterString + "_Head.png",
+        m_LevelInfo.playerInfos.at(characterType).lives);
     auto livesDisplay{go->GetComponent<LivesDisplay>()};
     entityComp->GetDeathEvent()->AddObserver(livesDisplay);
+    m_Scene->Add(std::move(go));
+
+    go = std::make_unique<GameObject>();
+    go->GetComponent<Transform>()->SetLocalPosition(pos + glm::vec2{80.f, 0.f});
+    go->AddComponent<PepperDisplay>(
+        "Data/Characters/" + characterString + "_Pepper.png",
+        m_LevelInfo.playerInfos.at(characterType).nrPepper);
+    auto pepperDisplay{go->GetComponent<PepperDisplay>()};
+    entityComp->GetAttackEvent()->AddObserver(pepperDisplay);
     m_Scene->Add(std::move(go));
   };
 
@@ -55,19 +67,19 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
       return;
     m_LevelInfo.playerInfos.at(character).lives--;
     glm::ivec2 playerDimensions{32, 32};
-    auto go = std::make_unique<GameObject>();
-    go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::Texture2DDisplay>(
-        "Data/pepperguy.png", playerDimensions.x, playerDimensions.y);
-    go->AddComponent<dae::RectCollider>(Rect{glm::vec2{}, playerDimensions},
-                                        LAYER_PEPPERGUY, LAYER_ENEMY);
-    go->GetComponent<dae::Transform>()->SetLocalPosition(
-        glm::vec3{150, 214, 0});
     std::string spriteSheet{};
     if (character == Character::MrPepper)
       spriteSheet = "Data/Characters/PepperGuy_SpriteSheet.png";
     else
       spriteSheet = "Data/Characters/SaltWoman_SpriteSheet.png";
+    auto go = std::make_unique<GameObject>();
+    go->AddComponent<dae::ObjectRenderer>();
+    go->AddComponent<dae::Texture2DDisplay>(spriteSheet, playerDimensions.x,
+                                            playerDimensions.y);
+    go->AddComponent<dae::RectCollider>(Rect{glm::vec2{}, playerDimensions},
+                                        LAYER_PEPPERGUY, LAYER_ENEMY);
+    go->GetComponent<dae::Transform>()->SetLocalPosition(
+        glm::vec3{150, 214, 0});
 
     go->AddComponent<dae::SpriteAnimation>(
         "Data/Characters/PepperGuy_AnimationData.json", spriteSheet);
@@ -91,20 +103,20 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
   case GameMode::Pvp: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{600.f, 5.f});
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{500.f, 5.f});
     break;
   }
   case GameMode::SinglePlayer: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(0),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{600.f, 5.f});
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{500.f, 5.f});
     break;
   }
   case GameMode::Coop: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
     std::vector<PlayerInput *> inputs1{inputManager.GetControllerInput(0)};
-    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{600.f, 5.f});
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{500.f, 5.f});
     CreatePlayer(Character::MrsSalt, inputs1, glm::vec2{680.f, 5.f});
     break;
   }
