@@ -21,6 +21,8 @@ dae::EntityStateStunned::EntityStateStunned(Entity &entity)
   OnEnter();
 }
 
+dae::EntityStateStunned::~EntityStateStunned() { OnExit(); }
+
 std::unique_ptr<EntityState> dae::EntityStateStunned::HandleInput() {
   m_StopWatch += TimeManager::GetInstance().GetDeltaTime();
   if (m_Entity->GetInput()->ShouldDie())
@@ -34,4 +36,8 @@ std::unique_ptr<EntityState> dae::EntityStateStunned::HandleInput() {
 
 void dae::EntityStateStunned::OnEnter() {
   m_Entity->GetEntityAnimation()->SetAnimationState("Stunned");
+  m_Collider = m_Entity->GetEntity()->GetComponent<RectCollider>();
+  m_Collider->SetActiveState(false);
 }
+
+void dae::EntityStateStunned::OnExit() { m_Collider->SetActiveState(true); }

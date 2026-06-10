@@ -30,6 +30,8 @@ std::unique_ptr<EntityState> dae::EntityStateDying::HandleInput() {
 
 void dae::EntityStateDying::OnEnter() {
   m_Entity->GetEntityAnimation()->SetAnimationState("Dying");
+  m_Collider = m_Entity->GetEntity()->GetComponent<RectCollider>();
+  m_Collider->SetActiveState(false);
 }
 
 void dae::EntityStateDying::OnExit() {

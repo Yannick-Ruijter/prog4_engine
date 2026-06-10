@@ -93,6 +93,7 @@ bool dae::LevelGrid::IsOnLadder(glm::vec2 const &topleft, glm::vec2 size) {
 }
 
 bool dae::LevelGrid::IsOnBurgerBowl(glm::vec2 const &topleft, glm::vec2 size) {
+  // check tile for bottomleft and bottomright to be in burgerbowl
   char bottomRightTile{GetTile(topleft + size)};
   if (!(bottomRightTile >= '9' && bottomRightTile <= 'c'))
     return false;
@@ -104,9 +105,10 @@ bool dae::LevelGrid::IsOnBurgerBowl(glm::vec2 const &topleft, glm::vec2 size) {
 }
 
 float dae::LevelGrid::RoundToPlatformHeight(float yPos) {
-  float vertTile = std::floor(yPos / m_GridSize.y);
   float platformOffset = 55.f;
-  return vertTile * m_GridSize.y + platformOffset;
+  float relative = yPos - platformOffset;
+  float nearestRow = std::round(relative / m_GridSize.y);
+  return nearestRow * m_GridSize.y + platformOffset;
 }
 
 int dae::LevelGrid::GetGridSize() const { return m_GridSize.x; }

@@ -24,20 +24,22 @@ void dae::RectCollider::Update() {
 }
 
 void dae::RectCollider::Render() const {
-  SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0,
-                         255);
+  Uint8 gValue{static_cast<Uint8>(m_IsActive ? 0 : 255)};
+  SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, gValue,
+                         0, 255);
   SDL_RenderRect(Renderer::GetInstance().GetSDLRenderer(),
                  std::bit_cast<SDL_FRect *>(&m_Rect));
 }
 
 void dae::RectCollider::LateUpdate() {
-  if (m_LayerMask == LAYER_NONE)
+  if (m_LayerMask == LAYER_NONE || !m_IsActive)
     return;
   for (auto collider : m_Colliders) {
     // if it's either this collider or not part of our mask
 
     if (collider == this ||
-        (collider->GetLayer() & m_LayerMask) != collider->GetLayer())
+        (collider->GetLayer() & m_LayerMask) != collider->GetLayer() ||
+        !collider->IsActive())
       continue;
 
     auto otherRect = collider->GetRect();
@@ -61,3 +63,7 @@ RectCollider *dae::RectCollider::GetLastCollision() const {
 int32_t dae::RectCollider::GetLayer() const { return m_Layer; }
 
 Subject *dae::RectCollider::GetSubject() const { return m_Subject.get(); }
+
+bool dae::RectCollider::IsActive() const { return m_IsActive; }
+
+void dae::RectCollider::SetActiveState(bool isActive) { m_IsActive = isActive; }

@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 namespace dae {
 class Transform;
+class RectCollider;
 enum class Direction;
 class EntityStateDying : public EntityState {
 public:
@@ -14,6 +15,7 @@ public:
 
 private:
   Transform *m_EntityTransform;
+  RectCollider *m_Collider{nullptr};
   float m_StopWatch{0.f};
   float m_StunnedTime{5.f};
 };

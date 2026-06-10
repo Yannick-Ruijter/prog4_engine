@@ -60,7 +60,7 @@
     "Height": 16,
     "FrameCount": 4,
     "FrameDuration": 8,
-    "StartLoop": 0
+    "StartLoop": 3
   },
   "Stunned": {
     "startPosX": 64,

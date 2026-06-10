@@ -28,6 +28,8 @@ public:
   RectCollider *GetLastCollision() const;
   int32_t GetLayer() const;
   Subject *GetSubject() const;
+  bool IsActive() const;
+  void SetActiveState(bool isActive);
 
 private:
   Rect m_Rect{};
@@ -36,5 +38,6 @@ private:
   int32_t m_Layer;
   int32_t m_LayerMask;
   std::unique_ptr<Subject> m_Subject;
+  bool m_IsActive{true};
 };
 } // namespace dae

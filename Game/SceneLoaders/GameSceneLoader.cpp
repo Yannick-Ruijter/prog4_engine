@@ -78,29 +78,6 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::FpsDisplay>();
     scene->Add(std::move(go));
-
-    go = std::make_unique<GameObject>();
-    go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
-    go->AddComponent<dae::RectCollider>(
-        Rect{glm::vec2{}, glm::vec2{32.f, 32.f}}, LAYER_ENEMY,
-        LAYER_BURGERPART | LAYER_PEPPER);
-    go->GetComponent<dae::Transform>()->SetLocalPosition(
-        glm::vec3{150, 214, 0});
-    go->AddComponent<dae::SpriteAnimation>(
-        "Data/Characters/HotDogGuy_AnimationData.json",
-        "Data/Characters/HotDogGuy_SpriteSheet.png");
-    go->AddComponent<dae::Entity>(
-        std::make_unique<dae::PlayerEnemyController>(
-            std::vector<PlayerInput *>{
-                InputManager::GetInstance().GetControllerInput(0)},
-            go.get()),
-        level->GetComponent<dae::LevelGrid>(), Character::HotDogGuy);
-    auto controller = go->GetComponent<dae::Entity>()->GetInput();
-    go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
-        controller);
-
-    scene->Add(std::move(go));
   }
 
   {
@@ -131,6 +108,30 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   LoadSpriteMap(scene, tileSize, manager->GetPlayers(), levelGrid);
   manager->AddPlayersToScene(scene);
   scene->Add(std::move(go));
+
+  {
+    go = std::make_unique<GameObject>();
+    go->AddComponent<dae::ObjectRenderer>();
+    go->AddComponent<dae::Texture2DDisplay>("Data/pepperguy.png", 32, 32);
+    go->AddComponent<dae::RectCollider>(
+        Rect{glm::vec2{}, glm::vec2{32.f, 32.f}}, LAYER_ENEMY,
+        LAYER_BURGER | LAYER_PEPPER);
+    go->GetComponent<dae::Transform>()->SetLocalPosition(
+        glm::vec3{150, 214, 0});
+    go->AddComponent<dae::SpriteAnimation>(
+        "Data/Characters/HotDogGuy_AnimationData.json",
+        "Data/Characters/HotDogGuy_SpriteSheet.png");
+    go->AddComponent<dae::Entity>(
+        std::make_unique<dae::PlayerEnemyController>(
+            std::vector<PlayerInput *>{
+                InputManager::GetInstance().GetControllerInput(0)},
+            go.get()),
+        level->GetComponent<dae::LevelGrid>(), Character::HotDogGuy);
+    auto controller = go->GetComponent<dae::Entity>()->GetInput();
+    go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
+        controller);
+    scene->Add(std::move(go));
+  }
   return scene;
 }
 
