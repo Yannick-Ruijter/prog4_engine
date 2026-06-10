@@ -58,7 +58,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     charToTexture['c'] = "Data/Tiles/Burger_Bowl_Right.png";
 
     go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::LevelGrid>(tileSize, "Data/Levels/Level0.csv",
+    go->AddComponent<dae::LevelGrid>(tileSize, "Data/Levels/Level1.csv",
                                      charToTexture);
     levelGrid = go->GetComponent<LevelGrid>();
     level = go.get();
@@ -131,7 +131,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
 void dae::GameSceneLoader::LoadSpriteMap(
     Scene *scene, glm::ivec2 const &tileSize,
     std::vector<GameObject *> const &players, LevelGrid *levelGrid) {
-  std::string const &filePath{"Data/Levels/Level0_Burgers.csv"};
+  std::string const &filePath{"Data/Levels/Level1_Burgers.csv"};
   std::ifstream stream{filePath};
   std::string line;
   glm::ivec2 gridCoord{};
