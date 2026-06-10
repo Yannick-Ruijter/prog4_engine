@@ -35,8 +35,8 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   auto go = std::make_unique<dae::GameObject>();
   auto fontMain =
       dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-  auto fontSmall =
-      dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
+  /*auto fontSmall =
+      dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);*/
 
   dae::GameObject *level{};
   glm::ivec2 const tileSize{64, 64};
@@ -63,13 +63,6 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
                                      charToTexture);
     levelGrid = go->GetComponent<LevelGrid>();
     level = go.get();
-    scene->Add(std::move(go));
-
-    go = std::make_unique<dae::GameObject>();
-    go->AddComponent<dae::ObjectRenderer>();
-    go->GetComponent<dae::Transform>()->SetLocalPosition(292, 0);
-    go->AddComponent<dae::TextDisplay>("Programming 4 Assignment", fontMain,
-                                       SDL_Color{255, 0, 0, 255});
     scene->Add(std::move(go));
 
     go = std::make_unique<dae::GameObject>();
@@ -101,12 +94,12 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   }
 
   go = std::make_unique<GameObject>();
-  go->AddComponent<GameManager>(levelInfo);
+  go->AddComponent<GameManager>(levelInfo, scene);
   auto manager = go->GetComponent<GameManager>();
   manager->SetupPlayers(level);
 
   LoadSpriteMap(scene, tileSize, manager->GetPlayers(), levelGrid);
-  manager->AddPlayersToScene(scene);
+  manager->AddPlayersToScene();
   scene->Add(std::move(go));
 
   {

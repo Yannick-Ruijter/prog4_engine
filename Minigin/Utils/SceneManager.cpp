@@ -3,7 +3,9 @@
 
 void dae::SceneManager::Update() {
   if (m_FutureScene) {
+    auto current = m_CurrentScene;
     SetActiveScene(m_FutureScene);
+    UnLoadScene(current);
     m_FutureScene = nullptr;
   }
   m_CurrentScene->Update();

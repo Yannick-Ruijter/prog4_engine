@@ -20,7 +20,7 @@ class RectCollider : public Component {
 public:
   RectCollider(GameObject &owner, Rect rect, int32_t layer,
                int32_t layerMask = 0b11111111'11111111'11111111'11111111);
-  virtual ~RectCollider() override;
+  virtual ~RectCollider();
   const Rect &GetRect() const;
   void Update() override;
   void Render() const override;
@@ -30,11 +30,11 @@ public:
   Subject *GetSubject() const;
   bool IsActive() const;
   void SetActiveState(bool isActive);
+  static std::vector<RectCollider *> m_Colliders;
 
 private:
   Rect m_Rect{};
   RectCollider *m_LastCollision{nullptr};
-  static std::vector<RectCollider *> m_Colliders;
   int32_t m_Layer;
   int32_t m_LayerMask;
   std::unique_ptr<Subject> m_Subject;

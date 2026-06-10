@@ -9,13 +9,14 @@
 namespace dae {
 class GameObject;
 class Scene;
+class LivesDisplay;
 class GameManager : public Component, public Observer {
 public:
-  GameManager(GameObject &owner, LevelInfo const &levelInfo);
+  GameManager(GameObject &owner, LevelInfo const &levelInfo, Scene *scene);
 
   void SetupPlayers(GameObject *level);
   void RegisterPlayer(GameObject *player);
-  void AddPlayersToScene(Scene *scene);
+  void AddPlayersToScene();
   int GetScore() const;
   std::vector<GameObject *> const &GetPlayers() const;
   void Notify(EventId eventId, GameObject *source) override;
@@ -23,6 +24,7 @@ public:
 private:
   std::vector<std::unique_ptr<GameObject>> m_TempPlayers{};
   std::vector<GameObject *> m_Players{};
+  Scene *m_Scene{nullptr};
   uint32_t m_CharactersDead{};
   LevelInfo m_LevelInfo;
 

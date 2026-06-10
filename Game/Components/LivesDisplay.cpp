@@ -1,21 +1,41 @@
 #include "GameObject.hpp"
-#include "Health.hpp"
 #include "LivesDisplay.hpp"
+#include "ObjectRenderer.hpp"
+#include "ResourceManager.hpp"
 #include "TextDisplay.hpp"
+#include "Texture2DDisplay.hpp"
 #include "sdbm_hash.hpp"
+#include <memory>
 
-dae::LivesDisplay::LivesDisplay(GameObject &gameObject, Health &targetHealth)
-    : Component(gameObject), m_TargetHealth{&targetHealth} {
-    // force event to update the text
-    Notify("PlayerDeath"_h, &gameObject);
+dae::LivesDisplay::LivesDisplay(GameObject &gameObject,
+                                std::string const &imagePath, int lives)
+    : Component(gameObject), m_Lives{lives} {
+  auto fontMain =
+      dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+  auto lifeText = std::make_unique<GameObject>();
+  lifeText->AddComponent<ObjectRenderer>();
+  lifeText->AddComponent<TextDisplay>(std::to_string(lives), fontMain);
+  // parent owns it now
+  lifeText->SetParent(GetOwner(), false);
+  lifeText->GetComponent<Transform>()->SetLocalPosition(glm::vec2{40.f, 0.f});
+  m_LifeText = lifeText.release();
+
+  auto lifeImage = std::make_unique<GameObject>();
+  lifeImage->AddComponent<ObjectRenderer>();
+  lifeImage->AddComponent<Texture2DDisplay>(imagePath, 35, 40);
+  // parent owns it now
+  lifeImage->SetParent(GetOwner(), false);
+  m_LifeImage = lifeImage.release();
 }
 
-void dae::LivesDisplay::Notify(EventId eventId, GameObject *) {
-    if (m_TextComponent == nullptr)
-        m_TextComponent = GetOwner()->GetComponent<dae::TextDisplay>();
-    assert(m_TextComponent != nullptr);
-    if (eventId == "PlayerDeath"_h) {
-        int currentHealth = m_TargetHealth->GetNumberOfLives();
-        m_TextComponent->SetText("# Lives: " + std::to_string(currentHealth));
-    }
+void dae::LivesDisplay::DecrementLives() {
+  --m_Lives;
+  auto text = m_LifeText->GetComponent<TextDisplay>();
+  text->SetText(std::to_string(m_Lives));
+}
+
+void dae::LivesDisplay::Notify(EventId event, GameObject *) {
+  if (event == "OnEntityDeath"_h) {
+    DecrementLives();
+  }
 }

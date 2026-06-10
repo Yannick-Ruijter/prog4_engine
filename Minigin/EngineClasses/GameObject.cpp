@@ -71,9 +71,11 @@ bool dae::GameObject::IsChild(GameObject *object) const {
 }
 
 void dae::GameObject::RemoveChild(GameObject *object) {
-  m_Children.erase(
-      std::find_if(begin(m_Children), end(m_Children),
-                   [object](const auto &ptr) { return ptr.get() == object; }));
+  auto it =
+      std::find_if(m_Children.begin(), m_Children.end(),
+                   [object](const auto &ptr) { return ptr.get() == object; });
+  it->release();
+  m_Children.erase(it);
 }
 
 void dae::GameObject::AddChild(GameObject *object) {

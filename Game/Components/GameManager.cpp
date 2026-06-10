@@ -5,6 +5,7 @@
 #include "GameSceneLoader.hpp"
 #include "InputManager.hpp"
 #include "LevelGrid.hpp"
+#include "LivesDisplay.hpp"
 #include "MainSceneLoader.hpp"
 #include "ObjectRenderer.hpp"
 #include "PlayerInput.hpp"
@@ -19,20 +20,40 @@
 #include <algorithm>
 using namespace dae;
 
-dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo)
-    : Component(owner), m_LevelInfo{levelInfo} {}
+dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo,
+                              Scene *scene)
+    : Component(owner), m_Scene{scene}, m_LevelInfo{levelInfo} {}
 
 void dae::GameManager::SetupPlayers(GameObject *level) {
+
+  auto CreatePlayerInfoDisplays = [&](GameObject *character, glm::vec2 pos) {
+    std::string imagePath{};
+    auto entityComp{character->GetComponent<Entity>()};
+    auto characterType{entityComp->GetCharacterType()};
+    if (characterType == Character::MrPepper)
+      imagePath = "Data/Characters/PepperGuy_Head.png";
+    else
+      imagePath = "Data/Characters/SaltWoman_Head.png";
+
+    auto go = std::make_unique<GameObject>();
+    go->GetComponent<Transform>()->SetLocalPosition(pos);
+    go->AddComponent<LivesDisplay>(
+        imagePath, m_LevelInfo.playerInfos.at(characterType).lives);
+    auto livesDisplay{go->GetComponent<LivesDisplay>()};
+    entityComp->GetDeathEvent()->AddObserver(livesDisplay);
+    m_Scene->Add(std::move(go));
+  };
+
   auto CreatePlayer = [&](Character character,
                           std::vector<PlayerInput *> const &inputs,
-                          GameManager *manager) {
+                          glm::vec2 infoPos) {
     if (!m_LevelInfo.playerInfos.contains(character))
       m_LevelInfo.playerInfos[character] = {};
     // not spawning if it's dead
     // this can only trigger in multiplayer
-    if (m_LevelInfo.playerInfos.at(character).lives < 0)
+    if (m_LevelInfo.playerInfos.at(character).lives == 0)
       return;
-
+    m_LevelInfo.playerInfos.at(character).lives--;
     glm::ivec2 playerDimensions{32, 32};
     auto go = std::make_unique<GameObject>();
     go->AddComponent<dae::ObjectRenderer>();
@@ -47,6 +68,7 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
       spriteSheet = "Data/Characters/PepperGuy_SpriteSheet.png";
     else
       spriteSheet = "Data/Characters/SaltWoman_SpriteSheet.png";
+
     go->AddComponent<dae::SpriteAnimation>(
         "Data/Characters/PepperGuy_AnimationData.json", spriteSheet);
     go->AddComponent<dae::Entity>(
@@ -56,7 +78,9 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
     auto controller = go->GetComponent<dae::Entity>()->GetInput();
     go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
         controller);
-    go->GetComponent<Entity>()->GetDeathEvent()->AddObserver(manager);
+    go->GetComponent<Entity>()->GetDeathEvent()->AddObserver(this);
+
+    CreatePlayerInfoDisplays(go.get(), infoPos);
     m_Players.push_back(go.get());
     m_TempPlayers.push_back(std::move(go));
   };
@@ -67,21 +91,21 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
   case GameMode::Pvp: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0, this);
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{600.f, 5.f});
     break;
   }
   case GameMode::SinglePlayer: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(0),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0, this);
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{600.f, 5.f});
     break;
   }
   case GameMode::Coop: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
     std::vector<PlayerInput *> inputs1{inputManager.GetControllerInput(0)};
-    CreatePlayer(Character::MrPepper, inputs0, this);
-    CreatePlayer(Character::MrsSalt, inputs1, this);
+    CreatePlayer(Character::MrPepper, inputs0, glm::vec2{600.f, 5.f});
+    CreatePlayer(Character::MrsSalt, inputs1, glm::vec2{680.f, 5.f});
     break;
   }
   }
@@ -91,9 +115,9 @@ void dae::GameManager::RegisterPlayer(GameObject *player) {
   m_Players.emplace_back(player);
 }
 
-void dae::GameManager::AddPlayersToScene(Scene *scene) {
+void dae::GameManager::AddPlayersToScene() {
   for (auto &player : m_TempPlayers) {
-    scene->Add(std::move(player));
+    m_Scene->Add(std::move(player));
   }
   m_TempPlayers.clear();
 }
@@ -109,7 +133,6 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
     if (auto entity = source->GetComponent<Entity>(); entity) {
       if (auto entityType = entity->GetCharacterType();
           m_LevelInfo.playerInfos.contains(entityType)) {
-        m_LevelInfo.playerInfos.at(entityType).lives--;
         auto controller{
             dynamic_cast<PlayerPepperController *>(entity->GetInput())};
         // it can not be null
@@ -122,7 +145,7 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
         if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
           bool noLivesLeft{true};
           for (auto const &characterInfo : m_LevelInfo.playerInfos) {
-            if (characterInfo.second.lives >= 0)
+            if (characterInfo.second.lives > 0)
               noLivesLeft = false;
           }
 
