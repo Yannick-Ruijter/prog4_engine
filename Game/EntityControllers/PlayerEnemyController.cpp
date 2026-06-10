@@ -16,14 +16,14 @@ dae::PlayerEnemyController::~PlayerEnemyController() {}
 glm::vec2 dae::PlayerEnemyController::GetMovementDirection() const {
   glm::vec2 dir{};
   for (auto const &input : m_Inputs) {
-    if (input->IsButtonPressed(InputAction::MoveUp))
-      dir.y = 1.f;
-    if (input->IsButtonPressed(InputAction::MoveDown))
-      dir.y = 1.f;
-    if (input->IsButtonPressed(InputAction::MoveLeft))
-      dir.x = 1.f;
-    if (input->IsButtonPressed(InputAction::MoveRight))
-      dir.x = 1.f;
+    if (input->IsButtonPressed(InputAction::MoveUp) && dir.y != -1.f)
+      dir.y -= 1.f;
+    if (input->IsButtonPressed(InputAction::MoveDown) && dir.y != 1.f)
+      dir.y += 1.f;
+    if (input->IsButtonPressed(InputAction::MoveLeft) && dir.x != -1.f)
+      dir.x -= 1.f;
+    if (input->IsButtonPressed(InputAction::MoveRight) && dir.x != 1.f)
+      dir.x += 1.f;
   }
   return dir;
 }

@@ -28,9 +28,8 @@ public:
   template <typename Loader, typename... Args>
     requires IsSceneLoader<Loader, Args...>
   Scene *LoadScene(Args &&...args) {
-    auto scene = Loader::LoadScene(std::forward<Args>(args)...);
-    SetActiveScene(scene);
-    return scene;
+    m_FutureScene = Loader::LoadScene(std::forward<Args>(args)...);
+    return m_FutureScene;
   }
 
   void SetActiveScene(Scene *scene);
@@ -40,6 +39,7 @@ private:
   friend class Singleton<SceneManager>;
   SceneManager() = default;
   std::vector<std::unique_ptr<Scene>> m_Scenes{};
+  Scene *m_FutureScene{nullptr};
   Scene *m_CurrentScene{nullptr};
 };
 } // namespace dae

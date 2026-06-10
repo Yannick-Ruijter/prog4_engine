@@ -24,7 +24,8 @@ dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo)
 
 void dae::GameManager::SetupPlayers(GameObject *level) {
   auto CreatePlayer = [&](Character character,
-                          std::vector<PlayerInput *> const &inputs) {
+                          std::vector<PlayerInput *> const &inputs,
+                          GameManager *manager) {
     if (!m_LevelInfo.playerInfos.contains(character))
       m_LevelInfo.playerInfos[character] = {};
     // not spawning if it's dead
@@ -51,7 +52,7 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
     auto controller = go->GetComponent<dae::Entity>()->GetInput();
     go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
         controller);
-    go->GetComponent<Entity>()->GetDeathEvent()->AddObserver(this);
+    go->GetComponent<Entity>()->GetDeathEvent()->AddObserver(manager);
     m_Players.push_back(go.get());
     m_TempPlayers.push_back(std::move(go));
   };
@@ -59,19 +60,24 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
   auto &inputManager = InputManager::GetInstance();
 
   switch (m_LevelInfo.gameMode) {
-  case GameMode::Pvp:
+  case GameMode::Pvp: {
+    std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
+                                       inputManager.GetKeyboardInput()};
+    CreatePlayer(Character::MrPepper, inputs0, this);
+    break;
+  }
   case GameMode::SinglePlayer: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(0),
                                        inputManager.GetKeyboardInput()};
-    CreatePlayer(Character::MrPepper, inputs0);
+    CreatePlayer(Character::MrPepper, inputs0, this);
     break;
   }
   case GameMode::Coop: {
     std::vector<PlayerInput *> inputs0{inputManager.GetControllerInput(1),
                                        inputManager.GetKeyboardInput()};
     std::vector<PlayerInput *> inputs1{inputManager.GetControllerInput(0)};
-    CreatePlayer(Character::MrPepper, inputs0);
-    CreatePlayer(Character::MrsSalt, inputs1);
+    CreatePlayer(Character::MrPepper, inputs0, this);
+    CreatePlayer(Character::MrsSalt, inputs1, this);
     break;
   }
   }

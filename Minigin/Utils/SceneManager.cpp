@@ -1,7 +1,13 @@
 #include "Scene.hpp"
 #include "SceneManager.hpp"
 
-void dae::SceneManager::Update() { m_CurrentScene->Update(); }
+void dae::SceneManager::Update() {
+  if (m_FutureScene) {
+    SetActiveScene(m_FutureScene);
+    m_FutureScene = nullptr;
+  }
+  m_CurrentScene->Update();
+}
 
 void dae::SceneManager::LateUpdate() { m_CurrentScene->LateUpdate(); }
 

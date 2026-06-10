@@ -15,6 +15,6 @@ public:
 private:
   Transform *m_EntityTransform;
   float m_StopWatch{0.f};
-  float m_StunnedTime{2.f};
+  float m_StunnedTime{5.f};
 };
 } // namespace dae
