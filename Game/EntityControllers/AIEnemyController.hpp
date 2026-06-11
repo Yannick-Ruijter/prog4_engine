@@ -9,6 +9,7 @@ class RectCollider;
 class GameObject;
 class Transform;
 class GameManager;
+class Subject;
 class AIEnemyController : public InputProvider {
 public:
   AIEnemyController(GameObject *controlledEnemy, GameManager *manager);
@@ -20,6 +21,7 @@ public:
   void Notify(EventId eventId, GameObject *source) override;
 
 private:
+  std::vector<Subject *> m_EventsToUnBind{};
   GameObject *m_ControlledEnemy{nullptr};
   Transform *m_Transform{nullptr};
   GameObject *m_TargetPlayer{nullptr};

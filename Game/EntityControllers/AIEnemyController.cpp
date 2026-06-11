@@ -10,6 +10,7 @@
 #include <GameObject.hpp>
 #include <LevelGrid.hpp>
 #include <ServiceProvider.hpp>
+#include <Subject.hpp>
 #include <TimeManager.hpp>
 #include <Transform.hpp>
 #include <random>
@@ -28,7 +29,13 @@ dae::AIEnemyController::AIEnemyController(GameObject *controlledEnemy,
   m_MovementVec = glm::vec2{1.f, 1.f};
 }
 
-dae::AIEnemyController::~AIEnemyController() {}
+dae::AIEnemyController::~AIEnemyController() {
+  if (m_TargetPlayer) {
+    auto entity{m_TargetPlayer->GetComponent<Entity>()};
+    if (entity)
+      entity->GetDeathEvent()->RemoveObserver(this);
+  }
+}
 
 glm::vec2 dae::AIEnemyController::GetMovementDirection() {
   // if we have no target, we can just stay still
