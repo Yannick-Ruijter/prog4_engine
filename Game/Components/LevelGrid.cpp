@@ -120,3 +120,9 @@ char dae::LevelGrid::GetTile(glm::vec2 const &pos) {
     return m_Grid[row][column];
   return ' ';
 }
+
+bool dae::LevelGrid::IsPlatform(char tile) {
+  return tile >= '0' && tile <= '5';
+}
+
+bool dae::LevelGrid::IsLadder(char tile) { return tile >= '3' && tile <= '8'; }

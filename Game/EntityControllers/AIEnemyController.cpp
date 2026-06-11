@@ -35,8 +35,8 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
   if (m_TargetPlayer == nullptr)
     return glm::vec2{};
 
-  auto deltaTime{TimeManager::GetInstance().GetDeltaTime()};
-  float displacement{deltaTime * m_Speed};
+  // auto deltaTime{TimeManager::GetInstance().GetDeltaTime()};
+  float displacement{4.f};
   glm::vec2 charSize{32.f, 32.f};
   auto worldPos{m_Transform->GetWorldPosition()};
 
@@ -52,6 +52,11 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
       level->IsOnPlatform(worldPos + glm::vec2{-displacement, 0}, charSize);
   bool canGoRight =
       level->IsOnPlatform(worldPos + glm::vec2{displacement, 0}, charSize);
+
+
+  auto tileSize = level->GetGridSize();
+  bool platformLeft = level->IsPlatform(level->GetTile(worldPos + glm::vec2{-tileSize, 0}));
+  bool platformRight = level->IsPlatform(level->GetTile(worldPos + glm::vec2{ tileSize, 0 }));
   // clang-format on
   bool atCrossRoads{(canGoUp || canGoDown) && (canGoLeft || canGoRight)};
   if (atCrossRoads || m_FirstLoop) {
@@ -72,9 +77,10 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
       m_MovementVec = glm::vec2{0, -1.f};
     else if (temp.y > 0 && canGoDown && m_MovementVec.y >= 0.f)
       m_MovementVec = glm::vec2{0, 1.f};
-    else if (temp.x < 0 && canGoLeft && m_MovementVec.x <= 0.f)
+    else if (temp.x < 0 && canGoLeft && m_MovementVec.x <= 0.f && platformLeft)
       m_MovementVec = glm::vec2{-1.f, 0};
-    else if (temp.x > 0 && canGoRight && m_MovementVec.x >= 0.f)
+    else if (temp.x > 0 && canGoRight && m_MovementVec.x >= 0.f &&
+             platformRight)
       m_MovementVec = glm::vec2{1.f, 0};
     else {
       std::uniform_int_distribution<int> dist(0, 3);
@@ -88,9 +94,9 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
           m_MovementVec = glm::vec2{0, -1.f};
         else if (canGoDown && !isMovingVertically)
           m_MovementVec = glm::vec2{0, 1.f};
-        else if (canGoLeft && !isMovingHorizontally)
+        else if (canGoLeft && !isMovingHorizontally && platformLeft)
           m_MovementVec = glm::vec2{-1.f, 0.f};
-        else if (canGoRight && !isMovingHorizontally)
+        else if (canGoRight && !isMovingHorizontally && platformRight)
           m_MovementVec = glm::vec2{1.f, 0.f};
       }
       return m_MovementVec;
