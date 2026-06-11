@@ -22,8 +22,9 @@ dae::AIEnemyController::AIEnemyController(GameObject *controlledEnemy,
   entity->GetDeathEvent()->AddObserver(this);
   m_Speed = entity->GetMoveSpeed();
   m_TargetTransform = m_TargetPlayer->GetComponent<Transform>();
-  // force random direciotn
-  m_MovementVec = glm::vec2{1.f, 0};
+  // force 2 directions so the first time something gets the input, it checks
+  // for both axis
+  m_MovementVec = glm::vec2{1.f, 1.f};
 }
 
 dae::AIEnemyController::~AIEnemyController() {}
@@ -40,8 +41,9 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
 
   // check possible direction to go to
   // clang-format off
+  //we can go up when we're either on a ladder or slightly above one (to reach the platform since it's not perfectly aligned with each cell)
   bool canGoUp =
-      m_Level->IsOnLadder(worldPos + glm::vec2{0, -displacement}, charSize);
+      m_Level->IsOnLadder(worldPos + glm::vec2{0, -displacement}, charSize) || m_Level->IsOnLadder(worldPos + glm::vec2{ 0, -displacement + 10.f }, charSize);
   bool canGoDown =
       m_Level->IsOnLadder(worldPos + glm::vec2{0, displacement + 10.f}, charSize);
   bool canGoLeft =
@@ -57,7 +59,7 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
     m_WasOnCrossRoads = true;
     auto targetPos{m_TargetTransform->GetWorldPosition()};
     auto diff{targetPos - worldPos};
-    // switch axis
+    // switch axis so i give priority to changing direction
     glm::vec2 temp{m_MovementVec.y * m_MovementVec.y,
                    m_MovementVec.x * m_MovementVec.x};
     temp = temp * diff;
@@ -76,7 +78,7 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
     m_WasOnCrossRoads = false;
     // if we have reached a vertical dead end, we turn around (because we're not
     // at a crossroads
-    if ((!canGoUp && m_MovementVec.y < 0.f) ||
+    if ((!(canGoUp) && m_MovementVec.y < 0.f) ||
         (!canGoDown && m_MovementVec.y > 0.f))
       m_MovementVec.y = -m_MovementVec.y;
     // if we have reached a horizontal dead end, we turn around (because we're
