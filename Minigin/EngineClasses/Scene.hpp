@@ -37,6 +37,7 @@ private:
 
   std::vector<std::unique_ptr<GameObject>> m_objects{};
   std::vector<const GameObject *> m_ToBeDeletedObjects{};
+  std::vector<std::unique_ptr<GameObject>> m_ToBeAddedObjects{};
   std::vector<std::function<void()>> m_EnterFunctions;
   std::vector<std::function<void()>> m_ExitFunctions;
 };

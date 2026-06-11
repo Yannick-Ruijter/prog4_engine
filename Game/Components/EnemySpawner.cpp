@@ -39,6 +39,8 @@ void dae::EnemySpawner::Notify(EventId event, GameObject *source) {
     if (auto entity = source->GetComponent<Entity>(); entity) {
       if (entity->GetCharacterType() == Character::EggGuy)
         --m_EggCount;
+      if (dynamic_cast<PlayerEnemyController *>(entity->GetInput()))
+        --m_PlayerEnemyCount;
     }
   }
 }
@@ -49,12 +51,13 @@ void dae::EnemySpawner::SpawnEnemy(glm::vec2 const &pos, Character character,
 
   std::unique_ptr<InputProvider> input;
   {
-    if (playerControlled)
+    if (playerControlled) {
       input = std::make_unique<PlayerEnemyController>(
           std::vector<PlayerInput *>{
               InputManager::GetInstance().GetControllerInput(0)},
           go.get());
-    else
+      m_PlayerEnemyCount++;
+    } else
       input = std::make_unique<AIEnemyController>(go.get(), m_Manager);
   }
   float moveSpeed{};

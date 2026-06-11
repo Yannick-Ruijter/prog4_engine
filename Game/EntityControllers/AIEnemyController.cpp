@@ -59,6 +59,9 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
   auto tileSize = level->GetGridSize();
   bool platformLeft = level->IsPlatform(level->GetTile(worldPos + glm::vec2{-tileSize, 0}));
   bool platformRight = level->IsPlatform(level->GetTile(worldPos + glm::vec2{ tileSize, 0 }));
+  //bool ladderAbove = level->IsLadder(level->GetTile(worldPos + glm::vec2{ 0, -tileSize }));
+  bool ladderBellow = level->IsLadder(level->GetTile(worldPos + glm::vec2{ 0, tileSize }));
+
   // clang-format on
   bool atCrossRoads{(canGoUp || canGoDown) && (canGoLeft || canGoRight)};
   if (atCrossRoads || m_FirstLoop) {
@@ -72,37 +75,50 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
     glm::vec2 temp{m_MovementVec.y * m_MovementVec.y,
                    m_MovementVec.x * m_MovementVec.x};
     temp = temp * diff;
-    // check for each direction if we can walk/climb  there and if we're not
-    // going the opposite direction
 
-    if (temp.y < 0 && canGoUp && m_MovementVec.y <= 0.f)
-      m_MovementVec = glm::vec2{0, -1.f};
-    else if (temp.y > 0 && canGoDown && m_MovementVec.y >= 0.f)
-      m_MovementVec = glm::vec2{0, 1.f};
-    else if (temp.x < 0 && canGoLeft && m_MovementVec.x <= 0.f && platformLeft)
-      m_MovementVec = glm::vec2{-1.f, 0};
-    else if (temp.x > 0 && canGoRight && m_MovementVec.x >= 0.f &&
-             platformRight)
-      m_MovementVec = glm::vec2{1.f, 0};
-    else {
-      std::uniform_int_distribution<int> dist(0, 3);
-      // 25% chance to change direction randomly
-      auto result = dist(ServiceProvider::GetRandomProvider().GetRng());
-      if (result == 0) {
-        // is moving vertically
-        bool isMovingVertically{m_MovementVec.y != 0.f};
-        bool isMovingHorizontally{m_MovementVec.x != 0.f};
-        if (canGoUp && !isMovingVertically)
+    // 25% chance to go to take a 90 degree turn which might not be optimal
+    std::uniform_int_distribution<int> dist(0, 3);
+    auto result = dist(ServiceProvider::GetRandomProvider().GetRng());
+    bool doRandom{result == 0};
+    if (doRandom) {
+      bool isMovingVertically{m_MovementVec.y != 0.f};
+      bool isMovingHorizontally{m_MovementVec.x != 0.f};
+      if (canGoUp && !isMovingVertically)
+        m_MovementVec = glm::vec2{0, -1.f};
+      else if (canGoDown && !isMovingVertically)
+        m_MovementVec = glm::vec2{0, 1.f};
+      else if (canGoLeft && !isMovingHorizontally && platformLeft)
+        m_MovementVec = glm::vec2{-1.f, 0.f};
+      else if (canGoRight && !isMovingHorizontally && platformRight)
+        m_MovementVec = glm::vec2{1.f, 0.f};
+    } else {
+      // check for each direction if we can walk/climb  there and if we're not
+      // going the opposite direction
+      if (temp.y < 0 && canGoUp && m_MovementVec.y <= 0.f)
+        m_MovementVec = glm::vec2{0, -1.f};
+      else if (temp.y > 0 && canGoDown && m_MovementVec.y >= 0.f &&
+               ladderBellow)
+        m_MovementVec = glm::vec2{0, 1.f};
+      else if (temp.x < 0 && canGoLeft && m_MovementVec.x <= 0.f &&
+               platformLeft)
+        m_MovementVec = glm::vec2{-1.f, 0};
+      else if (temp.x > 0 && canGoRight && m_MovementVec.x >= 0.f &&
+               platformRight)
+        m_MovementVec = glm::vec2{1.f, 0};
+      // if non of these bring the enemy closer to the player we'll take the
+      // first suboptimal path
+      else {
+        if (canGoUp && m_MovementVec.y <= 0.f)
           m_MovementVec = glm::vec2{0, -1.f};
-        else if (canGoDown && !isMovingVertically)
+        else if (canGoDown && m_MovementVec.y >= 0.f)
           m_MovementVec = glm::vec2{0, 1.f};
-        else if (canGoLeft && !isMovingHorizontally && platformLeft)
-          m_MovementVec = glm::vec2{-1.f, 0.f};
-        else if (canGoRight && !isMovingHorizontally && platformRight)
-          m_MovementVec = glm::vec2{1.f, 0.f};
+        else if (canGoLeft && m_MovementVec.x <= 0.f && platformLeft)
+          m_MovementVec = glm::vec2{-1.f, 0};
+        else if (canGoRight && m_MovementVec.x >= 0.f && platformRight)
+          m_MovementVec = glm::vec2{1.f, 0};
       }
-      return m_MovementVec;
     }
+
   } else {
     m_WasOnCrossRoads = false;
     // if we have reached a vertical dead end, we turn around (because we're not

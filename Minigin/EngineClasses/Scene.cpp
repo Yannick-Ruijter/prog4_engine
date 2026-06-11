@@ -10,7 +10,7 @@ bool Scene::DebugOutputEnabled = false;
 
 void Scene::Add(std::unique_ptr<GameObject> object) {
   assert(object != nullptr && "Cannot add a null GameObject to the scene.");
-  m_objects.emplace_back(std::move(object));
+  m_ToBeAddedObjects.emplace_back(std::move(object));
   if (DebugOutputEnabled)
     std::cout << "Added object number " << m_objects.size()
               << " to the scene\n";
@@ -45,6 +45,11 @@ void Scene::LateUpdate() {
                     m_objects.end());
   }
   m_ToBeDeletedObjects.clear();
+
+  for (auto &object : m_ToBeAddedObjects) {
+    m_objects.push_back(std::move(object));
+  }
+  m_ToBeAddedObjects.clear();
 }
 
 void Scene::Render() const {
