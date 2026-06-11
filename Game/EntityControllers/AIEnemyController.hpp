@@ -2,16 +2,19 @@
 
 #include "InputProvider.hpp"
 #include "Observer.hpp"
+#include <glm/glm.hpp>
 #include <vector>
 namespace dae {
-class PlayerInput;
 class RectCollider;
 class GameObject;
-class PlayerEnemyController : public InputProvider {
+class LevelGrid;
+class Transform;
+class GameManager;
+class AIEnemyController : public InputProvider {
 public:
-  PlayerEnemyController(std::vector<PlayerInput *> inputs,
-                        GameObject *controlledEnemy);
-  virtual ~PlayerEnemyController() override;
+  AIEnemyController(GameObject *controlledEnemy, LevelGrid *level,
+                    GameManager *manager);
+  virtual ~AIEnemyController() override;
   virtual glm::vec2 GetMovementDirection() override;
   virtual bool AttackButtonPressed() const override;
   virtual bool IsStunned() override;
@@ -19,10 +22,18 @@ public:
   void Notify(EventId eventId, GameObject *source) override;
 
 private:
-  std::vector<PlayerInput *> m_Inputs{nullptr};
   GameObject *m_ControlledEnemy{nullptr};
+  Transform *m_Transform{nullptr};
+  GameObject *m_TargetPlayer{nullptr};
+  Transform *m_TargetTransform{nullptr};
+  LevelGrid *m_Level{nullptr};
+  GameManager *m_Manager{nullptr};
   RectCollider *m_Collider{nullptr};
+  glm::vec2 m_MovementVec{};
+  float m_Speed{};
   bool m_HasBeenStunned{false};
   bool m_ShouldDie{false};
+  bool m_WasOnCrossRoads{false};
+  bool m_FirstLoop{true};
 };
 } // namespace dae

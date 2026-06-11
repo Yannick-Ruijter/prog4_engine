@@ -11,7 +11,7 @@ public:
   PlayerPepperController(std::vector<PlayerInput *> inputs,
                          GameObject *controlledCharacter, int pepperCount);
   virtual ~PlayerPepperController() override;
-  virtual glm::vec2 GetMovementDirection() const override;
+  virtual glm::vec2 GetMovementDirection() override;
   virtual bool AttackButtonPressed() const override;
   virtual bool IsStunned() override;
   virtual bool ShouldDie() const override;

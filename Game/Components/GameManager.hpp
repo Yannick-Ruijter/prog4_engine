@@ -26,6 +26,7 @@ public:
   void SaveBurgers();
   void AddPlayersToScene();
   int GetScore() const;
+  GameObject *GetRandomPlayer() const;
   std::vector<GameObject *> const &GetPlayers() const;
   void Notify(EventId eventId, GameObject *source) override;
 
@@ -37,7 +38,7 @@ private:
   uint32_t m_CharactersDead{};
   std::shared_ptr<Font> m_TextFont;
   LevelInfo m_LevelInfo;
-  TextDisplay *m_ScoreText;
+  TextDisplay *m_ScoreText{nullptr};
   int m_FinishedBurgerCount{};
   int m_TotalBurgers{};
   int m_NrOfLevels{3};

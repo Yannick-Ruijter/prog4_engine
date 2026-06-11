@@ -22,6 +22,7 @@
 #include "Subject.hpp"
 #include "TextDisplay.hpp"
 #include "burgerLayer.hpp"
+#include <AIEnemyController.hpp>
 
 #include <fstream>
 #include <sstream>
@@ -117,10 +118,7 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         "Data/Characters/HotDogGuy_AnimationData.json",
         "Data/Characters/HotDogGuy_SpriteSheet.png");
     go->AddComponent<dae::Entity>(
-        std::make_unique<dae::PlayerEnemyController>(
-            std::vector<PlayerInput *>{
-                InputManager::GetInstance().GetControllerInput(0)},
-            go.get()),
+        std::make_unique<dae::AIEnemyController>(go.get(), levelGrid, manager),
         level->GetComponent<dae::LevelGrid>(), Character::HotDogGuy);
     auto controller = go->GetComponent<dae::Entity>()->GetInput();
     go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(

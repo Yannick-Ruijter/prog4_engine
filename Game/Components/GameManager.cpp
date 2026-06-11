@@ -20,9 +20,11 @@
 #include "Texture2DDisplay.hpp"
 #include "burgerLayer.hpp"
 #include "sdbm_hash.hpp"
+#include <AIEnemyController.hpp>
 #include <Font.hpp>
 #include <ResourceManager.hpp>
 #include <algorithm>
+#include <random>
 using namespace dae;
 
 dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo,
@@ -191,6 +193,15 @@ void dae::GameManager::AddPlayersToScene() {
 
 int dae::GameManager::GetScore() const { return m_LevelInfo.currentScore; }
 
+// get a random player from the list (created for ai controller enemies
+GameObject *dae::GameManager::GetRandomPlayer() const {
+  if (m_Players.size() == 0)
+    return nullptr;
+  std::mt19937 rng(std::random_device{}());
+  return m_Players[std::uniform_int_distribution<size_t>(0, m_Players.size() -
+                                                                1)(rng)];
+}
+
 std::vector<GameObject *> const &dae::GameManager::GetPlayers() const {
   return m_Players;
 }
@@ -224,10 +235,11 @@ void dae::GameManager::HandleEntityDeath(GameObject *object) {
       assert(controller != nullptr);
       m_LevelInfo.playerInfos.at(entityType).nrPepper =
           controller->GetPepperCount();
+      std::erase(m_Players, object);
       m_CharactersDead++;
-      // check if all players died
+      // check if all players died this stage
       if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
-        // check if all players are dead
+        // check if any of the players still has a life left
         m_PlayersDead = true;
         for (auto const &characterInfo : m_LevelInfo.playerInfos) {
           if (characterInfo.second.lives > 0)

@@ -13,7 +13,7 @@ dae::PlayerEnemyController::PlayerEnemyController(
 
 dae::PlayerEnemyController::~PlayerEnemyController() {}
 
-glm::vec2 dae::PlayerEnemyController::GetMovementDirection() const {
+glm::vec2 dae::PlayerEnemyController::GetMovementDirection() {
   glm::vec2 dir{};
   for (auto const &input : m_Inputs) {
     if (input->IsButtonPressed(InputAction::MoveUp) && dir.y != -1.f)
