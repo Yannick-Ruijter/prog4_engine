@@ -20,9 +20,9 @@ dae::AIEnemyController::AIEnemyController(GameObject *controlledEnemy,
     : m_ControlledEnemy{controlledEnemy}, m_Manager{manager} {
   m_Transform = controlledEnemy->GetComponent<Transform>();
   m_TargetPlayer = m_Manager->GetRandomPlayer();
-  auto entity{m_TargetPlayer->GetComponent<Entity>()};
-  entity->GetDeathEvent()->AddObserver(this);
-  m_Speed = entity->GetMoveSpeed();
+  auto otherEntity{m_TargetPlayer->GetComponent<Entity>()};
+  otherEntity->GetDeathEvent()->AddObserver(this);
+  m_Speed = otherEntity->GetMoveSpeed();
   m_TargetTransform = m_TargetPlayer->GetComponent<Transform>();
   // force 2 directions so the first time something gets the input, it checks
   // for both axis
@@ -95,7 +95,7 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
   const glm::vec2 diff = m_TargetTransform->GetWorldPosition() - worldPos;
 
   // give it a chance to change direction randomly
-  std::uniform_int_distribution<int> dist(0, 3);
+  std::uniform_int_distribution<int> dist(0, 5);
   const bool doRandom =
       dist(ServiceProvider::GetRandomProvider().GetRng()) == 1;
 

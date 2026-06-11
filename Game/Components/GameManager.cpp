@@ -197,6 +197,8 @@ void dae::GameManager::AddPlayersToScene() {
 
 int dae::GameManager::GetScore() const { return m_LevelInfo.currentScore; }
 
+bool dae::GameManager::GameOver() const { return m_ShouldRestart; }
+
 LevelGrid *dae::GameManager::GetLevel() const { return m_Level; }
 
 LevelInfo const &dae::GameManager::GetLevelInfo() const { return m_LevelInfo; }

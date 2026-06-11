@@ -20,12 +20,23 @@ dae::EnemySpawner::EnemySpawner(GameObject &owner, GameManager *manager,
                                 std::vector<glm::vec2> const &spawnPositions,
                                 Scene *scene)
     : Component(owner), m_SpawnPositions{spawnPositions}, m_Manager{manager},
-      m_Scene{scene}, m_SpawnSpeed{spawnFrequency} {}
+      m_Scene{scene}, m_SpawnSpeed{spawnFrequency} {
+  // spawn 2 starting enemies
+  auto pos = GetNextSpawnPos();
+  auto type = GetNextCharacterType();
+  auto playerControlled = ShouldBePlayerControlled();
+  SpawnEnemy(pos, type, playerControlled);
+
+  pos = GetNextSpawnPos();
+  type = GetNextCharacterType();
+  playerControlled = ShouldBePlayerControlled();
+  SpawnEnemy(pos, type, playerControlled);
+}
 
 void dae::EnemySpawner::Update() {
   m_SpawnTimer += TimeManager::GetInstance().GetDeltaTime();
 
-  if (m_SpawnTimer >= m_SpawnSpeed) {
+  if (!m_Manager->GameOver() && m_SpawnTimer >= m_SpawnSpeed) {
     auto pos = GetNextSpawnPos();
     auto type = GetNextCharacterType();
     auto playerControlled = ShouldBePlayerControlled();

@@ -18,6 +18,7 @@ Entity::Entity(GameObject &owner, std::unique_ptr<InputProvider> input,
   assert(m_SpriteAnimation != nullptr &&
          "Entity needs a SpriteAnimation (added before this component)");
   m_AttackEvent->AddObserver(m_Input.get());
+  m_DeathEvent->AddObserver(m_Input.get());
 }
 
 dae::Entity::~Entity() {}

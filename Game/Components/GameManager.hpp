@@ -26,6 +26,7 @@ public:
   void SaveBurgers();
   void AddPlayersToScene();
   int GetScore() const;
+  bool GameOver() const;
   LevelGrid *GetLevel() const;
   LevelInfo const &GetLevelInfo() const;
   GameObject *GetRandomPlayer() const;
