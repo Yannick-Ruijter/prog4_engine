@@ -64,6 +64,7 @@ void dae::GameManager::SetupPlayers() {
         m_LevelInfo.playerInfos.at(characterType).nrPepper);
     auto pepperDisplay{go->GetComponent<PepperDisplay>()};
     entityComp->GetAttackEvent()->AddObserver(pepperDisplay);
+    entityComp->GetAttackEvent()->AddObserver(this);
     m_Scene->Add(std::move(go));
   };
 
@@ -221,6 +222,15 @@ void dae::GameManager::Notify(EventId eventId, GameObject *source) {
     HandleScoreChange();
     // clang-format on
     HandleEntityDeath(source);
+  }
+
+  if (eventId == "Attacked"_h) {
+    if (auto entity = source->GetComponent<Entity>(); entity) {
+      auto type{entity->GetCharacterType()};
+      if (m_LevelInfo.playerInfos.contains(type)) {
+        m_LevelInfo.playerInfos.at(type).nrPepper--;
+      }
+    }
   }
 
   if (eventId == "BurgerFinished"_h) {
