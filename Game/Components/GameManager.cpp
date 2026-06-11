@@ -22,6 +22,7 @@
 #include "sdbm_hash.hpp"
 #include <AIEnemyController.hpp>
 #include <Font.hpp>
+#include <GameOverSceneLoader.hpp>
 #include <LoadSceneLoader.hpp>
 #include <ResourceManager.hpp>
 #include <ServiceProvider.hpp>
@@ -306,7 +307,7 @@ void dae::GameManager::TryLoadingNextScene()
     if (m_NrOfFallingBurgers == 0 && m_ShouldRestart) {
         if (m_PlayersDead) {
             // temporarily load main scene if they al have no lives left
-            SceneManager::GetInstance().LoadScene<MainSceneLoader>();
+            SceneManager::GetInstance().LoadScene<GameOverSceneLoader>(m_LevelInfo);
         }
         else {
             SaveBurgers();

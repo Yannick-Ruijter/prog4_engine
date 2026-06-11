@@ -10,6 +10,7 @@
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
 #include "TextDisplay.hpp"
+#include <GameOverSceneLoader.hpp>
 
 using namespace dae;
 // add a component that unloads all the bindings when scene destroyed
@@ -24,7 +25,6 @@ Scene *dae::MainSceneLoader::LoadScene() {
 
   // background stuff
   {
-
     go = std::make_unique<dae::GameObject>();
     go->AddComponent<dae::ObjectRenderer>();
     go->GetComponent<dae::Transform>()->SetLocalPosition(292, 0);
@@ -100,9 +100,11 @@ Scene *dae::MainSceneLoader::LoadScene() {
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::Button>(
         [&]() {
-          SDL_Event quit_event;
-          quit_event.type = SDL_EVENT_QUIT;
-          SDL_PushEvent(&quit_event);
+          dae::SceneManager::GetInstance().LoadScene<dae::GameOverSceneLoader>(
+              LevelInfo{.gameMode = GameMode::Pvp, .currentScore = 300});
+          // SDL_Event quit_event;
+          // quit_event.type = SDL_EVENT_QUIT;
+          // SDL_PushEvent(&quit_event);
         },
         focusedColor, idleColor);
     quitButton = go->GetComponent<dae::Button>();
