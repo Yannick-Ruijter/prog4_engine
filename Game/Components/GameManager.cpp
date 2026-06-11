@@ -213,6 +213,13 @@ std::vector<GameObject *> const &dae::GameManager::GetPlayers() const {
 
 void dae::GameManager::Notify(EventId eventId, GameObject *source) {
   if (eventId == "OnEntityDeath"_h) {
+    auto entityType{source->GetComponent<Entity>()->GetCharacterType()};
+    // clang-format off
+    if(entityType == Character::HotDogGuy) m_LevelInfo.currentScore += 100;
+    if(entityType == Character::PickleGuy) m_LevelInfo.currentScore += 200;
+    if(entityType == Character::EggGuy) m_LevelInfo.currentScore += 300;
+    HandleScoreChange();
+    // clang-format on
     HandleEntityDeath(source);
   }
 

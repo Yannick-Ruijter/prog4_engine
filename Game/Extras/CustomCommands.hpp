@@ -87,4 +87,14 @@ class ToggleSoundCommand : public Command {
 public:
   virtual void Execute() override;
 };
+
+class GameManager;
+class AdvanceSceneCommand : public Command {
+public:
+  AdvanceSceneCommand(GameManager *manager);
+  virtual void Execute() override;
+
+private:
+  GameManager *m_Manager;
+};
 } // namespace dae

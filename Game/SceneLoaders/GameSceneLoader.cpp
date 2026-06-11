@@ -76,8 +76,26 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
     scene->Add(std::move(go));
   }
 
+  go = std::make_unique<GameObject>();
+  go->AddComponent<GameManager>(levelInfo, scene, levelGrid);
+  auto manager = go->GetComponent<GameManager>();
+  manager->SetupPlayers();
+  std::vector<glm::vec2> spawnPoints{};
+  LoadSpriteMap(tileSize, manager, levelInfo, spawnPoints);
+  manager->AddPlayersToScene();
+  scene->Add(std::move(go));
+
+  go = std::make_unique<GameObject>();
+  go->AddComponent<EnemySpawner>(manager, 10.f, spawnPoints, scene);
+
+  scene->Add(std::move(go));
   {
     std::vector<Binding *> bindings{};
+
+    auto keyBoardInput{InputManager::GetInstance().GetKeyboardInput()};
+    bindings.push_back(keyBoardInput->AddBinding(
+        std::make_unique<AdvanceSceneCommand>(manager), InputKeybinds::F1,
+        InputState::JustPressed));
 
     scene->AddExitFunction([bindings]() {
       auto &inputManager{InputManager::GetInstance()};
@@ -94,42 +112,6 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
           controllerInput->UnBind(binding);
       }
     });
-  }
-
-  go = std::make_unique<GameObject>();
-  go->AddComponent<GameManager>(levelInfo, scene, levelGrid);
-  auto manager = go->GetComponent<GameManager>();
-  manager->SetupPlayers();
-  std::vector<glm::vec2> spawnPoints{};
-  LoadSpriteMap(tileSize, manager, levelInfo, spawnPoints);
-  manager->AddPlayersToScene();
-  scene->Add(std::move(go));
-
-  go = std::make_unique<GameObject>();
-  go->AddComponent<EnemySpawner>(manager, 10.f, spawnPoints, scene);
-
-  scene->Add(std::move(go));
-
-  {
-    // go = std::make_unique<GameObject>();
-    // go->AddComponent<dae::ObjectRenderer>();
-    // go->AddComponent<dae::Texture2DDisplay>(
-    //     "Data/Characters/HotDogGuy_SpriteSheet.png", 32, 32);
-    // go->AddComponent<dae::RectCollider>(
-    //     Rect{glm::vec2{}, glm::vec2{32.f, 32.f}}, LAYER_ENEMY,
-    //     LAYER_BURGER | LAYER_PEPPER);
-    // go->GetComponent<dae::Transform>()->SetLocalPosition(
-    //     glm::vec3{150, 214, 0});
-    // go->AddComponent<dae::SpriteAnimation>(
-    //     "Data/Characters/Enemy_AnimationData.json",
-    //     "Data/Characters/HotDogGuy_SpriteSheet.png");
-    // go->AddComponent<dae::Entity>(
-    //     std::make_unique<dae::AIEnemyController>(go.get(), manager),
-    //     levelGrid, Character::HotDogGuy);
-    // auto controller = go->GetComponent<dae::Entity>()->GetInput();
-    // go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
-    //     controller);
-    // scene->Add(std::move(go));
   }
   return scene;
 }
