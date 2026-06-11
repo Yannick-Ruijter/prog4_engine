@@ -197,57 +197,83 @@ std::vector<GameObject *> const &dae::GameManager::GetPlayers() const {
 
 void dae::GameManager::Notify(EventId eventId, GameObject *source) {
   if (eventId == "OnEntityDeath"_h) {
-    if (auto entity = source->GetComponent<Entity>(); entity) {
-      if (auto entityType = entity->GetCharacterType();
-          m_LevelInfo.playerInfos.contains(entityType)) {
-        auto controller{
-            dynamic_cast<PlayerPepperController *>(entity->GetInput())};
-        // it can not be null
-        assert(controller != nullptr);
-        m_LevelInfo.playerInfos.at(entityType).nrPepper =
-            controller->GetPepperCount();
-        m_CharactersDead++;
-        // check if all players died
-        if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
-          bool noLivesLeft{true};
-          for (auto const &characterInfo : m_LevelInfo.playerInfos) {
-            if (characterInfo.second.lives > 0)
-              noLivesLeft = false;
-          }
-          m_LevelInfo.playerInfos.at(entityType).lives--;
-
-          if (noLivesLeft) {
-            // temporarily load main scene if they al have no lives left
-            SceneManager::GetInstance().LoadScene<MainSceneLoader>();
-          } else {
-            SaveBurgers();
-            SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
-          }
-        }
-        return;
-      }
-    }
+    HandleEntityDeath(source);
   }
 
   if (eventId == "BurgerFinished"_h) {
-    m_FinishedBurgerCount++;
-    if (m_FinishedBurgerCount == m_TotalBurgers) {
-      m_LevelInfo.burgerInfos.clear();
-      m_LevelInfo.level++;
-      if (m_LevelInfo.level >= m_NrOfLevels)
-        m_LevelInfo.level = 0;
-
-      SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
-    }
+    HandleBurgerFinished();
+  }
+  if (eventId == "StartedFalling"_h) {
+    m_NrOfFallingBurgers++;
   }
   if (eventId == "BurgerFell"_h) {
     m_LevelInfo.currentScore += 50;
-    size_t width = 8;
-    // clang-format off
+    HandleScoreChange();
+    m_NrOfFallingBurgers--;
+    TryLoadingNextScene();
+  }
+}
+
+void dae::GameManager::HandleEntityDeath(GameObject *object) {
+  if (auto entity = object->GetComponent<Entity>(); entity) {
+    if (auto entityType = entity->GetCharacterType();
+        m_LevelInfo.playerInfos.contains(entityType)) {
+      auto controller{
+          dynamic_cast<PlayerPepperController *>(entity->GetInput())};
+      // it can not be null
+      assert(controller != nullptr);
+      m_LevelInfo.playerInfos.at(entityType).nrPepper =
+          controller->GetPepperCount();
+      m_CharactersDead++;
+      // check if all players died
+      if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
+        // check if all players are dead
+        m_PlayersDead = true;
+        for (auto const &characterInfo : m_LevelInfo.playerInfos) {
+          if (characterInfo.second.lives > 0)
+            m_PlayersDead = false;
+        }
+        m_LevelInfo.playerInfos.at(entityType).lives--;
+        m_ShouldRestart = true;
+
+        TryLoadingNextScene();
+      }
+    }
+  }
+}
+
+void dae::GameManager::HandleBurgerFinished() {
+  m_FinishedBurgerCount++;
+  if (m_FinishedBurgerCount == m_TotalBurgers) {
+    m_LevelInfo.burgerInfos.clear();
+    m_LevelInfo.level++;
+    if (m_LevelInfo.level >= m_NrOfLevels)
+      m_LevelInfo.level = 0;
+
+    SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
+  }
+}
+
+void dae::GameManager::HandleScoreChange() {
+  size_t width = 8;
+  // clang-format off
     auto text{
         std::string(
             width - std::min(width, std::to_string(m_LevelInfo.currentScore).length()), '0') +
         std::to_string(m_LevelInfo.currentScore) };
     m_ScoreText->SetText(text);
-  }
+}
+
+void dae::GameManager::TryLoadingNextScene()
+{
+    if (m_NrOfFallingBurgers == 0 && m_ShouldRestart) {
+        if (m_PlayersDead) {
+            // temporarily load main scene if they al have no lives left
+            SceneManager::GetInstance().LoadScene<MainSceneLoader>();
+        }
+        else {
+            SaveBurgers();
+            SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
+        }
+    }
 }

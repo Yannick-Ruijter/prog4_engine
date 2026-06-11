@@ -41,6 +41,15 @@ private:
   int m_FinishedBurgerCount{};
   int m_TotalBurgers{};
   int m_NrOfLevels{3};
+  int m_NrOfFallingBurgers{};
+  bool m_PlayersDead{};
+  bool m_ShouldRestart{false};
+
+  void HandleEntityDeath(GameObject *object);
+  void HandleBurgerFinished();
+  void HandleScoreChange();
+  void TryLoadingNextScene();
+
   // Inherited via Observer
 };
 } // namespace dae

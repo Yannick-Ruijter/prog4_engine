@@ -95,6 +95,8 @@ void dae::BurgerLayer::StartFalling() {
     transform->SetLocalPosition(pos);
     layerPart->GetComponent<BurgerLayerPart>()->SetFallingState(true);
   }
+
+  m_BurgerFellEvent->NotifyObservers("StartedFalling"_h, GetOwner());
 }
 
 bool dae::BurgerLayer::CanFall() {
