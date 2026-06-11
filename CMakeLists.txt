@@ -243,7 +243,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
      "Game/States/EntityStateStunned.cpp" 
      "Game/Components/GameManager.cpp" 
      "Game/States/EntityStateDeath.cpp" 
-     "Game/Components/PepperDisplay.cpp" "Game/EntityControllers/AIEnemyController.cpp")
+     "Game/Components/PepperDisplay.cpp" "Game/EntityControllers/AIEnemyController.cpp" "Game/Components/EnemySpawner.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

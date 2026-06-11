@@ -29,13 +29,14 @@
 using namespace dae;
 
 dae::GameManager::GameManager(GameObject &owner, LevelInfo const &levelInfo,
-                              Scene *scene)
-    : Component(owner), m_Scene{scene}, m_LevelInfo{levelInfo} {
+                              Scene *scene, LevelGrid *levelGrid)
+    : Component(owner), m_Scene{scene}, m_LevelInfo{levelInfo},
+      m_Level{levelGrid} {
   m_TextFont =
       dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 36);
 }
 
-void dae::GameManager::SetupPlayers(GameObject *level) {
+void dae::GameManager::SetupPlayers() {
 
   auto CreatePlayerInfoDisplays = [&](GameObject *character, glm::vec2 pos) {
     std::string characterString{};
@@ -95,7 +96,7 @@ void dae::GameManager::SetupPlayers(GameObject *level) {
     go->AddComponent<dae::Entity>(
         std::make_unique<dae::PlayerPepperController>(
             inputs, go.get(), m_LevelInfo.playerInfos.at(character).nrPepper),
-        level->GetComponent<dae::LevelGrid>(), character);
+        m_Level, character);
     auto controller = go->GetComponent<dae::Entity>()->GetInput();
     go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
         controller);
@@ -151,12 +152,12 @@ void dae::GameManager::RegisterPlayer(GameObject *player) {
   m_Players.emplace_back(player);
 }
 
-void dae::GameManager::CreateBurger(glm::vec2 const &pos, BurgerLayerType type,
-                                    LevelGrid *levelGrid) {
+void dae::GameManager::CreateBurger(glm::vec2 const &pos,
+                                    BurgerLayerType type) {
   auto go = std::make_unique<GameObject>();
   go->AddComponent<dae::ObjectRenderer>();
   go->GetComponent<dae::Transform>()->SetLocalPosition(pos);
-  go->AddComponent<dae::BurgerLayer>(type, levelGrid);
+  go->AddComponent<dae::BurgerLayer>(type, m_Level);
   auto layer{go->GetComponent<BurgerLayer>()};
   layer->BurgerFellEvent()->AddObserver(this);
   if (layer->Type() == BurgerLayerType::TopPaddy) {
@@ -170,9 +171,9 @@ void dae::GameManager::CreateBurger(glm::vec2 const &pos, BurgerLayerType type,
   m_Scene->Add(std::move(go));
 }
 
-void dae::GameManager::LoadBurgers(LevelGrid *levelGrid) {
+void dae::GameManager::LoadBurgers() {
   for (auto const &burgerInfo : m_LevelInfo.burgerInfos) {
-    CreateBurger(burgerInfo.pos, burgerInfo.type, levelGrid);
+    CreateBurger(burgerInfo.pos, burgerInfo.type);
   }
 }
 
@@ -193,6 +194,10 @@ void dae::GameManager::AddPlayersToScene() {
 }
 
 int dae::GameManager::GetScore() const { return m_LevelInfo.currentScore; }
+
+LevelGrid *dae::GameManager::GetLevel() const { return m_Level; }
+
+LevelInfo const &dae::GameManager::GetLevelInfo() const { return m_LevelInfo; }
 
 // get a random player from the list (created for ai controller enemies
 GameObject *dae::GameManager::GetRandomPlayer() const {

@@ -7,13 +7,11 @@
 namespace dae {
 class RectCollider;
 class GameObject;
-class LevelGrid;
 class Transform;
 class GameManager;
 class AIEnemyController : public InputProvider {
 public:
-  AIEnemyController(GameObject *controlledEnemy, LevelGrid *level,
-                    GameManager *manager);
+  AIEnemyController(GameObject *controlledEnemy, GameManager *manager);
   virtual ~AIEnemyController() override;
   virtual glm::vec2 GetMovementDirection() override;
   virtual bool AttackButtonPressed() const override;
@@ -26,7 +24,6 @@ private:
   Transform *m_Transform{nullptr};
   GameObject *m_TargetPlayer{nullptr};
   Transform *m_TargetTransform{nullptr};
-  LevelGrid *m_Level{nullptr};
   GameManager *m_Manager{nullptr};
   RectCollider *m_Collider{nullptr};
   glm::vec2 m_MovementVec{};

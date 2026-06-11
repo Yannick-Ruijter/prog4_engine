@@ -10,11 +10,11 @@
 using namespace dae;
 
 Entity::Entity(GameObject &owner, std::unique_ptr<InputProvider> input,
-               LevelGrid *level, Character character)
+               LevelGrid *level, Character character, float speed)
     : Component(owner), m_Character{character},
       m_SpriteAnimation{owner.GetComponent<SpriteAnimation>()},
       m_CurrentState{std::make_unique<EntityStateIdle>(*this)},
-      m_Input{std::move(input)}, m_Level{level} {
+      m_Input{std::move(input)}, m_Level{level}, m_MoveSpeed{speed} {
   assert(m_SpriteAnimation != nullptr &&
          "Entity needs a SpriteAnimation (added before this component)");
   m_AttackEvent->AddObserver(m_Input.get());

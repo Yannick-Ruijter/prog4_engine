@@ -15,9 +15,8 @@
 #include <random>
 
 dae::AIEnemyController::AIEnemyController(GameObject *controlledEnemy,
-                                          LevelGrid *level,
                                           GameManager *manager)
-    : m_ControlledEnemy{controlledEnemy}, m_Level{level}, m_Manager{manager} {
+    : m_ControlledEnemy{controlledEnemy}, m_Manager{manager} {
   m_Transform = controlledEnemy->GetComponent<Transform>();
   m_TargetPlayer = m_Manager->GetRandomPlayer();
   auto entity{m_TargetPlayer->GetComponent<Entity>()};
@@ -44,14 +43,15 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
   // check possible direction to go to
   // clang-format off
   //we can go up when we're either on a ladder or slightly above one (to reach the platform since it's not perfectly aligned with each cell)
+  auto level = m_Manager->GetLevel();
   bool canGoUp =
-      m_Level->IsOnLadder(worldPos + glm::vec2{0, -displacement}, charSize) || m_Level->IsOnLadder(worldPos + glm::vec2{ 0, -displacement + 10.f }, charSize);
+      level->IsOnLadder(worldPos + glm::vec2{0, -displacement}, charSize) || level->IsOnLadder(worldPos + glm::vec2{ 0, -displacement + 10.f }, charSize);
   bool canGoDown =
-      m_Level->IsOnLadder(worldPos + glm::vec2{0, displacement + 10.f}, charSize);
+      level->IsOnLadder(worldPos + glm::vec2{0, displacement + 10.f}, charSize);
   bool canGoLeft =
-      m_Level->IsOnPlatform(worldPos + glm::vec2{-displacement, 0}, charSize);
+      level->IsOnPlatform(worldPos + glm::vec2{-displacement, 0}, charSize);
   bool canGoRight =
-      m_Level->IsOnPlatform(worldPos + glm::vec2{displacement, 0}, charSize);
+      level->IsOnPlatform(worldPos + glm::vec2{displacement, 0}, charSize);
   // clang-format on
   bool atCrossRoads{(canGoUp || canGoDown) && (canGoLeft || canGoRight)};
   if (atCrossRoads || m_FirstLoop) {

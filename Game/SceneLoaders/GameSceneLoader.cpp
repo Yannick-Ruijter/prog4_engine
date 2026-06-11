@@ -23,6 +23,9 @@
 #include "TextDisplay.hpp"
 #include "burgerLayer.hpp"
 #include <AIEnemyController.hpp>
+#include <EnemySpawner.hpp>
+#include <SpriteAnimation.hpp>
+#include <Texture2DDisplay.hpp>
 
 #include <fstream>
 #include <sstream>
@@ -38,7 +41,6 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   auto fontSmall =
       dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 24);
 
-  dae::GameObject *level{};
   glm::ivec2 const tileSize{64, 64};
   LevelGrid *levelGrid{nullptr};
   // background stuff
@@ -64,7 +66,6 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
         "Data/Levels/Level" + std::to_string(levelInfo.level) + ".csv",
         charToTexture);
     levelGrid = go->GetComponent<LevelGrid>();
-    level = go.get();
     scene->Add(std::move(go));
 
     go = std::make_unique<dae::GameObject>();
@@ -96,45 +97,50 @@ Scene *dae::GameSceneLoader::LoadScene(LevelInfo levelInfo) {
   }
 
   go = std::make_unique<GameObject>();
-  go->AddComponent<GameManager>(levelInfo, scene);
+  go->AddComponent<GameManager>(levelInfo, scene, levelGrid);
   auto manager = go->GetComponent<GameManager>();
-  manager->SetupPlayers(level);
-
-  LoadSpriteMap(tileSize, levelGrid, manager, levelInfo);
+  manager->SetupPlayers();
+  std::vector<glm::vec2> spawnPoints{};
+  LoadSpriteMap(tileSize, manager, levelInfo, spawnPoints);
   manager->AddPlayersToScene();
   scene->Add(std::move(go));
 
+  go = std::make_unique<GameObject>();
+  go->AddComponent<EnemySpawner>(manager, 10.f, spawnPoints, scene);
+
+  scene->Add(std::move(go));
+
   {
-    go = std::make_unique<GameObject>();
-    go->AddComponent<dae::ObjectRenderer>();
-    go->AddComponent<dae::Texture2DDisplay>(
-        "Data/Characters/HotDogGuy_SpriteSheet.png", 32, 32);
-    go->AddComponent<dae::RectCollider>(
-        Rect{glm::vec2{}, glm::vec2{32.f, 32.f}}, LAYER_ENEMY,
-        LAYER_BURGER | LAYER_PEPPER);
-    go->GetComponent<dae::Transform>()->SetLocalPosition(
-        glm::vec3{150, 214, 0});
-    go->AddComponent<dae::SpriteAnimation>(
-        "Data/Characters/HotDogGuy_AnimationData.json",
-        "Data/Characters/HotDogGuy_SpriteSheet.png");
-    go->AddComponent<dae::Entity>(
-        std::make_unique<dae::AIEnemyController>(go.get(), levelGrid, manager),
-        level->GetComponent<dae::LevelGrid>(), Character::HotDogGuy);
-    auto controller = go->GetComponent<dae::Entity>()->GetInput();
-    go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
-        controller);
-    scene->Add(std::move(go));
+    // go = std::make_unique<GameObject>();
+    // go->AddComponent<dae::ObjectRenderer>();
+    // go->AddComponent<dae::Texture2DDisplay>(
+    //     "Data/Characters/HotDogGuy_SpriteSheet.png", 32, 32);
+    // go->AddComponent<dae::RectCollider>(
+    //     Rect{glm::vec2{}, glm::vec2{32.f, 32.f}}, LAYER_ENEMY,
+    //     LAYER_BURGER | LAYER_PEPPER);
+    // go->GetComponent<dae::Transform>()->SetLocalPosition(
+    //     glm::vec3{150, 214, 0});
+    // go->AddComponent<dae::SpriteAnimation>(
+    //     "Data/Characters/Enemy_AnimationData.json",
+    //     "Data/Characters/HotDogGuy_SpriteSheet.png");
+    // go->AddComponent<dae::Entity>(
+    //     std::make_unique<dae::AIEnemyController>(go.get(), manager),
+    //     levelGrid, Character::HotDogGuy);
+    // auto controller = go->GetComponent<dae::Entity>()->GetInput();
+    // go->GetComponent<dae::RectCollider>()->GetSubject()->AddObserver(
+    //     controller);
+    // scene->Add(std::move(go));
   }
   return scene;
 }
 
 void dae::GameSceneLoader::LoadSpriteMap(glm::ivec2 const &tileSize,
-                                         LevelGrid *levelGrid,
                                          GameManager *manager,
-                                         LevelInfo levelInfo) {
+                                         LevelInfo levelInfo,
+                                         auto &spawnPoints) {
   bool loadBurgers{levelInfo.burgerInfos.size() == 0};
   if (!loadBurgers)
-    manager->LoadBurgers(levelGrid);
+    manager->LoadBurgers();
   std::string const &filePath{"Data/Levels/Level" +
                               std::to_string(levelInfo.level) + "_Burgers.csv"};
   std::ifstream stream{filePath};
@@ -146,7 +152,7 @@ void dae::GameSceneLoader::LoadSpriteMap(glm::ivec2 const &tileSize,
       {'2', BurgerLayerType::Salad},
       {'3', BurgerLayerType::BottomPaddy},
   };
-
+  char spawnPointChar{'z'};
   auto players = manager->GetPlayers();
   std::unordered_map<char, GameObject *> charToPlayers;
   for (uint32_t i = 0; i < players.size(); i++) {
@@ -160,6 +166,11 @@ void dae::GameSceneLoader::LoadSpriteMap(glm::ivec2 const &tileSize,
     // goes over every character between ','
     while (std::getline(ss, cell, ',')) {
       char currentChar{cell[0]};
+      if (currentChar == spawnPointChar) {
+        glm::vec2 pos{gridCoord * tileSize + tileSize / 4};
+        pos.y += tileSize.y / 8;
+        spawnPoints.push_back(pos);
+      }
       if (charToPlayers.contains(currentChar)) {
         glm::vec2 pos{gridCoord * tileSize + tileSize / 4};
         pos.y += tileSize.y / 8;
@@ -173,7 +184,7 @@ void dae::GameSceneLoader::LoadSpriteMap(glm::ivec2 const &tileSize,
         // same size as the tiles
         pos.x += tileSize.x / 3.5f;
         pos.y += tileSize.y / 1.9f;
-        manager->CreateBurger(pos, layers.at(currentChar), levelGrid);
+        manager->CreateBurger(pos, layers.at(currentChar));
       }
       gridCoord.x++;
     }

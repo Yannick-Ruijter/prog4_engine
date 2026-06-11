@@ -13,7 +13,7 @@ public:
   static Scene *LoadScene(LevelInfo levelInfo = {});
 
 private:
-  static void LoadSpriteMap(glm::ivec2 const &tileSize, LevelGrid *levelGrid,
-                            GameManager *manager, LevelInfo levelInfo);
+  static void LoadSpriteMap(glm::ivec2 const &tileSize, GameManager *manager,
+                            LevelInfo levelInfo, auto& spawnPoints);
 };
 } // namespace dae

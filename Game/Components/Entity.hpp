@@ -14,7 +14,7 @@ class RectCollider;
 class Entity final : public Component {
 public:
   Entity(GameObject &owner, std::unique_ptr<InputProvider> input,
-         LevelGrid *level, Character character);
+         LevelGrid *level, Character character, float speed = 100.f);
   ~Entity();
   void Update();
   GameObject *GetEntity();

@@ -16,16 +16,18 @@ class TextDisplay;
 enum class BurgerLayerType;
 class GameManager : public Component, public Observer {
 public:
-  GameManager(GameObject &owner, LevelInfo const &levelInfo, Scene *scene);
+  GameManager(GameObject &owner, LevelInfo const &levelInfo, Scene *scene,
+              LevelGrid *levelGrid);
 
-  void SetupPlayers(GameObject *level);
+  void SetupPlayers();
   void RegisterPlayer(GameObject *player);
-  void CreateBurger(glm::vec2 const &pos, BurgerLayerType type,
-                    LevelGrid *levelGrid);
-  void LoadBurgers(LevelGrid *levelGrid);
+  void CreateBurger(glm::vec2 const &pos, BurgerLayerType type);
+  void LoadBurgers();
   void SaveBurgers();
   void AddPlayersToScene();
   int GetScore() const;
+  LevelGrid *GetLevel() const;
+  LevelInfo const &GetLevelInfo() const;
   GameObject *GetRandomPlayer() const;
   std::vector<GameObject *> const &GetPlayers() const;
   void Notify(EventId eventId, GameObject *source) override;
@@ -38,6 +40,7 @@ private:
   uint32_t m_CharactersDead{};
   std::shared_ptr<Font> m_TextFont;
   LevelInfo m_LevelInfo;
+  LevelGrid *m_Level{nullptr};
   TextDisplay *m_ScoreText{nullptr};
   int m_FinishedBurgerCount{};
   int m_TotalBurgers{};

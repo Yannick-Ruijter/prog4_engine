@@ -10,7 +10,7 @@ enum class GameMode {
   Pvp,
 };
 
-enum class Character { MrPepper, MrsSalt, HotDogGuy };
+enum class Character { MrPepper, MrsSalt, HotDogGuy, EggGuy, PickleGuy };
 
 struct PlayerInfo {
   int lives = 3;
