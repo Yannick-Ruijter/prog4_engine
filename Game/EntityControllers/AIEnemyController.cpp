@@ -216,5 +216,11 @@ void dae::AIEnemyController::Notify(EventId eventId, GameObject *source) {
 
   if (eventId == "OnEntityDeath"_h && source == m_TargetPlayer) {
     m_TargetPlayer = m_Manager->GetRandomPlayer();
+    if (m_TargetPlayer) {
+      m_TargetTransform = m_TargetPlayer->GetComponent<Transform>();
+      auto entity{m_TargetPlayer->GetComponent<Entity>()};
+      if (entity)
+        entity->GetDeathEvent()->AddObserver(this);
+    }
   }
 }

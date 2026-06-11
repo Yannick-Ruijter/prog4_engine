@@ -43,7 +43,7 @@ void BurgerTime::SetupKeybinds() {
       .BindInputAction(InputAction::MoveDown, InputKeybinds::DOWN)
       .BindInputAction(InputAction::MoveRight, InputKeybinds::RIGHT)
       .BindInputAction(InputAction::MoveLeft, InputKeybinds::LEFT)
-      .BindInputAction(InputAction::Attack, InputKeybinds::W);
+      .BindInputAction(InputAction::Attack, InputKeybinds::S);
 
   for (int i = 0; i < 4; ++i) {
     inputManager.GetControllerInput(i)

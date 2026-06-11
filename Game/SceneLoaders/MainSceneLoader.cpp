@@ -5,6 +5,7 @@
 #include "FPSDisplay.hpp"
 #include "GameSceneLoader.hpp"
 #include "InputManager.hpp"
+#include "LoadSceneLoader.hpp"
 #include "ObjectRenderer.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
@@ -57,7 +58,7 @@ Scene *dae::MainSceneLoader::LoadScene() {
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::Button>(
         [&]() {
-          dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(
+          dae::SceneManager::GetInstance().LoadScene<dae::LoadSceneLoader>(
               LevelInfo{.gameMode = GameMode::SinglePlayer});
         },
         focusedColor, idleColor);
@@ -71,7 +72,7 @@ Scene *dae::MainSceneLoader::LoadScene() {
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::Button>(
         [&]() {
-          dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(
+          dae::SceneManager::GetInstance().LoadScene<dae::LoadSceneLoader>(
               LevelInfo{.gameMode = GameMode::Coop});
         },
         focusedColor, idleColor);
@@ -85,7 +86,7 @@ Scene *dae::MainSceneLoader::LoadScene() {
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::Button>(
         [&]() {
-          dae::SceneManager::GetInstance().LoadScene<dae::GameSceneLoader>(
+          dae::SceneManager::GetInstance().LoadScene<dae::LoadSceneLoader>(
               LevelInfo{.gameMode = GameMode::Pvp});
         },
         focusedColor, idleColor);
@@ -157,15 +158,15 @@ Scene *dae::MainSceneLoader::LoadScene() {
 
     bindings.emplace_back(keyboardInput->AddBinding(
         std::make_unique<dae::NavigateButtonCommand>(Direction::Up),
-        InputKeybinds::W, InputState::JustPressed));
+        InputKeybinds::UP, InputState::JustPressed));
 
     bindings.emplace_back(keyboardInput->AddBinding(
         std::make_unique<dae::NavigateButtonCommand>(Direction::Down),
-        InputKeybinds::S, InputState::JustPressed));
+        InputKeybinds::DOWN, InputState::JustPressed));
 
     bindings.emplace_back(
         keyboardInput->AddBinding(std::make_unique<dae::PressButtonCommand>(),
-                                  InputKeybinds::Z, InputState::JustPressed));
+                                  InputKeybinds::S, InputState::JustPressed));
 
     scene->AddExitFunction([bindings]() {
       auto &inputManager{InputManager::GetInstance()};

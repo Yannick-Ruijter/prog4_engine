@@ -29,9 +29,14 @@ dae::LivesDisplay::LivesDisplay(GameObject &gameObject,
 }
 
 void dae::LivesDisplay::DecrementLives() {
-  --m_Lives;
-  auto text = m_LifeText->GetComponent<TextDisplay>();
-  text->SetText(std::to_string(m_Lives));
+  if (m_Lives == 0) {
+    auto text = m_LifeText->GetComponent<TextDisplay>();
+    text->SetText("/");
+  } else {
+    --m_Lives;
+    auto text = m_LifeText->GetComponent<TextDisplay>();
+    text->SetText(std::to_string(m_Lives));
+  }
 }
 
 void dae::LivesDisplay::Notify(EventId event, GameObject *) {

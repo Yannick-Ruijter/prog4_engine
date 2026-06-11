@@ -22,6 +22,7 @@
 #include "sdbm_hash.hpp"
 #include <AIEnemyController.hpp>
 #include <Font.hpp>
+#include <LoadSceneLoader.hpp>
 #include <ResourceManager.hpp>
 #include <ServiceProvider.hpp>
 #include <algorithm>
@@ -259,15 +260,15 @@ void dae::GameManager::HandleEntityDeath(GameObject *object) {
           controller->GetPepperCount();
       std::erase(m_Players, object);
       m_CharactersDead++;
+      m_LevelInfo.playerInfos.at(entityType).lives--;
       // check if all players died this stage
       if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
         // check if any of the players still has a life left
         m_PlayersDead = true;
         for (auto const &characterInfo : m_LevelInfo.playerInfos) {
-          if (characterInfo.second.lives > 0)
+          if (characterInfo.second.lives >= 0)
             m_PlayersDead = false;
         }
-        m_LevelInfo.playerInfos.at(entityType).lives--;
         m_ShouldRestart = true;
 
         TryLoadingNextScene();
@@ -284,7 +285,7 @@ void dae::GameManager::HandleBurgerFinished() {
     if (m_LevelInfo.level >= m_NrOfLevels)
       m_LevelInfo.level = 0;
 
-    SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
+    SceneManager::GetInstance().LoadScene<LoadSceneLoader>(m_LevelInfo);
   }
 }
 
@@ -307,7 +308,7 @@ void dae::GameManager::TryLoadingNextScene()
         }
         else {
             SaveBurgers();
-            SceneManager::GetInstance().LoadScene<GameSceneLoader>(m_LevelInfo);
+            SceneManager::GetInstance().LoadScene<LoadSceneLoader>(m_LevelInfo);
         }
     }
 }

@@ -13,6 +13,7 @@
 #include "sdbm_hash.hpp"
 #include <GameManager.hpp>
 #include <GameSceneLoader.hpp>
+#include <LoadSceneLoader.hpp>
 #include <SceneManager.hpp>
 using namespace dae;
 
@@ -94,6 +95,6 @@ void dae::AdvanceSceneCommand::Execute() {
   levelInfo.level++;
   if (levelInfo.level >= 3)
     levelInfo.level = 0;
-
-  SceneManager::GetInstance().LoadScene<GameSceneLoader>(levelInfo);
+  levelInfo.burgerInfos.clear();
+  SceneManager::GetInstance().LoadScene<LoadSceneLoader>(levelInfo);
 }
