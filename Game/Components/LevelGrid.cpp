@@ -116,7 +116,7 @@ int dae::LevelGrid::GetGridSize() const { return m_GridSize.x; }
 char dae::LevelGrid::GetTile(glm::vec2 const &pos) {
   uint32_t row = static_cast<uint32_t>(pos.y / m_GridSize.y);
   uint32_t column = static_cast<uint32_t>(pos.x / m_GridSize.x);
-  if (row <= m_Grid.size() && column <= m_Grid.front().size())
+  if (row < m_Grid.size() && column < m_Grid.front().size())
     return m_Grid[row][column];
   return ' ';
 }

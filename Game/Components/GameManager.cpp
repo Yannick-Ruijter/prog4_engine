@@ -23,6 +23,7 @@
 #include <AIEnemyController.hpp>
 #include <Font.hpp>
 #include <ResourceManager.hpp>
+#include <ServiceProvider.hpp>
 #include <algorithm>
 #include <random>
 using namespace dae;
@@ -197,9 +198,8 @@ int dae::GameManager::GetScore() const { return m_LevelInfo.currentScore; }
 GameObject *dae::GameManager::GetRandomPlayer() const {
   if (m_Players.size() == 0)
     return nullptr;
-  std::mt19937 rng(std::random_device{}());
-  return m_Players[std::uniform_int_distribution<size_t>(0, m_Players.size() -
-                                                                1)(rng)];
+  return m_Players[std::uniform_int_distribution<size_t>(
+      0, m_Players.size() - 1)(ServiceProvider::GetRandomProvider().GetRng())];
 }
 
 std::vector<GameObject *> const &dae::GameManager::GetPlayers() const {

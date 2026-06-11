@@ -9,8 +9,10 @@
 #include <GameManager.hpp>
 #include <GameObject.hpp>
 #include <LevelGrid.hpp>
+#include <ServiceProvider.hpp>
 #include <TimeManager.hpp>
 #include <Transform.hpp>
+#include <random>
 
 dae::AIEnemyController::AIEnemyController(GameObject *controlledEnemy,
                                           LevelGrid *level,
@@ -51,8 +53,8 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
   bool canGoRight =
       m_Level->IsOnPlatform(worldPos + glm::vec2{displacement, 0}, charSize);
   // clang-format on
-
-  if (((canGoUp || canGoDown) && (canGoLeft || canGoRight)) || m_FirstLoop) {
+  bool atCrossRoads{(canGoUp || canGoDown) && (canGoLeft || canGoRight)};
+  if (atCrossRoads || m_FirstLoop) {
     m_FirstLoop = false;
     if (m_WasOnCrossRoads)
       return m_MovementVec;
@@ -74,6 +76,25 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
       m_MovementVec = glm::vec2{-1.f, 0};
     else if (temp.x > 0 && canGoRight && m_MovementVec.x >= 0.f)
       m_MovementVec = glm::vec2{1.f, 0};
+    else {
+      std::uniform_int_distribution<int> dist(0, 3);
+      // 25% chance to change direction randomly
+      auto result = dist(ServiceProvider::GetRandomProvider().GetRng());
+      if (result == 0) {
+        // is moving vertically
+        bool isMovingVertically{m_MovementVec.y != 0.f};
+        bool isMovingHorizontally{m_MovementVec.x != 0.f};
+        if (canGoUp && !isMovingVertically)
+          m_MovementVec = glm::vec2{0, -1.f};
+        else if (canGoDown && !isMovingVertically)
+          m_MovementVec = glm::vec2{0, 1.f};
+        else if (canGoLeft && !isMovingHorizontally)
+          m_MovementVec = glm::vec2{-1.f, 0.f};
+        else if (canGoRight && !isMovingHorizontally)
+          m_MovementVec = glm::vec2{1.f, 0.f};
+      }
+      return m_MovementVec;
+    }
   } else {
     m_WasOnCrossRoads = false;
     // if we have reached a vertical dead end, we turn around (because we're not
