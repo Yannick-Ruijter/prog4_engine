@@ -15,6 +15,7 @@
 #include <GameSceneLoader.hpp>
 #include <LoadSceneLoader.hpp>
 #include <SceneManager.hpp>
+#include <TextDisplay.hpp>
 using namespace dae;
 
 GameObjectCommand::GameObjectCommand(GameObject &object)
@@ -97,4 +98,29 @@ void dae::AdvanceSceneCommand::Execute() {
     levelInfo.level = 0;
   levelInfo.burgerInfos.clear();
   SceneManager::GetInstance().LoadScene<LoadSceneLoader>(levelInfo);
+}
+int ScrollButtonInitials::CharIndex = 0;
+std::string ScrollButtonInitials::Text = "aa";
+Button *ScrollButtonInitials::Target = nullptr;
+TextDisplay *ScrollButtonInitials::TargetText = nullptr;
+dae::ScrollButtonInitials::ScrollButtonInitials(Direction dir) : m_Dir{dir} {}
+
+void dae::ScrollButtonInitials::Execute() {
+  if (CurrentButton == Target) {
+    if (m_Dir == Direction::Up)
+      Text[CharIndex] = (Text[CharIndex] == 'Z') ? 'A' : Text[CharIndex] + 1;
+    else if (m_Dir == Direction::Down)
+      Text[CharIndex] = (Text[CharIndex] == 'A') ? 'Z' : Text[CharIndex] - 1;
+    else if (m_Dir == Direction::Right)
+      CharIndex = (CharIndex + 1) % 2;
+    else if (m_Dir == Direction::Left)
+      CharIndex = (CharIndex + 1) % 2;
+    TargetText->SetText("Initials: " + Text);
+  }
+}
+
+void dae::ScrollButtonInitials::SetNameSelectionButton(Button *button) {
+  Target = button;
+  TargetText = Target->GetOwner()->GetComponent<TextDisplay>();
+  TargetText->SetText("Initials: " + Text);
 }

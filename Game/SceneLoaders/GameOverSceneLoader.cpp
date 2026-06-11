@@ -7,6 +7,7 @@
 #include <Font.hpp>
 #include <GameObject.hpp>
 #include <GameSceneLoader.hpp>
+#include <HighScoresDisplay.hpp>
 #include <InputInfo.hpp>
 #include <InputManager.hpp>
 #include <KeyboardInput.hpp>
@@ -34,6 +35,88 @@ Scene *dae::GameOverSceneLoader::LoadScene(LevelInfo levelInfo) {
       dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 36);
   auto fontSmall =
       dae::ResourceManager::GetInstance().LoadFont("PublicPixel.ttf", 24);
+
+  // Input bindings
+  {
+    std::vector<ControllerInput *> inputs{
+        inputManager.GetControllerInput(0),
+        inputManager.GetControllerInput(1),
+        inputManager.GetControllerInput(2),
+        inputManager.GetControllerInput(3),
+    };
+    auto keyboardInput = inputManager.GetKeyboardInput();
+
+    std::vector<Binding *> bindings{};
+    for (auto input : inputs) {
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::NavigateButtonCommand>(Direction::Down),
+          InputKeybinds::DPAD_DOWN, InputState::JustPressed));
+
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::NavigateButtonCommand>(Direction::Up),
+          InputKeybinds::DPAD_UP, InputState::JustPressed));
+
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::PressButtonCommand>(),
+          InputKeybinds::BUTTON_SOUTH, InputState::JustPressed));
+
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::ScrollButtonInitials>(Direction::Down),
+          InputKeybinds::DPAD_DOWN, InputState::JustPressed));
+
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::ScrollButtonInitials>(Direction::Up),
+          InputKeybinds::DPAD_UP, InputState::JustPressed));
+
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::ScrollButtonInitials>(Direction::Left),
+          InputKeybinds::DPAD_LEFT, InputState::JustPressed));
+
+      bindings.emplace_back(input->AddBinding(
+          std::make_unique<dae::ScrollButtonInitials>(Direction::Right),
+          InputKeybinds::DPAD_RIGHT, InputState::JustPressed));
+    }
+
+    bindings.emplace_back(keyboardInput->AddBinding(
+        std::make_unique<dae::NavigateButtonCommand>(Direction::Up),
+        InputKeybinds::UP, InputState::JustPressed));
+
+    bindings.emplace_back(keyboardInput->AddBinding(
+        std::make_unique<dae::NavigateButtonCommand>(Direction::Down),
+        InputKeybinds::DOWN, InputState::JustPressed));
+
+    bindings.emplace_back(keyboardInput->AddBinding(
+        std::make_unique<dae::ScrollButtonInitials>(Direction::Down),
+        InputKeybinds::DOWN, InputState::JustPressed));
+
+    bindings.emplace_back(keyboardInput->AddBinding(
+        std::make_unique<dae::ScrollButtonInitials>(Direction::Up),
+        InputKeybinds::UP, InputState::JustPressed));
+
+    bindings.emplace_back(keyboardInput->AddBinding(
+        std::make_unique<dae::ScrollButtonInitials>(Direction::Left),
+        InputKeybinds::LEFT, InputState::JustPressed));
+
+    bindings.emplace_back(keyboardInput->AddBinding(
+        std::make_unique<dae::ScrollButtonInitials>(Direction::Right),
+        InputKeybinds::RIGHT, InputState::JustPressed));
+
+    scene->AddExitFunction([bindings]() {
+      auto &inputManager{InputManager::GetInstance()};
+      auto keyBoardInput{inputManager.GetKeyboardInput()};
+      std::vector<PlayerInput *> controllerInputs{
+          inputManager.GetControllerInput(0),
+          inputManager.GetControllerInput(1),
+          inputManager.GetControllerInput(2),
+          inputManager.GetControllerInput(3)};
+
+      for (auto const &binding : bindings) {
+        keyBoardInput->UnBind(binding);
+        for (auto const &controllerInput : controllerInputs)
+          controllerInput->UnBind(binding);
+      }
+    });
+  }
 
   go = std::make_unique<dae::GameObject>();
   go->AddComponent<dae::ObjectRenderer>();
@@ -64,23 +147,54 @@ Scene *dae::GameOverSceneLoader::LoadScene(LevelInfo levelInfo) {
 
   scene->Add(std::move(go));
 
-  ShowScores(scene, fontSmall);
+  go = std::make_unique<GameObject>();
+  go->AddComponent<HighScoresDisplay>("Data/highscores.csv", fontSmall);
+  auto highScores = go->GetComponent<HighScoresDisplay>();
+  go->GetComponent<Transform>()->SetLocalPosition(300.f, 480.f);
+  scene->Add(std::move(go));
+  // save score button
+  auto tempButton = std::make_unique<dae::GameObject>();
+  auto initialsObject = tempButton.get();
 
-  // buttons for navigation game
   go = std::make_unique<dae::GameObject>();
+  auto self = go.get();
   go->AddComponent<dae::ObjectRenderer>();
   go->GetComponent<dae::Transform>()->SetLocalPosition(320.f, 350.f);
   go->AddComponent<dae::TextDisplay>("Save Score", fontSmall,
                                      SDL_Color{255, 255, 255, 255});
-  go->AddComponent<dae::Button>([levelInfo]() {}, SDL_Color{255, 255, 0, 255},
-                                SDL_Color{100, 100, 100, 255});
+  go->AddComponent<dae::Button>(
+      [levelInfo, initialsObject, self]() {
+        auto initialsButton = initialsObject->GetComponent<Button>();
+        auto selfButton = self->GetComponent<Button>();
+        initialsButton->GainFocus();
+        selfButton->LoseFocus();
+        ButtonCommand::SetInitialButton(initialsButton);
+      },
+      SDL_Color{255, 255, 0, 255}, SDL_Color{100, 100, 100, 255});
   dae::Button *saveScoreButton = go->GetComponent<dae::Button>();
   saveScoreButton->GainFocus();
   scene->Add(std::move(go));
 
+  tempButton->AddComponent<dae::ObjectRenderer>();
+  tempButton->GetComponent<dae::Transform>()->SetLocalPosition(320.f, 400.f);
+  tempButton->AddComponent<dae::TextDisplay>("Initials: ", fontSmall,
+                                             SDL_Color{255, 255, 255, 255});
+  tempButton->AddComponent<dae::Button>(
+      [highScores, saveScoreButton, levelInfo, initialsObject]() {
+        ButtonCommand::SetInitialButton(saveScoreButton);
+        highScores->AddToHighscores(ScrollButtonInitials::Text,
+                                    levelInfo.currentScore);
+        saveScoreButton->GainFocus();
+        initialsObject->GetComponent<Button>()->LoseFocus();
+      },
+      SDL_Color{255, 255, 0, 255}, SDL_Color{100, 100, 100, 255});
+  auto initialsButton = tempButton->GetComponent<Button>();
+  scene->Add(std::move(tempButton));
+  // buttons for navigation game
+
   go = std::make_unique<dae::GameObject>();
   go->AddComponent<dae::ObjectRenderer>();
-  go->GetComponent<dae::Transform>()->SetLocalPosition(320.f, 400.f);
+  go->GetComponent<dae::Transform>()->SetLocalPosition(320.f, 450.f);
   go->AddComponent<dae::TextDisplay>("Main Menu", fontSmall,
                                      SDL_Color{100, 100, 100, 255});
   go->AddComponent<dae::Button>(
@@ -97,64 +211,10 @@ Scene *dae::GameOverSceneLoader::LoadScene(LevelInfo levelInfo) {
   mainMenuButton->AddNeighbor(Direction::Up, saveScoreButton);
   mainMenuButton->AddNeighbor(Direction::Down, saveScoreButton);
 
-  // Input bindings
-  {
-    auto controllerInput0 = inputManager.GetControllerInput(0);
-    auto controllerInput1 = inputManager.GetControllerInput(1);
-    auto keyboardInput = inputManager.GetKeyboardInput();
-
-    dae::NavigateButtonCommand::SetInitialButton(saveScoreButton);
-
-    std::vector<Binding *> bindings{};
-    bindings.emplace_back(controllerInput0->AddBinding(
-        std::make_unique<dae::NavigateButtonCommand>(Direction::Down),
-        InputKeybinds::DPAD_DOWN, InputState::JustPressed));
-
-    bindings.emplace_back(controllerInput0->AddBinding(
-        std::make_unique<dae::NavigateButtonCommand>(Direction::Up),
-        InputKeybinds::DPAD_UP, InputState::JustPressed));
-
-    bindings.emplace_back(controllerInput0->AddBinding(
-        std::make_unique<dae::PressButtonCommand>(),
-        InputKeybinds::BUTTON_SOUTH, InputState::JustPressed));
-
-    bindings.emplace_back(controllerInput1->AddBinding(
-        std::make_unique<dae::NavigateButtonCommand>(Direction::Down),
-        InputKeybinds::DPAD_DOWN, InputState::JustPressed));
-
-    bindings.emplace_back(controllerInput1->AddBinding(
-        std::make_unique<dae::NavigateButtonCommand>(Direction::Up),
-        InputKeybinds::DPAD_UP, InputState::JustPressed));
-
-    bindings.emplace_back(controllerInput1->AddBinding(
-        std::make_unique<dae::PressButtonCommand>(),
-        InputKeybinds::BUTTON_SOUTH, InputState::JustPressed));
-
-    bindings.emplace_back(keyboardInput->AddBinding(
-        std::make_unique<dae::NavigateButtonCommand>(Direction::Up),
-        InputKeybinds::UP, InputState::JustPressed));
-
-    bindings.emplace_back(keyboardInput->AddBinding(
-        std::make_unique<dae::NavigateButtonCommand>(Direction::Down),
-        InputKeybinds::DOWN, InputState::JustPressed));
-
-    scene->AddExitFunction([bindings]() {
-      auto &inputManager{InputManager::GetInstance()};
-      auto keyBoardInput{inputManager.GetKeyboardInput()};
-      std::vector<PlayerInput *> controllerInputs{
-          inputManager.GetControllerInput(0),
-          inputManager.GetControllerInput(1),
-          inputManager.GetControllerInput(2),
-          inputManager.GetControllerInput(3)};
-
-      for (auto const &binding : bindings) {
-        keyBoardInput->UnBind(binding);
-        for (auto const &controllerInput : controllerInputs)
-          controllerInput->UnBind(binding);
-      }
-    });
-  }
-
+  dae::ScrollButtonInitials::Text = "aa";
+  dae::ScrollButtonInitials::CharIndex = 0;
+  dae::NavigateButtonCommand::SetInitialButton(saveScoreButton);
+  dae::ScrollButtonInitials::SetNameSelectionButton(initialsButton);
   return scene;
 }
 

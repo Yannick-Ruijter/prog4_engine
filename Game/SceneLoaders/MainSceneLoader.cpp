@@ -100,11 +100,9 @@ Scene *dae::MainSceneLoader::LoadScene() {
                                        SDL_Color{255, 0, 0, 255});
     go->AddComponent<dae::Button>(
         [&]() {
-          dae::SceneManager::GetInstance().LoadScene<dae::GameOverSceneLoader>(
-              LevelInfo{.gameMode = GameMode::Pvp, .currentScore = 300});
-          // SDL_Event quit_event;
-          // quit_event.type = SDL_EVENT_QUIT;
-          // SDL_PushEvent(&quit_event);
+          SDL_Event quit_event;
+          quit_event.type = SDL_EVENT_QUIT;
+          SDL_PushEvent(&quit_event);
         },
         focusedColor, idleColor);
     quitButton = go->GetComponent<dae::Button>();

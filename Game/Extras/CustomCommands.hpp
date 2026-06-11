@@ -83,6 +83,21 @@ public:
   virtual void Execute() override;
 };
 
+class TextDisplay;
+class ScrollButtonInitials : public ButtonCommand {
+public:
+  ScrollButtonInitials(Direction dir);
+  virtual void Execute() override;
+  static void SetNameSelectionButton(Button *button);
+  static std::string Text;
+  static int CharIndex;
+
+private:
+  static Button *Target;
+  static TextDisplay *TargetText;
+  Direction m_Dir;
+};
+
 class ToggleSoundCommand : public Command {
 public:
   virtual void Execute() override;
