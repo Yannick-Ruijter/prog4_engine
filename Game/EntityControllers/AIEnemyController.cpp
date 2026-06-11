@@ -26,119 +26,157 @@ dae::AIEnemyController::AIEnemyController(GameObject *controlledEnemy,
   m_TargetTransform = m_TargetPlayer->GetComponent<Transform>();
   // force 2 directions so the first time something gets the input, it checks
   // for both axis
-  m_MovementVec = glm::vec2{1.f, 1.f};
+  m_MovementVec = glm::vec2{1.f, 0.f};
 }
 
-dae::AIEnemyController::~AIEnemyController() {
-  if (m_TargetPlayer) {
-    auto entity{m_TargetPlayer->GetComponent<Entity>()};
-    if (entity)
-      entity->GetDeathEvent()->RemoveObserver(this);
-  }
-}
-
+dae::AIEnemyController::~AIEnemyController() {}
 glm::vec2 dae::AIEnemyController::GetMovementDirection() {
-  // if we have no target, we can just stay still
   if (m_TargetPlayer == nullptr)
-    return glm::vec2{};
+    return {};
 
-  // auto deltaTime{TimeManager::GetInstance().GetDeltaTime()};
-  float displacement{4.f};
-  glm::vec2 charSize{32.f, 32.f};
-  auto worldPos{m_Transform->GetWorldPosition()};
+  constexpr float displacement = 4.f;
+  constexpr float ladderOffset = 10.f;
+  const glm::vec2 charSize{32.f, 32.f};
 
-  // check possible direction to go to
-  // clang-format off
-  //we can go up when we're either on a ladder or slightly above one (to reach the platform since it's not perfectly aligned with each cell)
-  auto level = m_Manager->GetLevel();
-  bool canGoUp =
-      level->IsOnLadder(worldPos + glm::vec2{0, -displacement}, charSize) || level->IsOnLadder(worldPos + glm::vec2{ 0, -displacement + 10.f }, charSize);
-  bool canGoDown =
-      level->IsOnLadder(worldPos + glm::vec2{0, displacement + 10.f}, charSize);
-  bool canGoLeft =
+  auto *level = m_Manager->GetLevel();
+  const int tileSize = level->GetGridSize();
+  const glm::vec2 worldPos = m_Transform->GetWorldPosition();
+
+  // check what directions we can go to
+  const bool canGoUp =
+      level->IsOnLadder(worldPos + glm::vec2{0, -displacement}, charSize) ||
+      level->IsOnLadder(worldPos + glm::vec2{0, -displacement + ladderOffset},
+                        charSize);
+  const bool canGoDown = level->IsOnLadder(
+      worldPos + glm::vec2{0, displacement + ladderOffset}, charSize);
+  const bool canGoLeft =
       level->IsOnPlatform(worldPos + glm::vec2{-displacement, 0}, charSize);
-  bool canGoRight =
+  const bool canGoRight =
       level->IsOnPlatform(worldPos + glm::vec2{displacement, 0}, charSize);
 
+  // compensating for my bad programming (double checking if we can move in a
+  // direction
+  const bool tileLeft =
+      level->IsPlatform(level->GetTile(worldPos + glm::vec2{-tileSize, 0}));
+  const bool tileRight =
+      level->IsPlatform(level->GetTile(worldPos + glm::vec2{tileSize, 0}));
+  const bool tileBelow =
+      level->IsLadder(level->GetTile(worldPos + glm::vec2{0, tileSize}));
 
-  //need to check this as the tiles are far bigger then the char itself and we don't want it to start going left 
-  // when there is a little room left but no actual tiles (i deeple regret a certain choice)
-  auto tileSize = level->GetGridSize();
-  bool platformLeft = level->IsPlatform(level->GetTile(worldPos + glm::vec2{-tileSize, 0}));
-  bool platformRight = level->IsPlatform(level->GetTile(worldPos + glm::vec2{ tileSize, 0 }));
-  //bool ladderAbove = level->IsLadder(level->GetTile(worldPos + glm::vec2{ 0, -tileSize }));
-  bool ladderBellow = level->IsLadder(level->GetTile(worldPos + glm::vec2{ 0, tileSize }));
+  const bool allowUp = canGoUp;
+  const bool allowDown = canGoDown && tileBelow;
+  const bool allowLeft = canGoLeft && tileLeft;
+  const bool allowRight = canGoRight && tileRight;
 
-  // clang-format on
-  bool atCrossRoads{(canGoUp || canGoDown) && (canGoLeft || canGoRight)};
-  if (atCrossRoads || m_FirstLoop) {
-    m_FirstLoop = false;
-    if (m_WasOnCrossRoads)
-      return m_MovementVec;
-    m_WasOnCrossRoads = true;
-    auto targetPos{m_TargetTransform->GetWorldPosition()};
-    auto diff{targetPos - worldPos};
-    // switch axis so i give priority to changing direction
-    glm::vec2 temp{m_MovementVec.y * m_MovementVec.y,
-                   m_MovementVec.x * m_MovementVec.x};
-    temp = temp * diff;
+  const bool atCrossroads = (allowUp || allowDown) && (allowLeft || allowRight);
 
-    // 25% chance to go to take a 90 degree turn which might not be optimal
-    std::uniform_int_distribution<int> dist(0, 3);
-    auto result = dist(ServiceProvider::GetRandomProvider().GetRng());
-    bool doRandom{result == 0};
-    if (doRandom) {
-      bool isMovingVertically{m_MovementVec.y != 0.f};
-      bool isMovingHorizontally{m_MovementVec.x != 0.f};
-      if (canGoUp && !isMovingVertically)
-        m_MovementVec = glm::vec2{0, -1.f};
-      else if (canGoDown && !isMovingVertically)
-        m_MovementVec = glm::vec2{0, 1.f};
-      else if (canGoLeft && !isMovingHorizontally && platformLeft)
-        m_MovementVec = glm::vec2{-1.f, 0.f};
-      else if (canGoRight && !isMovingHorizontally && platformRight)
-        m_MovementVec = glm::vec2{1.f, 0.f};
-    } else {
-      // check for each direction if we can walk/climb  there and if we're not
-      // going the opposite direction
-      if (temp.y < 0 && canGoUp && m_MovementVec.y <= 0.f)
-        m_MovementVec = glm::vec2{0, -1.f};
-      else if (temp.y > 0 && canGoDown && m_MovementVec.y >= 0.f &&
-               ladderBellow)
-        m_MovementVec = glm::vec2{0, 1.f};
-      else if (temp.x < 0 && canGoLeft && m_MovementVec.x <= 0.f &&
-               platformLeft)
-        m_MovementVec = glm::vec2{-1.f, 0};
-      else if (temp.x > 0 && canGoRight && m_MovementVec.x >= 0.f &&
-               platformRight)
-        m_MovementVec = glm::vec2{1.f, 0};
-      // if non of these bring the enemy closer to the player we'll take the
-      // first suboptimal path
-      else {
-        if (canGoUp && m_MovementVec.y <= 0.f)
-          m_MovementVec = glm::vec2{0, -1.f};
-        else if (canGoDown && m_MovementVec.y >= 0.f)
-          m_MovementVec = glm::vec2{0, 1.f};
-        else if (canGoLeft && m_MovementVec.x <= 0.f && platformLeft)
-          m_MovementVec = glm::vec2{-1.f, 0};
-        else if (canGoRight && m_MovementVec.x >= 0.f && platformRight)
-          m_MovementVec = glm::vec2{1.f, 0};
-      }
-    }
-
-  } else {
+  if (!atCrossroads && !m_FirstLoop) {
     m_WasOnCrossRoads = false;
-    // if we have reached a vertical dead end, we turn around (because we're not
-    // at a crossroads
-    if ((!(canGoUp) && m_MovementVec.y < 0.f) ||
+
+    // Flip if we've hit a dead end in the current direction
+    if ((!canGoUp && m_MovementVec.y < 0.f) ||
         (!canGoDown && m_MovementVec.y > 0.f))
       m_MovementVec.y = -m_MovementVec.y;
-    // if we have reached a horizontal dead end, we turn around (because we're
-    // not at a crossroads
+
     if ((!canGoLeft && m_MovementVec.x < 0.f) ||
         (!canGoRight && m_MovementVec.x > 0.f))
       m_MovementVec.x = -m_MovementVec.x;
+
+    return m_MovementVec;
   }
+
+  // we don't want to evaluate the same crossroads multiple times in a row
+  if (m_WasOnCrossRoads && !m_FirstLoop)
+    return m_MovementVec;
+
+  m_FirstLoop = false;
+  m_WasOnCrossRoads = true;
+
+  const glm::vec2 diff = m_TargetTransform->GetWorldPosition() - worldPos;
+
+  // give it a chance to change direction randomly
+  std::uniform_int_distribution<int> dist(0, 3);
+  const bool doRandom =
+      dist(ServiceProvider::GetRandomProvider().GetRng()) == 1;
+
+  const bool movingH = m_MovementVec.x != 0.f;
+
+  // creating the lambdas to set direction
+  auto tryUp = [&] {
+    if (allowUp && m_MovementVec.y <= 0.f) {
+      m_MovementVec = {0, -1};
+      return true;
+    }
+    return false;
+  };
+  auto tryDown = [&] {
+    if (allowDown && m_MovementVec.y >= 0.f) {
+      m_MovementVec = {0, 1};
+      return true;
+    }
+    return false;
+  };
+  auto tryLeft = [&] {
+    if (allowLeft && m_MovementVec.x <= 0.f) {
+      m_MovementVec = {-1, 0};
+      return true;
+    }
+    return false;
+  };
+  auto tryRight = [&] {
+    if (allowRight && m_MovementVec.x >= 0.f) {
+      m_MovementVec = {1, 0};
+      return true;
+    }
+    return false;
+  };
+
+  if (doRandom) {
+    // Pick a random valid perpendicular direction
+    if (movingH) {
+      if (rand() % 2)
+        tryDown() || tryUp();
+      else
+        tryUp() || tryDown();
+    } else {
+      if (rand() % 2)
+        tryLeft() || tryRight();
+      else
+        tryRight() || tryLeft();
+    }
+  } else {
+    // try and change direction that brings closer to player
+    bool moved = false;
+    if (movingH) {
+      // if we're moving horizontally, we try vertical moving first
+      moved = (diff.y < 0 && tryUp()) || (diff.y > 0 && tryDown()) ||
+              (diff.x < 0 && tryLeft()) || (diff.x > 0 && tryRight());
+    } else {
+      // if we're moving vertically, we try horizontal first
+      moved = (diff.x < 0 && tryLeft()) || (diff.x > 0 && tryRight()) ||
+              (diff.y < 0 && tryUp()) || (diff.y > 0 && tryDown());
+    }
+
+    // if we have not found a path in the direction of the player
+    if (!moved) {
+      // Prefer continuing in the same direction if we can't go to a direction
+      // that brings us closer
+      bool keptDir = false;
+      if (m_MovementVec.y < 0.f)
+        keptDir = tryUp();
+      else if (m_MovementVec.y > 0.f)
+        keptDir = tryDown();
+      else if (m_MovementVec.x < 0.f)
+        keptDir = tryLeft();
+      else if (m_MovementVec.x > 0.f)
+        keptDir = tryRight();
+
+      // if we can't continue moving, just take the first fitting one
+      if (!keptDir)
+        tryUp() || tryDown() || tryLeft() || tryRight();
+    }
+  }
+
   return m_MovementVec;
 }
 
@@ -165,6 +203,14 @@ void dae::AIEnemyController::Notify(EventId eventId, GameObject *source) {
     }
     if (other->GetLayer() == LAYER_PEPPER) {
       m_HasBeenStunned = true;
+    }
+  }
+
+  if (eventId == "OnEntityDeath"_h && source == m_ControlledEnemy) {
+    if (m_TargetPlayer) {
+      auto entity{m_TargetPlayer->GetComponent<Entity>()};
+      if (entity)
+        entity->GetDeathEvent()->RemoveObserver(this);
     }
   }
 
