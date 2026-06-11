@@ -21,6 +21,8 @@ BurgerLayer::BurgerLayer(GameObject &owner, BurgerLayerType layer,
   CreateChildrenParts(layer);
 }
 
+dae::BurgerLayer::~BurgerLayer() { std::erase(AllBurgerLayers, GetOwner()); }
+
 void BurgerLayer::OnLayerPartCollided() {
   ++m_NumberOfPartsSteppedOn;
   if (m_NumberOfPartsSteppedOn >= m_LayerParts.size()) {

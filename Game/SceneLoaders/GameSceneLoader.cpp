@@ -158,7 +158,6 @@ void dae::GameSceneLoader::LoadSpriteMap(glm::ivec2 const &tileSize,
   for (uint32_t i = 0; i < players.size(); i++) {
     charToPlayers[char('a' + i)] = players[i];
   }
-  BurgerLayer::AllBurgerLayers.clear();
   while (std::getline(stream, line)) {
     std::stringstream ss{line};
     std::string cell;

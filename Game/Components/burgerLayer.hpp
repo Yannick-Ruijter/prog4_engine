@@ -8,6 +8,7 @@ enum class BurgerLayerType { TopPaddy, Salad, Tomato, BottomPaddy };
 class BurgerLayer : public Component {
 public:
   BurgerLayer(GameObject &owner, BurgerLayerType layer, LevelGrid *levelGrid);
+  virtual ~BurgerLayer();
   void OnLayerPartCollided();
   virtual void Update() override;
   void StartFalling();

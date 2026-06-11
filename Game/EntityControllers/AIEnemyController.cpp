@@ -54,6 +54,8 @@ glm::vec2 dae::AIEnemyController::GetMovementDirection() {
       level->IsOnPlatform(worldPos + glm::vec2{displacement, 0}, charSize);
 
 
+  //need to check this as the tiles are far bigger then the char itself and we don't want it to start going left 
+  // when there is a little room left but no actual tiles (i deeple regret a certain choice)
   auto tileSize = level->GetGridSize();
   bool platformLeft = level->IsPlatform(level->GetTile(worldPos + glm::vec2{-tileSize, 0}));
   bool platformRight = level->IsPlatform(level->GetTile(worldPos + glm::vec2{ tileSize, 0 }));
