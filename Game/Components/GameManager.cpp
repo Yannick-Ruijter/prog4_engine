@@ -265,7 +265,7 @@ void dae::GameManager::HandleEntityDeath(GameObject *object) {
       m_CharactersDead++;
       m_LevelInfo.playerInfos.at(entityType).lives--;
       // check if all players died this stage
-      if (m_CharactersDead == m_LevelInfo.playerInfos.size()) {
+      if (m_Players.size() == 0) {
         // check if any of the players still has a life left
         m_PlayersDead = true;
         for (auto const &characterInfo : m_LevelInfo.playerInfos) {
