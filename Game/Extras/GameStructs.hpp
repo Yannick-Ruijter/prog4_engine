@@ -25,6 +25,7 @@ struct BurgerInfo {
 struct LevelInfo {
   GameMode gameMode = GameMode::SinglePlayer;
   int level = 0;
+  int burgersFinished = 0;
   int currentScore = 0;
   std::unordered_map<Character, PlayerInfo> playerInfos = {};
   std::vector<BurgerInfo> burgerInfos = {};

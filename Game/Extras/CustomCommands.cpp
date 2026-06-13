@@ -97,6 +97,7 @@ void dae::AdvanceSceneCommand::Execute() {
   if (levelInfo.level >= 3)
     levelInfo.level = 0;
   levelInfo.burgerInfos.clear();
+  levelInfo.burgersFinished = 0;
   SceneManager::GetInstance().LoadScene<LoadSceneLoader>(levelInfo);
 }
 int ScrollButtonInitials::CharIndex = 0;

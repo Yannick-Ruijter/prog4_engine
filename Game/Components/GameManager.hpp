@@ -43,7 +43,6 @@ private:
   LevelInfo m_LevelInfo;
   LevelGrid *m_Level{nullptr};
   TextDisplay *m_ScoreText{nullptr};
-  int m_FinishedBurgerCount{};
   int m_TotalBurgers{};
   int m_NrOfLevels{3};
   int m_NrOfFallingBurgers{};

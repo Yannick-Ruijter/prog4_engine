@@ -281,9 +281,10 @@ void dae::GameManager::HandleEntityDeath(GameObject *object) {
 }
 
 void dae::GameManager::HandleBurgerFinished() {
-  m_FinishedBurgerCount++;
-  if (m_FinishedBurgerCount == m_TotalBurgers) {
+  m_LevelInfo.burgersFinished++;
+  if (m_LevelInfo.burgersFinished == m_TotalBurgers) {
     m_LevelInfo.burgerInfos.clear();
+    m_LevelInfo.burgersFinished = 0;
     m_LevelInfo.level++;
     if (m_LevelInfo.level >= m_NrOfLevels)
       m_LevelInfo.level = 0;
