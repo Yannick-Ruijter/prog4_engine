@@ -1,88 +1,14 @@
-﻿# Minigin
+## Intoduction
+This repo consist of an engine and the arcade game Burgertime. I've applied various '[Game Programming Patterns](https://gameprogrammingpatterns.com/)' and '[Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)' throughout both the engine and the game itself. I learned these things by both me just reading random things and the Programming 4 course in the second year of DAE Game Development.
 
-Minigin is a very small project using [SDL3](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D c++ game projects. It is in no way a game engine, only a barebone start project where everything sdl related has been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
+ # The engine
+ The engine started out as [Minigin](https://github.com/avadae/minigin). A very small project where everything SDL related has been set up and glm has been included. First i created a GameObject class. I wanted my users to be able to create gameobjects and add them to the scene. The next thing i added to the engine was a [Game Loop](https://www.gameprogrammingpatterns.com/game-loop.html). I could "Concurrently" make the scenes and gameobjects update while not blocking another. I also gave the user the ability to add [Componenents](https://gameprogrammingpatterns.com/component.html). This allowed to user to add functionality to a game object by giving it a component which would be updated/rendered by the game object. I could now, for example, give the player a movecomponent that would move the player slightly left each frame. It's a really strong pattern since it prefers composition over inheritance (it inherits to be reused, not to reuse). The next thing i wanted to have was parenting. I added the ability to parent a game object to another game object and to make it either keep or discard their current position (I had already created a transform component which every game object has by default). This was a good addition but forced me to update my transform component as it would now have to deal with local and world position. Updating the world position every frame would be bad. I applied the  [Dirty Flag Pattern](https://gameprogrammingpatterns.com/dirty-flag.html) to solve this issue. I only updated the world position IF the dirty flag had been set and someone was requesting the position. The dirty flag could be set by either changing the local position or a parent game object changing local position. [The Command Pattern](https://gameprogrammingpatterns.com/command.html) was my next addition. The command pattern lets me decouple input handling from certain actions by encapsulating the action inside of an object with a state. This brings me to my next addition which is bindings. Bindings well 'bind' a command to a keybind and a keybind state (e.g just pressed, just released, released,...). I made sure you can get a specific input and create a binding for that input (e.g controller input 0 or keyboardinput). I also applied the [PImpl idiom](https://www.geeksforgeeks.org/cpp/pimpl-idiom-in-c-with-examples/) on the inputs so the user does not have to look at dirty code. I then learned about [Observers](https://www.gameprogrammingpatterns.com/observer.html). This pattern is one that i used a lot throughout the making of the game. It lets you create an Event (a subject), and then lets observers subscribe to that event. Once the event has been triggered (e.g player died), it notifies all observers. I Added an interface from which you can inherit from if you want (a component) to be an observer. I also added a subject class which you can give to a component which stores observers. We still needed sound support at this point so that's the next thing I added. You can load and play sound on a soundsystem. Both of these work with a soundqueue that runs concurrently so loading/playing a sound does not block the main thread. I also needed a way to get the soundsystem from everywhere inside the game so I created a static [Sevice Locator](https://gameprogrammingpatterns.com/service-locator.html) class. You can register any soundsystem you like to that service locator. It will save it as the currrent one and you'll be able to retrieve it from anywhere as it is static. I also added a 'Random' service which gives you a preloaded random seed. I also mentioned getting an input from somewhere. This thing you get it from is the InputManager. It's a [Singleton](https://gameprogrammingpatterns.com/singleton.html). As Singleton is a class abstraction where you can only have one instance from and one global access point to it. 
+
+ # BurgerTime
+Making BurgerTime was a lot easier given I had this entire engine. I did apply some other game programming patterns while creating it. One i applied (and a really important one) is the [State pattern](https://gameprogrammingpatterns.com/state.html). The state patterns makes states different objects which inherit from the same state (e.g walkingstate, jumpingstate and idlestate inherit from playerstate). This prevents a really big if-statement from happening and unspottable bugs to appear by just splitting up what you can do in each state. Each state can then do (before updating) some calculations/checks to see if they have to change to another state and change accordingly. The second important pattern i used was the [Strategy pattern](https://refactoring.guru/design-patterns/strategy). I had all my states of my player, but noticed that there's really no difference between what the players can do and the enemies can do (except that some can't access some states). They walked the same way, they climbed the same way and they stood idle the same way. The only difference they had was the input that was given to them. So i created an input provider class which you have to inherit from. This meant i also decoupled direct input polling from the actual states. Each entity now had an input provider from which you poll the current movement direction, if it attacked, if it's supposed to die, if it's supposed to be stunned or if it's supposed to be unstunned. The only difference is that in my player inputprovider, i made it impossible to be stunned (which is normal in the game). In my enemy input providers I made it impossible to attack (which is also normal in the game). I say enemy input providers because you could both control the enemy yourself or let an AI control it. Because of this pattern, creating the AI was not that big of a task. I already had the framework, I just had to fill it in.
 
 [![Build Status](https://github.com/Yannick-Ruijter/prog4_engine/actions/workflows/cmake.yml/badge.svg)](https://github.com/avadae/cmake/actions)
 [![Build Status](https://github.com/Yannick-Ruijter/prog4_engine/actions/workflows/emscripten.yml/badge.svg)](https://github.com/avadae/emscripten/actions)
-[![GitHub Release](https://img.shields.io/github/v/release/Yannick-Ruijter/prog4_engine?logo=github&sort=semver)](https://github.com/avadae/minigin/releases/latest)
 
-# Goal
-
-Minigin can/may be used as a start project for the exam assignment in the course [Programming 4](https://youtu.be/j96Oh6vzhmg) at DAE. In that assignment students need to recreate a popular 80's arcade game with a game engine they need to program themselves. During the course we discuss several game programming patterns, using the book '[Game Programming Patterns](https://gameprogrammingpatterns.com/)' by [Robert Nystrom](https://github.com/munificent) as reading material. 
-
-# Disclaimer
-
-Minigin is, despite perhaps the suggestion in its name, **not** a game engine. It is just a very simple SDL3 ready project with some of the scaffolding in place to get started. None of the patterns discussed in the course are used yet (except singleton which use we challenge during the course). It is up to the students to implement their own vision for their engine, apply patterns as they see fit, create their game as efficient as possible.
-
-# Use
-
-Get the source from this project, or since students need to have their work on github too, they can use this repository as a template. Hit the "Use this template" button on the top right corner of the github page of this project.
-
-## Windows version
-
-Either
-- Open the root folder in Visual Studio 2026; this will be recognized as a cmake project.
-  
-Or
-- Install CMake 
-- Install CMake and CMake Tools extensions in Visual Code
-- Open the root folder in Visual Code,  this will be recognized as a cmake project.
-
-Or
-- Use whatever editor you like :)
-
-## Emscripten (web) version
-
-### On windows
-
-For installing all of the needed tools on Windows I recommend using [Chocolatey](https://chocolatey.org/). You can then run the following in a terminal to install what is needed:
-
-    choco install -y cmake
-    choco install -y emscripten
-    choco install -y ninja
-    choco install -y python
-
-In a terminal, navigate to the root folder. Run this: 
-
-    mkdir build_web
-    cd build_web
-    emcmake cmake ..
-    emmake ninja
-
-To be able to see the webpage you can start a python webserver in the build_web folder
-
-    python -m http.server
-
-Then browse to http://localhost:8000 and you're good to go.
-
-### On OSX
-
-On Mac you can use homebrew
-
-    brew install cmake
-    brew install emscripten
-    brew install python
-
-In a terminal on OSX, navigate to the root folder. Run this: 
-
-    mkdir build_web
-    cd build_web
-    emcmake cmake .. -DCMAKE_OSX_ARCHITECTURES=""
-    emmake make
-
-To be able to see the webpage you can start a python webserver in the build_web folder
-
-    python3 -m http.server
-
-Then browse to http://localhost:8000 and you're good to go.
-
-## Github Actions
-
-This project is build with github actions.
-- The CMake workflow builds the project in Debug and Release for Windows and serves as a check that the project builds on that platform.
-- The Emscripten workflow generates a web version of the project and publishes it as a [github page](https://avadae.github.io/minigin/). 
-  - The url of that page will be `https://<username>.github.io/<repository>/`
-- You can embed this page with 
-
-```<iframe style="position: absolute; top: 0px; left: 0px; width: 1024px; height: 576px;" src="https://<username>.github.io/<repository>/" loading="lazy"></iframe>```
+[Repo](https://github.com/Yannick-Ruijter/prog4_engine) 
 
